@@ -37,3 +37,8 @@
 *.aso
 *.obj
 
+# emacs tmp files
+*~
+
+
+
