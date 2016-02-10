@@ -1,0 +1,6 @@
+1. There are 32 semaphores available in DLXOS.
+2. There are 64 locks available in DLXOS.
+3. The semaphore is created as a structure composed of a queue waiting, an integer counter and an unsigned integer inuse indicating whether or not it's in used. The function SemCreate initializes a semaphore by setting the inuse to 1, sets counter value as specified and initializes the queue waiting.
+4. SemWait disables all interrupts during waiting, and then it detects if the value of the sem is 0 or not. If it is 1, then decrements it to 0 and turn on the interrupts before exit with success. On the other hand if it is 0, it allocates a free link called "l" from the currentPCB and inserts "l" into the sem's waiting queue and finally goes to sleep.
+SemSignal also disables all interrupts, but it directly increase the value of sem by 1 before checking. During checking, it tests if the value count of sem is larger than 0 and if the waiting list of sem is not empty. If so, take out the first link of the waiting sems, and assign the link's object pointer to pcb. Finally remove the first link from the sem waiting list, wake up this process, and turn on the interrupts.
+5. The handle in DLXOS is a type defined integer called sem_t. It is used in SemHandleWait / SemHandleSignal as an index of semaphore array to access the semaphore.
