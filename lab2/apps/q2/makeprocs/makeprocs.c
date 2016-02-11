@@ -8,7 +8,7 @@ void main (int argc, char *argv[])
 {
   int numprocs = 0;               // Used to store number of processes to create
   int i;                          // Loop index variable
-  Circular_Buffer * cir_buffer;               // Used to get address of shared memory page
+  Circular_Buffer * cir_buffer;   // Used to get address of shared memory page
   uint32 h_mem;                   // Used to hold handle to shared memory page
   sem_t s_procs_completed;        // Semaphore used to wait until all spawned processes have completed
   char h_mem_str[10];             // Used as command-line argument to pass mem_handle to new processes
@@ -40,6 +40,8 @@ void main (int argc, char *argv[])
   // Put some values in the shared memory, to be read by other processes
   cir_buffer->head = 0;
   cir_buffer->tail = 0;
+  cir_buffer->buffer_lock = lock_create();
+
 
   // Create semaphore to not exit this process until all other processes 
   // have signalled that they are complete.  To do this, we will initialize
@@ -57,6 +59,7 @@ void main (int argc, char *argv[])
   // on the command line, so we must first convert them from ints to strings.
   ditoa(h_mem, h_mem_str);
   ditoa(s_procs_completed, s_procs_completed_str);
+
 
   // Now we can create the processes.  Note that you MUST end your call to
   // process_create with a NULL argument so that the operating system
