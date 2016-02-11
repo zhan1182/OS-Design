@@ -43,7 +43,7 @@ void main(int argc, char ** argv)
     }
     else{
       // Remove the character
-      Printf("Consumer %d removed: %c\n", getpid(), cir_buffer->space[ct]);
+      Printf("Consumer %d removed: %c\n", getpid(), cir_buffer->space[cir_buffer->tail % BUFFERSIZE]);
 
       // Update tail and ct
       ct++;

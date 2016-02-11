@@ -44,7 +44,7 @@ void main(int argc, char ** argv)
     }
     else{
       // Insert the character
-      cir_buffer->space[ct % BUFFERSIZE] = hello_world[ct];
+      cir_buffer->space[cir_buffer->head % BUFFERSIZE] = hello_world[ct];
 
       /* Printf("buffer lock: %d\n", cir_buffer->buffer_lock); */
       Printf("Producer %d inserted: %c\n", getpid(), hello_world[ct]);
