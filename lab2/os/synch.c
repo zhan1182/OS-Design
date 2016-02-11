@@ -29,6 +29,7 @@ int SynchModuleInit() {
   }
   for(i=0; i<MAX_LOCKS; i++) {
     // Your stuff for initializing locks goes here
+    locks[i].inuse = 0;
   }
   for(i=0; i<MAX_CONDS; i++) {
     // Your stuff for initializing Condition variables goes here
