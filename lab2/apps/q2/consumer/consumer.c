@@ -43,11 +43,11 @@ void main(int argc, char ** argv)
     }
     else{
       // Remove the character
-      Printf("Consumer %d removed: %c\n", getpid(), cir_buffer->space[cir_buffer->tail % BUFFERSIZE]);
+      Printf("Consumer %d removed: %c\n", getpid(), cir_buffer->space[cir_buffer->tail]);
 
       // Update tail and ct
       ct++;
-      cir_buffer->tail += 1;
+      cir_buffer->tail = (cir_buffer->tail + 1)  % BUFFERSIZE;
     }
 
     // Release the lock
