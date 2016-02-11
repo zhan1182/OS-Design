@@ -33,6 +33,7 @@ int SynchModuleInit() {
   }
   for(i=0; i<MAX_CONDS; i++) {
     // Your stuff for initializing Condition variables goes here
+    conds[i].inuse = 0;
   }
   dbprintf ('p', "SynchModuleInit: Leaving SynchModuleInit\n");
   return SYNC_SUCCESS;
