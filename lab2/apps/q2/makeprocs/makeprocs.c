@@ -49,7 +49,7 @@ void main (int argc, char *argv[])
   // should be equal to the number of processes we're spawning - 1.  Once 
   // each of the processes has signaled, the semaphore should be back to
   // zero and the final sem_wait below will return.
-  if ((s_procs_completed = sem_create(-(numprocs - 1))) == SYNC_FAIL) {
+  if ((s_procs_completed = sem_create(-(numprocs * 2 - 1))) == SYNC_FAIL) {
     Printf("Bad sem_create in "); Printf(argv[0]); Printf("\n");
     Exit();
   }
