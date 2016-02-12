@@ -41,8 +41,8 @@ void main (int argc, char *argv[])
   cir_buffer->head = 0;
   cir_buffer->tail = 0;
   cir_buffer->nitem = 0;
-  //cir_buffer->buffer_lock = lock_create();
-  cir_buffer->buffer_cond = cond_create(buffer_lock);
+  cir_buffer->buffer_lock = lock_create();
+  cir_buffer->buffer_cond = cond_create(cir_buffer->buffer_lock);
 
 
   // Create semaphore to not exit this process until all other processes 
