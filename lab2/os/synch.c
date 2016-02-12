@@ -405,10 +405,10 @@ int CondWait(Cond *cond)
   dbprintf ('I', "CondWait: Old interrupt value was 0x%x.\n", intrval);
   dbprintf ('s', "CondWait: Proc %d waiting on cond %d, lock=%d.\n", GetCurrentPid(), (int)(cond-conds), (int)(cond->lock));
 
-  lock = locks[cond->lock];
-  if (lock.pid != GetCurrentPid())
+  lock = &locks[cond->lock];
+  if (lock->pid != GetCurrentPid())
     {
-      dbprintf("CondWait: the calling process has not acquired the lock associated with this condition.\n");
+      printf("CondWait: the calling process has not acquired the lock associated with this condition.\n");
       RestoreIntrs(intrval);
       return SYNC_FAIL;
     }
@@ -418,7 +418,7 @@ int CondWait(Cond *cond)
       printf("FATAL ERROR: could not allocate link for condition queue in CondWait!\n");
       exitsim();
     }
-  if (AQueueInsertLast (&cond->wait, l) != QUEUE_SUCCESS)
+  if (AQueueInsertLast (&cond->waiting, l) != QUEUE_SUCCESS)
     {
       printf("FATAL ERROR: could not insert new link into condition waiting queue in CondWait!\n");
       exitsim();
@@ -478,11 +478,11 @@ int CondSignal (Cond *cond)
   intrs = DisableIntrs ();
   dbprintf ('s', "CondSignal: Process %d Signalling on cond %d, lock=%d.\n", GetCurrentPid(), (int)(cond-conds), cond->lock);
 
-  lock = locks[cond->lock];
-  if (lock.pid != GetCurrentPid())
+  lock = &locks[cond->lock];
+  if (lock->pid != GetCurrentPid())
     {
-      dbprintf("CondSignal: the calling process has not acquired the lock associated with this condition.\n");
-      RestoreIntrs(intrval);
+      printf("CondSignal: the calling process has not acquired the lock associated with this condition.\n");
+      RestoreIntrs(intrs);
       return SYNC_FAIL;
     }
   if (!AQueueEmpty(&cond->waiting))
@@ -541,11 +541,11 @@ int CondBroadcast (Cond *cond)
   intrs = DisableIntrs ();
   dbprintf ('s', "CondBroadcast: Process %d Signalling on cond %d, lock=%d.\n", GetCurrentPid(), (int)(cond-conds), cond->lock);
 
-  lock = locks[cond->lock];
-  if (lock.pid != GetCurrentPid())
+  lock = &locks[cond->lock];
+  if (lock->pid != GetCurrentPid())
     {
-      dbprintf("CondBroadcast: the calling process has not acquired the lock associated with this condition.\n");
-      RestoreIntrs(intrval);
+      printf("CondBroadcast: the calling process has not acquired the lock associated with this condition.\n");
+      RestoreIntrs(intrs);
       return SYNC_FAIL;
     }
   if (!AQueueEmpty(&cond->waiting))
