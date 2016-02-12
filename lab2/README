@@ -1,5 +1,22 @@
-q1. Zhaoyang reads first reads queue.c and queue.h obtaining general idea and then reads through synch.c and synch.h to answer the questions.
-q2.
-q3. Zhaoyang first studied the sem and lock functions in synch.c, then carefully read the instructions and then wrote the functions for cond with sem functions as templates.
-q4. Zhaoyang studied the solution to problem two and used it as templates and modified according to the lecture notes to finish this problem.
-q5.
+q1. How to build
+cd apps/q1
+The answers are in the file called "Prelab2.txt".
+
+q2. How to build:
+cd apps/q2
+make
+make run
+
+q3. How to build:
+cd os
+make
+
+q4. How to build:
+cd apps/q4
+make 
+make run
+
+q5. How to build:
+cd apps/q5
+make 
+make run
