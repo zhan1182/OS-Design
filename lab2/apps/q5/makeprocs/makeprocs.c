@@ -12,18 +12,13 @@ void main (int argc, char *argv[])
   char h_mem_str[10];             // Used as command-line argument to pass mem_handle to new processes
   char s_procs_completed_str[10]; // Used as command-line argument to pass page_mapped handle to new processes
 
-  int h2o_n = 0;
-  int so4_n = 0;
+  Molecules * mols;
 
   if (argc != 3) {
     Printf("Usage: "); Printf(argv[0]); Printf(" <number of H2O molecules> <number of SO4 molecules>\n");
     Exit();
   }
 
-  // Convert string from ascii command line argument to integer number
-  h2o_n = dstrtol(argv[1], NULL, 10); // the "10" means base 10
-  so4_n = dstrtol(argv[2], NULL, 10); // the "10" means base 10
-  Printf("H2O: %d, SO4: %d\n", h2o_n, so4_n);
 
   // Allocate space for a shared memory page, which is exactly 64KB
   // Note that it doesn't matter how much memory we actually need: we 
@@ -34,10 +29,24 @@ void main (int argc, char *argv[])
   }
 
   // Map shared memory page into this process's memory space
-  /* if ((cir_buffer = (Circular_Buffer *) shmat(h_mem)) == NULL) { */
-  /*   Printf("Could not map the shared page to virtual address in "); Printf(argv[0]); Printf(", exiting..\n"); */
-  /*   Exit(); */
-  /* } */
+  if ((mols = (Molecules *) shmat(h_mem)) == NULL) {
+    Printf("Could not map the shared page to virtual address in "); Printf(argv[0]); Printf(", exiting..\n");
+    Exit();
+  }
+
+  // Convert string from ascii command line argument to integer number
+  mols->init_h2o = dstrtol(argv[1], NULL, 10); // the "10" means base 10
+  mols->init_so4 = dstrtol(argv[2], NULL, 10); // the "10" means base 10
+  Printf("H2O: %d, SO4: %d\n", mols->init_h2o, mols->init_so4);
+
+  // Init semaphores
+  mols->h2o = sem_create(0);
+  mols->h2 = sem_create(0);
+  mols->o2 = sem_create(0);
+  mols->so4 = sem_create(0);
+  mols->so2 = sem_create(0);
+  mols->h2so4 = sem_create(0);
+
 
 
 
@@ -62,11 +71,16 @@ void main (int argc, char *argv[])
   // Now we can create the processes.  Note that you MUST end your call to
   // process_create with a NULL argument so that the operating system
   // knows how many arguments you are sending.
+  
+  // Injection
+  process_create(INJECTION_H2O_TO_RUN, h_mem_str, s_procs_completed_str, NULL);
+  process_create(INJECTION_SO4_TO_RUN, h_mem_str, s_procs_completed_str, NULL);
+
+  // Reaction
   process_create(REACTION_1_TO_RUN, h_mem_str, s_procs_completed_str, NULL);
   process_create(REACTION_2_TO_RUN, h_mem_str, s_procs_completed_str, NULL);
   process_create(REACTION_3_TO_RUN, h_mem_str, s_procs_completed_str, NULL);
-  process_create(INJECTION_H2O_TO_RUN, h_mem_str, s_procs_completed_str, NULL);
-  process_create(INJECTION_SO4_TO_RUN, h_mem_str, s_procs_completed_str, NULL);
+
 
   /* process_create(CONSUMER_TO_RUN, h_mem_str, s_procs_completed_str, NULL); */
 
