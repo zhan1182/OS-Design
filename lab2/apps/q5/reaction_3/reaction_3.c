@@ -11,6 +11,7 @@ void main(int argc, char ** argv)
 
   Molecules * mols;
   int ct;
+  int num_of_reactions = 0;
 
   if (argc != 3) { 
     Printf("Usage: "); Printf(argv[0]); Printf(" <handle_to_shared_memory_page> <handle_to_page_mapped_semaphore>\n"); 
@@ -27,7 +28,16 @@ void main(int argc, char ** argv)
     Exit();
   }
 
-  for(ct = 0; ct < mols->init_so4; ct++){
+  // Calculate the number of reactions
+  if(mols->init_so4 <= mols->init_h2o / 2 * 2){
+    num_of_reactions = mols->init_so4;
+  }
+  else{
+    num_of_reactions = mols->init_h2o / 2 * 2;
+  }
+  
+
+  for(ct = 0; ct < num_of_reactions; ct++){
     // Consume h2
     sem_wait(mols->h2);
     
