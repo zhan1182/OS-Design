@@ -234,14 +234,14 @@ int LockAcquire(Lock *k) {
 
   // Check to see if the current process owns the lock
   if (k->pid == GetCurrentPid()) {
-    dbprintf('s', "LockAcquire: Proc %d already owns lock %d\n", GetCurrentPid(), (int)(k-locks));
+    printf('s', "LockAcquire: Proc %d already owns lock %d\n", GetCurrentPid(), (int)(k-locks));
     RestoreIntrs(intrval);
     return SYNC_SUCCESS;
   }
 
   dbprintf ('s', "LockAcquire: Proc %d asking for lock %d.\n", GetCurrentPid(), (int)(k-locks));
   if (k->pid >= 0) { // Lock is already in use by another process
-    dbprintf('s', "LockAcquire: putting process %d to sleep\n", GetCurrentPid());
+    printf('s', "LockAcquire: putting process %d to sleep\n", GetCurrentPid());
     if ((l = AQueueAllocLink ((void *)currentPCB)) == NULL) {
       printf("FATAL ERROR: could not allocate link for lock queue in LockAcquire!\n");
       exitsim();
@@ -252,9 +252,10 @@ int LockAcquire(Lock *k) {
     }
     ProcessSleep();
   } else {
-    dbprintf('s', "LockAcquire: lock is available, assigning to proc %d\n", GetCurrentPid());
+    printf('s', "LockAcquire: lock is available, assigning to proc %d\n", GetCurrentPid());
     k->pid = GetCurrentPid();
   }
+  //printf("LockAcqure: lock id = %d, current id = %d.\n", k->pid, GetCurrentPid());
   RestoreIntrs(intrval);
   return SYNC_SUCCESS;
 }
@@ -334,8 +335,6 @@ cond_t CondCreate(lock_t lock) {
   // grabbing a cond should be an atomic operation
   intrval = DisableIntrs();
   
-  lock = LockCreate();
-  if (lock == SYNC_FAIL) return SYNC_FAIL;
   
   for(cond=0; cond<MAX_CONDS; cond++) {
     if(conds[cond].inuse==0) {
@@ -409,7 +408,7 @@ int CondWait(Cond *cond)
   lock = &locks[cond->lock];
   if (lock->pid != GetCurrentPid())
     {
-      printf("CondWait: the calling process has not acquired the lock associated with this condition.\n");
+      printf("CondWait: the calling process has not acquired the lock associated with this condition. lock pid = %d, current id = %d.\n", lock->pid, GetCurrentPid());
       RestoreIntrs(intrval);
       return SYNC_FAIL;
     }
@@ -431,6 +430,12 @@ int CondWait(Cond *cond)
     }
 
   ProcessSleep();
+
+  if (LockHandleAcquire (cond->lock) != SYNC_SUCCESS)
+    {
+      printf("CondWait, process tries to acquire lock after sleep before waking up failed.\n");
+      exitsim();
+    }
 
   ////////// any permission to continue?
 

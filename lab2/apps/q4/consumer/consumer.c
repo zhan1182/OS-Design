@@ -37,6 +37,7 @@ void main(int argc, char ** argv)
 
     /* Printf("Consumer %d holds the lock %d, head = %d, tail = %d\n", getpid(), cir_buffer->buffer_lock, cir_buffer->head, cir_buffer->tail); */
 
+    //Printf("Consumer, before checking if buffer empty.\n");
     // Consume an item to the buffer
     while(cir_buffer->head == cir_buffer->tail){
       // conditional wait when empty

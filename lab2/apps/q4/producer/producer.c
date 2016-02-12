@@ -28,7 +28,6 @@ void main(int argc, char ** argv)
     Exit();
   }
 
-
   while(ct < STRING_LENGTH){
     // Get the lock
     if(lock_acquire(cir_buffer->buffer_lock) != SYNC_SUCCESS){
@@ -37,13 +36,13 @@ void main(int argc, char ** argv)
     }
 
     /* Printf("Producer %d holds the lock %d, head = %d, tail = %d\n", getpid(), cir_buffer->buffer_lock, cir_buffer->head, cir_buffer->tail); */
-
+    //Printf("Producer, before checking if buffer full.\n");
     // Producer an item to the buffer
     while((cir_buffer->head + 1) % BUFFERSIZE == cir_buffer->tail){
       // The buffer is full, do nothing
       if(cond_wait(cir_buffer->buffer_cond) != SYNC_SUCCESS)
 	{
-	  Print("Producer Conditional wait not full unsuccessful.\n");
+	  Printf("Producer Conditional wait not full unsuccessful.\n");
 	  Exit();
 	}
     }
@@ -54,7 +53,7 @@ void main(int argc, char ** argv)
     /* Printf("buffer lock: %d\n", cir_buffer->buffer_lock); */
     Printf("Producer %d inserted: %c\n", getpid(), hello_world[ct]);
 
-
+    
     if(cir_buffer->nitem == 0)
       {
 	if(cond_signal(cir_buffer->buffer_cond) != SYNC_SUCCESS)
