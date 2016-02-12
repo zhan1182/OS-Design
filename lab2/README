@@ -1,0 +1,5 @@
+q1. Zhaoyang reads first reads queue.c and queue.h obtaining general idea and then reads through synch.c and synch.h to answer the questions.
+q2.
+q3. Zhaoyang first studied the sem and lock functions in synch.c, then carefully read the instructions and then wrote the functions for cond with sem functions as templates.
+q4. Zhaoyang studied the solution to problem two and used it as templates and modified according to the lecture notes to finish this problem.
+q5.

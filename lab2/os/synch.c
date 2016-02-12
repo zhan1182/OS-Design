@@ -400,11 +400,11 @@ int CondWait(Cond *cond)
   Lock *lock;
 
   if (!cond) return SYNC_FAIL;
-
+  
   intrval = DisableIntrs ();
   dbprintf ('I', "CondWait: Old interrupt value was 0x%x.\n", intrval);
   dbprintf ('s', "CondWait: Proc %d waiting on cond %d, lock=%d.\n", GetCurrentPid(), (int)(cond-conds), (int)(cond->lock));
-
+  
   lock = &locks[cond->lock];
   if (lock->pid != GetCurrentPid())
     {
