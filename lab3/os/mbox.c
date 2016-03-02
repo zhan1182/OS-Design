@@ -18,7 +18,17 @@
 //
 //-------------------------------------------------------
 
+static mbox_message system_mbox_message;
+static mbox system_mbox[MBOX_NUM_MBOXES];
+
 void MboxModuleInit() {
+  int ct;
+  
+  for(ct = 0; ct < MBOX_NUM_MBOXES; ct++){
+    system_mbox[ct].num_of_pid_inuse = 0;
+    system_mbox[ct].mbox_buffers_head = 0;
+    system_mbox[ct].mbox_buffers_tail = 0;
+  }
 }
 
 //-------------------------------------------------------

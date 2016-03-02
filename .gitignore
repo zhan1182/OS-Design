@@ -40,5 +40,9 @@
 # emacs tmp files
 *~
 
+# tar files
+*.tar.gz
 
+# Build dir
+work
 
