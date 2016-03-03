@@ -23,12 +23,17 @@ static mbox system_mbox[MBOX_NUM_MBOXES];
 
 void MboxModuleInit() {
   int ct;
-  
+
+  system_mbox_message.system_buffers_head = 0;
+  system_mbox_message.system_buffers_tail = 0;
+  system_mbox_message.system_buffers_lock = LockCreate();
+
+  // inuse = -1: not activated, inuse = 0: activated, ready to be opened, no process is using it now
+  // inuse > 0: some processes are using it
   for(ct = 0; ct < MBOX_NUM_MBOXES; ct++){
-    system_mbox[ct].num_of_pid_inuse = 0;
-    system_mbox[ct].mbox_buffers_head = 0;
-    system_mbox[ct].mbox_buffers_tail = 0;
+    system_mbox[ct].num_of_pid_inuse = -1;
   }
+
 }
 
 //-------------------------------------------------------
@@ -42,7 +47,32 @@ void MboxModuleInit() {
 //
 //-------------------------------------------------------
 mbox_t MboxCreate() {
-  return MBOX_FAIL;
+  
+  int ct;
+  mbox_t mbox_ct;
+  uint32 intrval;
+  
+  // grabbing a mbox should be an atomic operation
+  intrval = DisableIntrs();
+  for(mbox_ct = 0; mbox_ct < MBOX_NUM_MBOXES; mbox_ct++){
+    if(system_mbox[mbox_ct].num_of_pid_inuse == -1 ){
+      system_mbox[mbox_ct].num_of_pid_inuse = 0;
+      break;
+    }
+  }
+  RestoreIntrs(intrval);
+
+  if(mbox_ct == MBOX_NUM_MBOXES){
+    return MBOX_FAIL;
+  }
+  system_mbox[mbox_ct].mbox_buffers_head = 0;
+  system_mbox[mbox_ct].mbox_buffers_tail = 0;
+  system_mbox[mbox_ct].mbox_buffer_lock = LockCreate();
+  for(ct = 0; ct < MBOX_MAX_PROCS_NUM; ct++){
+    system_mbox[mbox_ct].mbox_pid_list[ct] = 0;
+  }
+
+  return mbox_ct;
 }
 
 //-------------------------------------------------------
@@ -60,7 +90,25 @@ mbox_t MboxCreate() {
 //
 //-------------------------------------------------------
 int MboxOpen(mbox_t handle) {
-  return MBOX_FAIL;
+  if(handle < 0 || handle >= MBOX_NUM_MBOXES){
+    return MBOX_FAIL;
+  }
+
+  if(mbox system_mbox[handle].num_of_pid_inuse < 0){
+    return MBOX_FAIL;
+  }
+
+  // Acquire the lock
+  if(LockHandleAcquire(mbox system_mbox[handle].mbox_buffer_lock) != SYNC_SUCCESS){
+    printf("FATAL ERROR: could acquire lock for the mbox %d!\n", handle);
+    Exit();
+  }
+
+  // Update the number of pid used
+  system_mbox[handle].num_of_pid_inuse += 1;
+  system_mbox[handle].mbox_pid_list[] = 1;
+
+  return MBOX_SUCCESS;
 }
 
 //-------------------------------------------------------
