@@ -24,12 +24,18 @@ static mbox system_mbox[MBOX_NUM_MBOXES];
 void MboxModuleInit() {
   int ct;
 
-  system_mbox_message.system_buffer_head = 0;
-  system_mbox_message.system_buffer_tail = 0;
+  /* system_mbox_message.system_buffer_head = 0; */
+  /* system_mbox_message.system_buffer_tail = 0; */
+
   system_mbox_message.system_buffer_slot_used = 0;
   system_mbox_message.system_buffer_lock = LockCreate();
   system_mbox_message.system_buffer_fill = CondCreate(system_mbox_message.system_buffer_lock);
   system_mbox_message.system_buffer_empty = CondCreate(system_mbox_message.system_buffer_lock);
+
+  // Initially, all system buffer slots are available for using
+  for(ct = 0; ct < MBOX_NUM_BUFFERS; ct++){
+    system_mbox_message.system_buffer_index_array[ct] = 0;
+  }
 
   // inuse = -1: not activated, inuse = 0: activated, ready to be opened, no process is using it now
   // inuse > 0: some processes are using it
@@ -232,8 +238,9 @@ int MboxClose(mbox_t handle) {
 //
 //-------------------------------------------------------
 int MboxSend(mbox_t handle, int length, void* message) {
-  
+
   int ct;
+  int system_buffer_index;
   unsigned int curr_pid = GetCurrentPid();
   char * message_str = (char *) message;
 
@@ -287,17 +294,32 @@ int MboxSend(mbox_t handle, int length, void* message) {
     }
   }
 
-  // Put the message into the system message slot --> pointed by head pointer
+  // Find out an available slot in the system message buffer for the message
+  for(system_buffer_index = 0; system_buffer_index < MBOX_NUM_BUFFERS; system_buffer_index++){
+    if(system_mbox_message.system_buffer_index_array[system_buffer_index] == 0){
+      system_mbox_message.system_buffer_index_array[system_buffer_index] = 1; // Reserved the slot
+      break;
+    }
+  }
+  
+  // Double check if the index is valid
+  if(system_buffer_index == MBOX_NUM_BUFFERS){
+    printf("FATAL ERROR: System buffer sync error\n");
+    exitsim();
+  }
+
+
+  // Put the message into the system message slot 
   for(ct = 0; ct < length; ct++){
-    system_mbox_message.system_message_buffer[system_mbox_message.system_buffer_head][ct] = message_str[ct];
+    system_mbox_message.system_message_buffer[system_buffer_index][ct] = message_str[ct];
   }
 
   // Set the mbox linking
-  system_mbox[handle].mbox_buffer_index_array[system_mbox[handle].mbox_buffer_head] = system_mbox_message.system_buffer_head;
+  system_mbox[handle].mbox_buffer_index_array[system_mbox[handle].mbox_buffer_head] = system_buffer_index;
   
   // Update head and used info
   system_mbox_message.system_buffer_slot_used += 1;
-  system_mbox_message.system_buffer_head = (system_mbox_message.system_buffer_head + 1) % MBOX_NUM_BUFFERS;
+  /* system_mbox_message.system_buffer_head = (system_mbox_message.system_buffer_head + 1) % MBOX_NUM_BUFFERS; */
 
   system_mbox[handle].mbox_buffer_slot_used += 1;
   system_mbox[handle].mbox_buffer_head = (system_mbox[handle].mbox_buffer_head + 1) % MBOX_MAX_BUFFERS_PER_MBOX;
@@ -353,9 +375,11 @@ int MboxRecv(mbox_t handle, int maxlength, void* message) {
 
   int ct;
   unsigned int curr_pid = GetCurrentPid();
+  int system_buffer_index = system_mbox[handle].mbox_buffer_index_array[system_mbox[handle].mbox_buffer_tail];
+  char * message_str = (char *) message;
   
   // Check if the length of the message can fit into the buffer slot
-  if(length < 0 || length >  MBOX_MAX_MESSAGE_LENGTH){
+  if(maxlength < 0 || maxlength >  MBOX_MAX_MESSAGE_LENGTH){
     return MBOX_FAIL;
   }
   
@@ -375,6 +399,75 @@ int MboxRecv(mbox_t handle, int maxlength, void* message) {
     return MBOX_FAIL;
   }
 
+  // Acquire the lock of the mbox message buffer
+  if(LockHandleAcquire(system_mbox_message.system_buffer_lock) != SYNC_SUCCESS){
+    printf("FATAL ERROR: Acquire lock for the mbox %d!\n", handle);
+    exitsim();
+  }
+  
+  // Check if the buffer is empty. If so, wait
+  while(system_mbox_message.system_buffer_slot_used == 0){
+    if(CondHandleWait(system_mbox_message.system_buffer_fill) != SYNC_SUCCESS){
+      printf("FATAL ERROR: Wait on CV empty for system message!\n");
+      exitsim();
+    }
+  }
+
+  // Acquire the lock of the mbox
+  if(LockHandleAcquire(system_mbox[handle].mbox_buffer_lock) != SYNC_SUCCESS){
+    printf("FATAL ERROR: Acquire lock for the mbox %d!\n", handle);
+    exitsim();
+  }
+  
+  
+  // Else, check if the mbox is empty. If so, wait
+  while(system_mbox[handle].mbox_buffer_slot_used == 0){
+    if(CondHandleWait(system_mbox[handle].mbox_buffer_fill) != SYNC_SUCCESS){
+      printf("FATAL ERROR: Wait on CV empty for mbox %d!\n", handle);
+      exitsim();
+    }
+  }
+
+  // Receive the message from the mbox
+  for(ct = 0; ct < maxlength; ct++){
+    message_str[ct] = system_mbox_message.system_message_buffer[system_mbox[handle].mbox_buffer_tail];
+  }
+
+  // Make the system buffer slot available again
+  system_mbox_message.system_buffer_index_array[system_mbox[handle].mbox_buffer_tail] = 0;
+  system_mbox_message.system_buffer_slot_used -= 1;
+
+  // Update mbox used and mbox buffer tail info
+  system_mbox[handle].mbox_buffer_slot_used -= 1;
+  system_mbox[handle].mbox_buffer_tail = (system_mbox[handle].mbox_buffer_tail + 1) % MBOX_MAX_BUFFERS_PER_MBOX;
+
+
+  // Signal mbox empty CV
+  if(CondHandleSignal(system_mbox[handle].mbox_buffer_empty) != SYNC_SUCCESS){
+    printf("FATAL ERROR: Signal on CV fill for mbox %d!\n", handle);
+    exitsim();
+  }
+
+  
+  // Release the lock of the mbox
+  if(LockHandleRelease(system_mbox[handle].mbox_buffer_lock) != SYNC_SUCCESS){
+    printf("FATAL ERROR: Release lock for the mbox %d!\n", handle);
+    exitsim();
+  }
+
+
+  // Signal system buffer empty CV
+  if(CondHandleSignal(system_mbox_message.system_buffer_empty) != SYNC_SUCCESS){
+    printf("FATAL ERROR: Signal on CV empty for system message!\n");
+    exitsim();
+  }
+
+
+  // Release the lock of the mbox message buffer
+  if(LockHandleRelease(system_mbox_message.system_buffer_lock) != SYNC_SUCCESS){
+    printf("FATAL ERROR: Release lock for the mbox %d!\n", handle);
+    exitsim();
+  }
 
 
 

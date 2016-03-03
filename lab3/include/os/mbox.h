@@ -19,8 +19,9 @@
 
 typedef struct mbox_message {
   char system_message_buffer[MBOX_NUM_BUFFERS][MBOX_MAX_MESSAGE_LENGTH];
-  int system_buffer_head;
-  int system_buffer_tail;
+  /* int system_buffer_head; */
+  /* int system_buffer_tail; */
+  int system_buffer_index_array[MBOX_NUM_BUFFERS];
   int system_buffer_slot_used;
   lock_t system_buffer_lock;
   cond_t system_buffer_fill;
