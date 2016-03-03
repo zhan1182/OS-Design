@@ -24,10 +24,10 @@ static mbox system_mbox[MBOX_NUM_MBOXES];
 void MboxModuleInit() {
   int ct;
 
-  system_mbox_message.system_buffers_head = 0;
-  system_mbox_message.system_buffers_tail = 0;
-  system_mbox_message.system_buffers_slot_left = 50;
-  system_mbox_message.system_buffers_lock = LockCreate();
+  system_mbox_message.system_buffer_head = 0;
+  system_mbox_message.system_buffer_tail = 0;
+  system_mbox_message.system_buffer_slot_used = 0;
+  system_mbox_message.system_buffer_lock = LockCreate();
 
   // inuse = -1: not activated, inuse = 0: activated, ready to be opened, no process is using it now
   // inuse > 0: some processes are using it
@@ -67,10 +67,11 @@ mbox_t MboxCreate() {
   if(mbox_ct == MBOX_NUM_MBOXES){
     return MBOX_FAIL;
   }
-  system_mbox[mbox_ct].mbox_buffers_head = 0;
-  system_mbox[mbox_ct].mbox_buffers_tail = 0;
+  system_mbox[mbox_ct].mbox_buffer_head = 0;
+  system_mbox[mbox_ct].mbox_buffer_tail = 0;
   system_mbox[mbox_ct].mbox_buffer_lock = LockCreate();
-  for(ct = 0; ct < MBOX_MAX_PROCS_NUM; ct++){
+  for(ct = 0; ct < PROCESS_MAX_PROCS; ct++){
+    // No proc opens the mbox when it is created
     system_mbox[mbox_ct].mbox_pid_list[ct] = 0;
   }
 
@@ -92,6 +93,9 @@ mbox_t MboxCreate() {
 //
 //-------------------------------------------------------
 int MboxOpen(mbox_t handle) {
+
+  unsigned int curr_pid = GetCurrentPid();
+
   // Check if handle is a valid number
   if(handle < 0 || handle >= MBOX_NUM_MBOXES){
     return MBOX_FAIL;
@@ -102,12 +106,10 @@ int MboxOpen(mbox_t handle) {
     return MBOX_FAIL;
   }
 
-  unsigned int curr_pid = GetCurrentPid();
-
   // Acquire the lock
   if(LockHandleAcquire(system_mbox[handle].mbox_buffer_lock) != SYNC_SUCCESS){
     printf("FATAL ERROR: Acquire lock for the mbox %d!\n", handle);
-    Exit();
+    exitsim();
   }
 
   // Update the number of pid used
@@ -119,11 +121,11 @@ int MboxOpen(mbox_t handle) {
     system_mbox[handle].mbox_pid_list[curr_pid] = 1;
   }
   else{
-    printf("FATAL ERROR: Unkown Pid or mbox %d not reserved!\n", handle);
+    printf("FATAL ERROR: Unkown Pid %d for mbox %d!\n", curr_pid, handle);
     // Release the lock
     if(LockHandleRelease(system_mbox[handle].mbox_buffer_lock) != SYNC_SUCCESS){
       printf("FATAL ERROR: Release lock for the mbox %d!\n", handle);
-      Exit();
+      exitsim();
     }
     return MBOX_FAIL;
   }
@@ -131,7 +133,7 @@ int MboxOpen(mbox_t handle) {
   // Release the lock
   if(LockHandleRelease(system_mbox[handle].mbox_buffer_lock) != SYNC_SUCCESS){
     printf("FATAL ERROR: Release lock for the mbox %d!\n", handle);
-    Exit();
+    exitsim();
   }
 
 
@@ -152,6 +154,10 @@ int MboxOpen(mbox_t handle) {
 //
 //-------------------------------------------------------
 int MboxClose(mbox_t handle) {
+
+  unsigned int curr_pid = GetCurrentPid();
+  int mbox_pid_status = system_mbox[handle].mbox_pid_list[curr_pid];
+
   // Check if handle is a valid number
   if(handle < 0 || handle >= MBOX_NUM_MBOXES){
     return MBOX_FAIL;
@@ -162,43 +168,41 @@ int MboxClose(mbox_t handle) {
     return MBOX_FAIL;
   }
 
-  unsigned int curr_pid = GetCurrentPid();
-
   // Acquire the lock
   if(LockHandleAcquire(system_mbox[handle].mbox_buffer_lock) != SYNC_SUCCESS){
     printf("FATAL ERROR: Acquire lock for the mbox %d!\n", handle);
-    Exit();
+    exitsim();
   }
 
-  int mbox_pid_status = system_mbox[handle].mbox_pid_list[curr_pid];
-  if(mbox_pid_status == -1 || mbox_pid_status == 0){
-    printf("The mbox %d has already been closed or not reserved\n", handle);
+
+  if(mbox_pid_status == 0){
+    printf("The mbox %d has already been closed for process %d\n", handle, curr_pid);
   }
   else if(mbox_pid_status == 1){
     // Update the number of pid used
     system_mbox[handle].num_of_pid_inuse -= 1;
-    system_mbox[handle].mbox_pid_list[GetCurrentPid()] = 0;
-
-    // Return the mbox to the pool of available mboxes for the system
-    if(system_mbox[handle].num_of_pid_inuse == 0){
-      system_mbox[handle].num_of_pid_inuse = -1;
-    }
+    system_mbox[handle].mbox_pid_list[curr_pid] = 0;
   }
   else{
-    printf("FATAL ERROR: Unkown Pid or mbox %d not reserved!\n", handle);
+    printf("FATAL ERROR: Unkown Pid %d for mbox %d\n", curr_pid, handle);
     // Release the lock
     if(LockHandleRelease(system_mbox[handle].mbox_buffer_lock) != SYNC_SUCCESS){
       printf("FATAL ERROR: Release lock for the mbox %d!\n", handle);
-      Exit();
+      exitsim();
     }
     return MBOX_FAIL;
   }
   
+  // Return the mbox to the pool of available mboxes for the system
+  if(system_mbox[handle].num_of_pid_inuse == 0){
+    system_mbox[handle].num_of_pid_inuse = -1;
+  }
+
 
   // Release the lock
   if(LockHandleRelease(system_mbox[handle].mbox_buffer_lock) != SYNC_SUCCESS){
     printf("FATAL ERROR: Release lock for the mbox %d!\n", handle);
-    Exit();
+    exitsim();
   }
 
   return MBOX_SUCCESS;
@@ -221,6 +225,41 @@ int MboxClose(mbox_t handle) {
 //
 //-------------------------------------------------------
 int MboxSend(mbox_t handle, int length, void* message) {
+  
+  unsigned int curr_pid = GetCurrentPid();
+
+  // Check if handle is a valid number
+  if(handle < 0 || handle >= MBOX_NUM_MBOXES){
+    return MBOX_FAIL;
+  }
+  
+  // Check if the mbox is reserved (activated)
+  if(system_mbox[handle].num_of_pid_inuse < 0){
+    return MBOX_FAIL;
+  }
+
+  // Check if the mbox is opened
+  if(system_mbox[handle].mbox_pid_list[curr_pid] == 0){
+  }
+
+  // Acquire the lock of the mbox message buffer
+
+  // Check if the buffer is full. If so, wait
+
+
+  // Else, check if the mbox is full. If so, wait
+
+
+  // Else, put the message into the mbox
+
+  
+  // Update 
+
+
+  // Release the lock of the mbox message buffer
+  
+
+
   return MBOX_FAIL;
 }
 
