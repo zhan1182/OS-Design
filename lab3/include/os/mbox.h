@@ -31,7 +31,10 @@ typedef struct mbox {
   int mbox_buffer_index_array[MBOX_MAX_BUFFERS_PER_MBOX];
   int mbox_buffer_head;
   int mbox_buffer_tail;  
+  int mbox_buffer_slot_used;
   lock_t mbox_buffer_lock;
+  cond_t mbox_buffer_fill;
+  cond_t mbox_buffer_empty;
   int num_of_pid_inuse; // 0 means no process opens the mbox --> The mbox is available
   int mbox_pid_list[PROCESS_MAX_PROCS]; // Each element represents a pid --> either 0: or 1
 } mbox;
