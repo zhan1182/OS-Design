@@ -388,12 +388,12 @@ int MboxRecv(mbox_t handle, int maxlength, void* message) {
     return MBOX_FAIL;
   }
   
-  // Check if the mbox is reserved (activated)
+  // Check if the mbox is reserved (activated). If not, return FAIL
   if(system_mbox[handle].num_of_pid_inuse < 0){
     return MBOX_FAIL;
   }
 
-  // Check if the mbox is opened
+  // Check if the mbox is opened. If the mbox is not opened, return FAIL
   if(system_mbox[handle].mbox_pid_list[curr_pid] == 0){
     printf("Mbox Send Error: The mbox %d hasn't been opened yet\n", handle);
     return MBOX_FAIL;
@@ -430,7 +430,7 @@ int MboxRecv(mbox_t handle, int maxlength, void* message) {
 
   // Receive the message from the mbox
   for(ct = 0; ct < maxlength; ct++){
-    message_str[ct] = system_mbox_message.system_message_buffer[system_mbox[handle].mbox_buffer_tail];
+    message_str[ct] = system_mbox_message.system_message_buffer[system_buffer_index][ct];
   }
 
   // Make the system buffer slot available again
@@ -487,5 +487,42 @@ int MboxRecv(mbox_t handle, int maxlength, void* message) {
 //
 //--------------------------------------------------------------------------------
 int MboxCloseAllByPid(int pid) {
+
+  int ct;
+
+  // Check if the pid is valid
+  if(pid < 0 || pid >= PROCESS_MAX_PROCS){
+    return MBOX_FAIL;
+  }
+
+  // Go througth all the mboxes
+  for(ct = 0; ct < MBOX_NUM_MBOXES; ct++){
+    // Acquire the lock of the mbox
+    if(LockHandleAcquire(system_mbox[ct].mbox_buffer_lock) != SYNC_SUCCESS){
+      printf("FATAL ERROR: Acquire lock for the mbox %d!\n", ct);
+      exitsim();
+    }
+  
+    // Check if the pid is in the mbox's "open procs" list. 
+    // If so, remove the pid and make the mailbox available if no other proc opens the mbox
+    // Else, do nothing
+    if(system_mbox[ct].mbox_pid_list[pid] == 1){
+      system_mbox[ct].mbox_pid_list[pid] = 0;
+      system_mbox[ct].num_of_pid_inuse -= 1;
+      if(system_mbox[ct].num_of_pid_inuse == 0){
+	system_mbox[ct].num_of_pid_inuse = -1; // Put the mbox back to the pool
+      }
+    }
+
+    // Release the lock of the mbox
+    if(LockHandleRelease(system_mbox[ct].mbox_buffer_lock) != SYNC_SUCCESS){
+      printf("FATAL ERROR: Release lock for the mbox %d!\n", ct);
+      exitsim();
+    }
+
+  }
+  
+
+
   return MBOX_FAIL;
 }
