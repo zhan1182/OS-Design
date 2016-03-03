@@ -330,7 +330,7 @@ int MboxSend(mbox_t handle, int length, void* message) {
   }
 
 
-  return MBOX_FAIL;
+  return MBOX_SUCCESS;
 }
 
 //-------------------------------------------------------
@@ -350,7 +350,35 @@ int MboxSend(mbox_t handle, int length, void* message) {
 //
 //-------------------------------------------------------
 int MboxRecv(mbox_t handle, int maxlength, void* message) {
-  return MBOX_FAIL;
+
+  int ct;
+  unsigned int curr_pid = GetCurrentPid();
+  
+  // Check if the length of the message can fit into the buffer slot
+  if(length < 0 || length >  MBOX_MAX_MESSAGE_LENGTH){
+    return MBOX_FAIL;
+  }
+  
+  // Check if handle is a valid number
+  if(handle < 0 || handle >= MBOX_NUM_MBOXES){
+    return MBOX_FAIL;
+  }
+  
+  // Check if the mbox is reserved (activated)
+  if(system_mbox[handle].num_of_pid_inuse < 0){
+    return MBOX_FAIL;
+  }
+
+  // Check if the mbox is opened
+  if(system_mbox[handle].mbox_pid_list[curr_pid] == 0){
+    printf("Mbox Send Error: The mbox %d hasn't been opened yet\n", handle);
+    return MBOX_FAIL;
+  }
+
+
+
+
+  return MBOX_SUCCESS;
 }
 
 //--------------------------------------------------------------------------------
