@@ -29,6 +29,9 @@
 #define	PROCESS_STATUS_MASK	0x3f
 #define	PROCESS_TYPE_SYSTEM	0x100
 #define	PROCESS_TYPE_USER	0x200
+#define PROCESS_STATUS_AUTOWAKE 0x300
+#define PROCESS_STATUS_YIELD 0X400
+
 
 typedef	void (*VoidFunc)();
 
@@ -45,6 +48,9 @@ typedef struct PCB {
 
   int           pinfo;          // Turns on printing of runtime stats
   int           pnice;          // Used in priority calculation
+
+  int wake_time; //if the pcb put into user sleep, store the wake up time
+  inline double start_time; //and record the time it sleeps
 } PCB;
 
 // Offsets of various registers from the stack pointer in the register

@@ -49,7 +49,17 @@ int ProcessGetCodeInfo(const char *file, uint32 *startAddr, uint32 *codeStart, u
                        uint32 *dataStart, uint32 *dataSize);
 int ProcessGetFromFile(int fd, unsigned char *buf, uint32 *addr, int max);
 uint32 get_argument(char *string);
+void idleProcess();
 
+// idle process
+PCB *idle = ProcessFork(idleProcess, 0,0,0,"idle",0);
+
+
+
+void idleProcess()
+{
+  while(1);
+}
 
 
 //----------------------------------------------------------------------
@@ -214,9 +224,14 @@ void ProcessSchedule () {
       }
       exitsim();
     }
-    printf ("No runnable processes - exiting!\n");
-    exitsim ();	// NEVER RETURNS
+    //printf ("No runnable processes - exiting!\n");
+    //exitsim ();	// NEVER RETURNS
   }
+
+
+
+
+
 
   // Move the front of the queue to the end.  The running process was the one in front.
   AQueueMoveAfter(&runQueue, AQueueLast(&runQueue), AQueueFirst(&runQueue));
@@ -407,6 +422,12 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
   dbprintf('p', "ProcessFork: Copying process name (%s) to pcb\n", name);
   dstrcpy(pcb->name, name);
 
+
+  /// set the start time and wake time to 0
+  pcb->wake_time = 0;
+  pcb->start_time = 0;
+
+
   //----------------------------------------------------------------------
   // This section initializes the memory for this process
   //----------------------------------------------------------------------
@@ -546,6 +567,12 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
 
     // Mark this as a system process.
     pcb->flags |= PROCESS_TYPE_SYSTEM;
+
+    if(func == idleProcess)
+      {
+	dbprintf ("ProcessFork creating idle process, name = %s.\n", pcb->name);
+      }
+	
   }
 
   // Place PCB onto run queue
@@ -962,6 +989,23 @@ int GetPidFromAddress(PCB *pcb) {
 //--------------------------------------------------------
 void ProcessUserSleep(int seconds) {
   // Your code here
+  ProcessSetStatus (currentPCB, PROCESS_STATUS_AUTOWAKE);
+
+  if (AQueueRemove(&(currentPCB->l)) != QUEUE_SUCCESS) {
+    printf("FATAL ERROR: could not remove process from run Queue in ProcessUserSleep!\n");
+    exitsim();
+  }
+  if ((currentPCB->l = AQueueAllocLink(currentPCB)) == NULL) {
+    printf("FATAL ERROR: could not get Queue Link in ProcessUserSleep!\n");
+    exitsim();
+  }
+  if (AQueueInsertLast(&waitQueue, currentPCB->l) != QUEUE_SUCCESS) {
+    printf("FATAL ERROR: could not insert suspend PCB into waitQueue!\n");
+    exitsim();
+  }
+  dbprintf ('p', "ProcessUserSleep (%d): function complete\n", GetCurrentPid());
+  currentPCB->start_time = ClkGetCurTime();
+  currentPCB->wake_time = seconds;
 }
 
 //-----------------------------------------------------
@@ -971,4 +1015,5 @@ void ProcessUserSleep(int seconds) {
 //-----------------------------------------------------
 void ProcessYield() {
   // Your code here
+  ProcessSetStatus (currentPCB, PROCESS_STATUS_YIELD);
 }
