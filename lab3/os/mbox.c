@@ -207,6 +207,7 @@ int MboxClose(mbox_t handle) {
   }
   
   // Return the mbox to the pool of available mboxes for the system
+  // Reset this mbox, clear rest of messages in this mbox (clear the linkings in the system)
   if(system_mbox[handle].num_of_pid_inuse == 0){
     system_mbox[handle].num_of_pid_inuse = -1;
   }
@@ -521,8 +522,6 @@ int MboxCloseAllByPid(int pid) {
     }
 
   }
-  
 
-
-  return MBOX_FAIL;
+  return MBOX_SUCCESS;
 }
