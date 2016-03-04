@@ -131,6 +131,10 @@ void ProcessFreeResources (PCB *pcb) {
   // Your code for closing any open mailbox connections
   // that a dying process might have goes here.
   //-----------------------------------------------------
+  if(MboxCloseAllByPid(GetPidFromAddress(pcb)) != SYNC_SUCCESS){
+    printf("FATAL ERROR: could not close all associated mboxes in ProcessFreeResources!\n");
+    exitsim();
+  }
 
 
   // Allocate a new link for this pcb on the freepcbs queue
@@ -874,6 +878,10 @@ void main (int argc, char *argv[])
   KbdModuleInit ();
   dbprintf ('i', "After initializing keyboard.\n");
   ClkModuleInit();
+
+  // Init mbox module
+  MboxModuleInit();
+
   for (i = 0; i < 100; i++) {
     buf[i] = 'a';
   }

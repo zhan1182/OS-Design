@@ -168,6 +168,7 @@ int MboxOpen(mbox_t handle) {
 //-------------------------------------------------------
 int MboxClose(mbox_t handle) {
 
+  int clear_ct;
   unsigned int curr_pid = GetCurrentPid();
   int mbox_pid_status = system_mbox[handle].mbox_pid_list[curr_pid];
 
@@ -207,8 +208,17 @@ int MboxClose(mbox_t handle) {
   }
   
   // Return the mbox to the pool of available mboxes for the system
+  // Reset this mbox, clear rest of messages in this mbox (clear the linkings in the system)
   if(system_mbox[handle].num_of_pid_inuse == 0){
     system_mbox[handle].num_of_pid_inuse = -1;
+
+    for(clear_ct = 0; clear_ct < system_mbox[handle].mbox_buffer_slot_used; clear_ct++){
+      // Make the system buffer slot available again
+      system_mbox_message.system_buffer_index_array[system_mbox[handle].mbox_buffer_tail] = 0;
+      system_mbox_message.system_buffer_slot_used -= 1;
+      system_mbox[handle].mbox_buffer_tail = (system_mbox[handle].mbox_buffer_tail + 1) % MBOX_MAX_BUFFERS_PER_MBOX;
+    }
+
   }
 
 
@@ -489,6 +499,8 @@ int MboxRecv(mbox_t handle, int maxlength, void* message) {
 int MboxCloseAllByPid(int pid) {
 
   int ct;
+  int clear_ct;
+  int mbox_pid_status;
 
   // Check if the pid is valid
   if(pid < 0 || pid >= PROCESS_MAX_PROCS){
@@ -506,12 +518,36 @@ int MboxCloseAllByPid(int pid) {
     // Check if the pid is in the mbox's "open procs" list. 
     // If so, remove the pid and make the mailbox available if no other proc opens the mbox
     // Else, do nothing
-    if(system_mbox[ct].mbox_pid_list[pid] == 1){
-      system_mbox[ct].mbox_pid_list[pid] = 0;
+    mbox_pid_status = system_mbox[ct].mbox_pid_list[pid];
+
+    if(mbox_pid_status == 0){
+      // Do nothing
+    }
+    else if(mbox_pid_status == 1){
+      // Update the number of pid used
       system_mbox[ct].num_of_pid_inuse -= 1;
-      if(system_mbox[ct].num_of_pid_inuse == 0){
-	system_mbox[ct].num_of_pid_inuse = -1; // Put the mbox back to the pool
+      system_mbox[ct].mbox_pid_list[pid] = 0;
+    }
+    else{
+      printf("FATAL ERROR: Unkown Pid %d for mbox %d\n", pid, ct);
+      // Release the lock
+      if(LockHandleRelease(system_mbox[ct].mbox_buffer_lock) != SYNC_SUCCESS){
+	printf("FATAL ERROR: Release lock for the mbox %d!\n", ct);
+	exitsim();
       }
+      return MBOX_FAIL;
+    }
+
+    // Return the mbox to the pool of available mboxes for the system
+    // Reset this mbox, clear rest of messages in this mbox (clear the linkings in the system)
+    if(system_mbox[ct].num_of_pid_inuse == 0){
+      system_mbox[ct].num_of_pid_inuse = -1;
+      for(clear_ct = 0; clear_ct < system_mbox[ct].mbox_buffer_slot_used; clear_ct++){
+	// Make the system buffer slot available again
+	system_mbox_message.system_buffer_index_array[system_mbox[ct].mbox_buffer_tail] = 0;
+	system_mbox_message.system_buffer_slot_used -= 1;
+	system_mbox[ct].mbox_buffer_tail = (system_mbox[ct].mbox_buffer_tail + 1) % MBOX_MAX_BUFFERS_PER_MBOX;
+    }
     }
 
     // Release the lock of the mbox
@@ -521,8 +557,6 @@ int MboxCloseAllByPid(int pid) {
     }
 
   }
-  
 
-
-  return MBOX_FAIL;
+  return MBOX_SUCCESS;
 }
