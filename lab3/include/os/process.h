@@ -50,7 +50,7 @@ typedef struct PCB {
   int           pnice;          // Used in priority calculation
 
   int wake_time; //if the pcb put into user sleep, store the wake up time
-  inline double start_time; //and record the time it sleeps
+  double start_time; //and record the time it sleeps
 } PCB;
 
 // Offsets of various registers from the stack pointer in the register

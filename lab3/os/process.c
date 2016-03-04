@@ -49,14 +49,14 @@ int ProcessGetCodeInfo(const char *file, uint32 *startAddr, uint32 *codeStart, u
                        uint32 *dataStart, uint32 *dataSize);
 int ProcessGetFromFile(int fd, unsigned char *buf, uint32 *addr, int max);
 uint32 get_argument(char *string);
-void idleProcess();
+VoidFunc idleProcess();
 
 // idle process
-PCB *idle = ProcessFork(idleProcess, 0,0,0,"idle",0);
+//PCB *idle = ProcessFork(idleProcess, 0,0,0,0,0);
 
 
 
-void idleProcess()
+VoidFunc idleProcess()
 {
   while(1);
 }
@@ -574,7 +574,7 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
 
     if(func == idleProcess)
       {
-	dbprintf ("ProcessFork creating idle process, name = %s.\n", pcb->name);
+	dbprintf ("ProcessFork creating idle process, name = %s.\n", name);
       }
 	
   }
