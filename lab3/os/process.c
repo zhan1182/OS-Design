@@ -589,6 +589,7 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
   pcb->wake_time = 0;
   pcb->sleep_time = 0;
   pcb->start_time = 0;
+  pcb->total_j = 0; // init the total jeffies
   /// set the tickets and pinfo
   //pcb->pnice = pnice;
   pcb->pinfo = pinfo;
