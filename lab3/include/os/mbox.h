@@ -22,6 +22,9 @@ typedef struct mbox_message {
   int system_buffer_index_array[MBOX_NUM_BUFFERS];
   int system_buffer_slot_used;
   lock_t system_buffer_lock;
+
+  cond_t system_buffer_empty;
+
 } mbox_message;
 
 typedef struct mbox {
