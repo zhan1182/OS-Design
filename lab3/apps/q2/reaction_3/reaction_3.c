@@ -24,6 +24,12 @@ void main (int argc, char *argv[])
 
   sem_t s_procs_completed; // Semaphore to signal the original process that we're done
 
+  int ct;
+  Printf("argc = %d\n", argc);
+  for(ct = 0 ; ct < argc; ct++){
+    Printf("argv[%d] = %s\n", ct, argv[ct]);
+  }
+
   if (argc != 6) { 
     Printf("Usage: %s <mailbox h2> <mailbox o2> <mailbox so2> <mailbox h2so4> <handle_to_page_mapped_semaphore>\n"); 
     Exit();
