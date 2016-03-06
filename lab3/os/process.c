@@ -324,7 +324,12 @@ void ProcessSchedule () {
   pass_time = curr_j - currentPCB->start_time;
 
   
-
+  // Update the total time the process has run
+  currentPCB->total_j += pass_time;
+  if(currentPCB->pinfo){
+    printf("pass time = %d\n", pass_time);
+    printf("CPUStats: Process %d has run for %d jiffies, priority = %d\n", GetPidFromAddress(currentPCB), currentPCB->total_j, pcb->pnice);
+  }
   
 
   
@@ -1171,7 +1176,7 @@ void process_create(char *name, ...)
     } while(args[i][j-1]!='\0');
   }
   allargs[k] = allargs[k+1] = 0;
-  ProcessFork(0, (uint32)allargs, 0, 0, name, 1);
+  ProcessFork(0, (uint32)allargs, 0, 1, name, 1);// turn on pinfo to 1
 }
 
 int GetPidFromAddress(PCB *pcb) {

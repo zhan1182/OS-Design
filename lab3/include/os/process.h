@@ -55,6 +55,8 @@ typedef struct PCB {
   int wake_time; //if the pcb put into user sleep, store the wake up time
   double sleep_time; //and record the time it sleeps
   int start_time; // the jeffies when the process starts
+
+  int total_j; // How long does the process has run
 } PCB;
 
 // Offsets of various registers from the stack pointer in the register
