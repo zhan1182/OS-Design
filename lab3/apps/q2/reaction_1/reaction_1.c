@@ -9,6 +9,8 @@
 
 void main (int argc, char *argv[])
 {
+  int ct;
+
   char h2o_buffer_1[H2O_SIZE];
   char h2o_buffer_2[H2O_SIZE];
 
@@ -41,19 +43,19 @@ void main (int argc, char *argv[])
 
   // Wait for the first h2o molecule from the mailbox
   if (mbox_recv(h_mbox_h2o, H2O_SIZE, (void *) h2o_buffer_1) == MBOX_FAIL) {
-    Printf("Reaction_2 (%d): Could not receive message from the mbox %d!\n", getpid(), h_mbox_h2o);
+    Printf("Reaction 1 (%d): Could not receive message from the mbox %d!\n", getpid(), h_mbox_h2o);
     Exit();
   }
 
   // Wait for the second h2o molecule from the mailbox  
   if (mbox_recv(h_mbox_h2o, H2O_SIZE, (void *) h2o_buffer_2) == MBOX_FAIL) {
-    Printf("Reaction_2 (%d): Could not receive message from the mbox %d!\n", getpid(), h_mbox_h2o);
+    Printf("Reaction 1 (%d): Could not receive message from the mbox %d!\n", getpid(), h_mbox_h2o);
     Exit();
   }
 
   // Close the h2o mailbox
   if (mbox_close(h_mbox_h2o) == MBOX_FAIL) {
-    Printf("Generator h2o (%d): Could not close the mailbox!\n", getpid());
+    Printf("Reaction 1 (%d): Could not close the mailbox!\n", getpid());
     Exit();
   }
 

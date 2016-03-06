@@ -24,11 +24,11 @@ void main (int argc, char *argv[])
 
   sem_t s_procs_completed; // Semaphore to signal the original process that we're done
 
-  int ct;
-  Printf("argc = %d\n", argc);
-  for(ct = 0 ; ct < argc; ct++){
-    Printf("argv[%d] = %s\n", ct, argv[ct]);
-  }
+  /* int ct; */
+  /* Printf("argc = %d\n", argc); */
+  /* for(ct = 0 ; ct < argc; ct++){ */
+  /*   Printf("argv[%d] = %s\n", ct, argv[ct]); */
+  /* } */
 
   if (argc != 6) { 
     Printf("Usage: %s <mailbox h2> <mailbox o2> <mailbox so2> <mailbox h2so4> <handle_to_page_mapped_semaphore>\n"); 
@@ -123,8 +123,7 @@ void main (int argc, char *argv[])
 
 
   // Now print a message to show that everything worked
-  Printf("A molecule SO2 has been generated\n");
-  Printf("A molecule O2 has been generated\n");
+  Printf("A molecule H2SO4 has been generated\n");
 
   // Signal the semaphore to tell the original process that we're done
   if(sem_signal(s_procs_completed) != SYNC_SUCCESS) {
