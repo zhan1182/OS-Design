@@ -44,13 +44,13 @@ main (int argc, char *argv[])
         process_create("userprog4.dlx.obj", i+18, 0, num_str,  spage_str, handle_str, NULL);     // different p_nice for child process
       }
 
-      
+      /*
       while(1)
 	{
 	  sem_wait(spage);            // wait for the children to reach 200
-	  }
+	  }*/
 
-      //sem_wait(spage);
+      sem_wait(spage);
       
       
       db->end = 1;                // terminate children processes
@@ -72,6 +72,7 @@ main (int argc, char *argv[])
       {
         for(j = 0; j < 50000; j++);     //waste some time
         //Printf("%c%d\n",'A'+offset, i);
+	sleep(2);
         if(i > 200) sem_signal(spage);  //signal end
       }
       Printf("***** Process %d reached %d *****\n", getpid(), i);

@@ -143,29 +143,29 @@ void main (int argc, char *argv[])
   // process_create with a NULL argument so that the operating system
   // knows how many arguments you are sending.
   for(i = 0; i < init_h2o; i++) {
-    process_create(GENERATOR_H2O_TO_RUN, 0, 0, h_mbox_h2o_str, s_procs_completed_str, NULL);
+    process_create(GENERATOR_H2O_TO_RUN, 0, 1, h_mbox_h2o_str, s_procs_completed_str, NULL);
     Printf("makeprocs (%d): Process %d created\n", getpid(), i);
   }
 
   for(i = 0; i < init_so4; i++) {
-    process_create(GENERATOR_SO4_TO_RUN, 0, 0, h_mbox_so4_str, s_procs_completed_str, NULL);
+    process_create(GENERATOR_SO4_TO_RUN, 0, 1, h_mbox_so4_str, s_procs_completed_str, NULL);
     Printf("makeprocs (%d): Process %d created\n", getpid(), i);
   }
 
   for(i = 0; i < init_h2o / 2; i++){
-    process_create(REACTION_1_TO_RUN, 0, 0, h_mbox_h2o_str, h_mbox_h2_str, h_mbox_o2_str, s_procs_completed_str, NULL);
+    process_create(REACTION_1_TO_RUN, 0, 1, h_mbox_h2o_str, h_mbox_h2_str, h_mbox_o2_str, s_procs_completed_str, NULL);
     Printf("makeprocs (%d): Process %d created\n", getpid(), i);
   }
 
   for(i = 0; i < init_so4; i++){
-    process_create(REACTION_2_TO_RUN, 0, 0, h_mbox_so4_str, h_mbox_so2_str, h_mbox_o2_str, s_procs_completed_str, NULL);
+    process_create(REACTION_2_TO_RUN, 0, 1, h_mbox_so4_str, h_mbox_so2_str, h_mbox_o2_str, s_procs_completed_str, NULL);
     Printf("makeprocs (%d): Process %d created\n", getpid(), i);
   }
 
 
   for(i = 0; i < num_of_reaction_3; i++){
     /* Printf("h_mbox_h2_str = %s, h_mbox_o2_str = %s, h_mbox_so2_str = %s, h_mbox_h2so4_str = %s, s_procs_completed_str = %s\n", h_mbox_h2_str, h_mbox_o2_str, h_mbox_so2_str, h_mbox_h2so4_str, s_procs_completed_str); */
-    process_create(REACTION_3_TO_RUN, 0 , 0, h_mbox_h2_str, h_mbox_o2_str, h_mbox_so2_str, h_mbox_h2so4_str, s_procs_completed_str, NULL);
+    process_create(REACTION_3_TO_RUN, 0 , 1, h_mbox_h2_str, h_mbox_o2_str, h_mbox_so2_str, h_mbox_h2so4_str, s_procs_completed_str, NULL);
     Printf("makeprocs (%d): Process %d created\n", getpid(), i);
   }
   

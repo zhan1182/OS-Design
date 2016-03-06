@@ -235,7 +235,7 @@ void ProcessSchedule_helper()
   int counter = 0;
   int win_base = 0;
   Link *l = NULL;
-  /*
+  
 #ifdef RR_SCHED
   // reset yield flag
 
@@ -252,7 +252,7 @@ void ProcessSchedule_helper()
   // Now, run the one at the head of the queue.
   pcb = (PCB *)AQueueObject(AQueueFirst(&runQueue));
 #endif
-  */
+  
 #ifdef LT_SCHED 
   // lottery logic
 
@@ -340,10 +340,10 @@ void ProcessSchedule () {
   currentPCB->total_j += pass_time;
   if(currentPCB->pinfo){
     printf("pass time = %d\n", pass_time);
-    printf("CPUStats: Process %d has run for %d jiffies, priority = %d\n", GetCurrentPid(), currentPCB->total_j, pcb->pnice);
+    printf("CPUStats: Process %d has run for %d jiffies, priority = %d\n", GetCurrentPid(), currentPCB->total_j, currentPCB->pnice);
   }
   
-
+  //printf("pnice = %d.\n", currentPCB->pnice);
 
   if((pass_time < PROCESS_QUANTUM_JIFFIES - 3) && (currentPCB->flags == 0x204 || currentPCB->flags == 0x203))
     {
@@ -390,10 +390,12 @@ void ProcessSchedule () {
 		// if the process is autowake flag
 		autoWake_flag = 1;
 		pass_time = (int)(curr_time - pcb->sleep_time);
+		printf("Process %d: pass time = %d.\n", GetCurrentPid(), pass_time);
 		if(pass_time >= pcb->wake_time * 1000)
 		  {
 		    ProcessWakeup(pcb);
 		    // update tickets
+		    printf("Process %d: wake up, sleep time = %f, curr = %f, pass time = %d.\n", GetCurrentPid(), pcb->sleep_time, curr_time, pass_time);
 		  }
 	      }
 	    l = AQueueNext(l);
@@ -413,12 +415,14 @@ void ProcessSchedule () {
 	  }
 	else if(autoWake_flag == 1)
 	  {
+	    printf("Waiting for auto wakeup processes! -- idle!\n");
 	    currentPCB = idle;
 	  }
 	else
 	  {
-	    printf ("ERROR: No runnable processes but sleeping processes- exiting!\n");
-	    exitsim();
+	    printf ("No runnable processes but sleeping processes- idle!\n");
+	    currentPCB = idle;
+	    
 	  }
     }
     else
@@ -623,6 +627,7 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
 
   if(pcb->name == "idle")
     {
+      //printf("wrong here.\n");
       pnice = 0;
     }
   else if(pnice <= 1)
