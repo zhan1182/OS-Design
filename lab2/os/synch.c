@@ -114,6 +114,7 @@ int SemWait (Sem *sem) {
       printf("FATAL ERROR: could not insert new link into semaphore waiting queue in SemWait!\n");
       exitsim();
     }
+    printf("Just before sleep.\n");
     ProcessSleep();
   } else {
     dbprintf('s', "SemWait: Proc %d granted permission to continue by sem %d\n", GetCurrentPid(), (int)(sem-sems));

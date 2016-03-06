@@ -49,16 +49,33 @@ int ProcessGetCodeInfo(const char *file, uint32 *startAddr, uint32 *codeStart, u
                        uint32 *dataStart, uint32 *dataSize);
 int ProcessGetFromFile(int fd, unsigned char *buf, uint32 *addr, int max);
 uint32 get_argument(char *string);
-VoidFunc idleProcess();
+void idleProcess();
+PCB * idleCreate();
+
 
 // idle process
-//PCB *idle = ProcessFork(idleProcess, 0,0,0,0,0);
+PCB *idle;
+
+// global tickets
+int global_tickets = 0;
 
 
-
-VoidFunc idleProcess()
+void idleProcess()
 {
   while(1);
+}
+
+
+PCB * idleCreate()
+{
+  PCB * pcb;
+  int pid;
+
+  pid = ProcessFork(&idleProcess, 0,0,0,"idle",0);
+  pcb = (PCB *)AQueueObject(AQueueFirst(&runQueue));
+  AQueueRemove(&(pcb->l));
+
+  return pcb;
 }
 
 
@@ -98,6 +115,8 @@ void ProcessModuleInit () {
   // There are no processes running at this point, so currentPCB=NULL
   currentPCB = NULL;
   dbprintf ('p', "ProcessModuleInit: function complete\n");
+  //idle = idleCreate();
+  //printf("Idle created finished!\n");
 }
 
 //----------------------------------------------------------------------
@@ -207,41 +226,63 @@ void ProcessSetResult (PCB * pcb, uint32 result) {
 //	which was saved.
 //
 //----------------------------------------------------------------------
-void ProcessSchedule () {
+void ProcessSchedule_helper()
+{
   PCB *pcb=NULL;
-  int i=0;
-  Link *l=NULL;
+  int curr_j = ClkGetCurJiffies();
+  int counter = 0;
+  int win_base = 0;
+  Link *l = NULL;
+  /*
+#ifdef RR_SCHED
+  // reset yield flag
 
-  dbprintf ('p', "Now entering ProcessSchedule (cur=0x%x, %d ready)\n",
-	    (int)currentPCB, AQueueLength (&runQueue));
-  // The OS exits if there's no runnable process.  This is a feature, not a
-  // bug.  An easy solution to allowing no runnable "user" processes is to
-  // have an "idle" process that's simply an infinite loop.
-  if (AQueueEmpty(&runQueue)) {
-    if (!AQueueEmpty(&waitQueue)) {
-      printf("FATAL ERROR: no runnable processes, but there are sleeping processes waiting!\n");
-      l = AQueueFirst(&waitQueue);
-      while (l != NULL) {
-        pcb = AQueueObject(l);
-        printf("Sleeping process %d: ", i++); printf("PID = %d\n", (int)(pcb - pcbs));
-        l = AQueueNext(l);
-      }
-      exitsim();
+  //printf("Entered RR.\n");
+  if (currentPCB->flags == PROCESS_STATUS_YIELD)
+    {
+      ProcessSetStatus (currentPCB, PROCESS_STATUS_RUNNABLE);
     }
-    //printf ("No runnable processes - exiting!\n");
-    //exitsim ();	// NEVER RETURNS
-  }
-
-
-
-
-
-
+  
   // Move the front of the queue to the end.  The running process was the one in front.
   AQueueMoveAfter(&runQueue, AQueueLast(&runQueue), AQueueFirst(&runQueue));
 
   // Now, run the one at the head of the queue.
   pcb = (PCB *)AQueueObject(AQueueFirst(&runQueue));
+#endif
+  */
+#ifdef LT_SCHED 
+  // lottery logic
+
+
+  //printf("Entered LT.\n");
+  //srandom(1);
+  counter = 0;
+  win_base = random() % (global_tickets);
+  
+  l = AQueueFirst(&runQueue);
+  while (l != NULL) 
+    {
+      pcb = (PCB *)AQueueObject(l);
+      counter += pcb->pnice;
+      if(counter > win_base)
+	{
+	  if(pcb->flags != PROCESS_STATUS_YIELD)
+	    {
+	      break;
+	    }
+	}
+      l = AQueueNext(l);
+    }
+  //printf("winnerID: %d, ticket = %d, global_t = %d. counter = %d, win = %d.\n", GetCurrentPid(), pcb->pnice, global_tickets, counter, win_base);
+  if (currentPCB->flags == PROCESS_STATUS_YIELD)
+    {
+      ProcessSetStatus (currentPCB, PROCESS_STATUS_RUNNABLE);
+    }
+  
+
+#endif
+
+  pcb->start_time = curr_j;
   currentPCB = pcb;
   dbprintf ('p',"About to switch to PCB 0x%x,flags=0x%x @ 0x%x\n",
 	    (int)pcb, pcb->flags, (int)(pcb->sysStackPtr[PROCESS_STACK_IAR]));
@@ -258,6 +299,107 @@ void ProcessSchedule () {
     ProcessFreeResources(pcb);
   }
   dbprintf ('p', "Leaving ProcessSchedule (cur=0x%x)\n", (int)currentPCB);
+
+
+}
+
+
+void ProcessSchedule () {
+  PCB *pcb=NULL;
+  int i=0;
+  Link *l=NULL;
+
+  double curr_time = ClkGetCurTime();
+  int curr_j = ClkGetCurJiffies();
+  int pass_time;
+  int autoWake_flag = 0;
+
+  dbprintf ('p', "Now entering ProcessSchedule (cur=0x%x, %d ready)\n",
+	    (int)currentPCB, AQueueLength (&runQueue));
+  // The OS exits if there's no runnable process.  This is a feature, not a
+  // bug.  An easy solution to allowing no runnable "user" processes is to
+  // have an "idle" process that's simply an infinite loop.
+
+  /// test if I/O or CPU process and update tickets
+  pass_time = curr_j - currentPCB->start_time;
+
+  
+
+  
+
+  /*
+  if((pass_time < PROCESS_QUANTUM_JIFFIES - 3) && (currentPCB->flags == PROCESS_STATUS_WAITING || currentPCB->flags == PROCESS_STATUS_AUTOWAKE))
+    {
+      currentPCB->pnice = currentPCB->pnice >= 19 ? 19 : currentPCB->pnice + 1; // curent pcb is I/O
+    }
+  else
+    {
+      currentPCB->pnice = currentPCB->pnice <= 1 ? 1 : currentPCB->pnice - 1;; // current pcb is CPU
+    }
+  */
+  
+  //printf("%d processes in runQ, and %d processes in waitQ.\n", AQueueLength(&runQueue), AQueueLength(&waitQueue));
+
+  //printf("Before test runQ and waitQ.\n");
+  /// check runQueue or wake up wait queue
+  if(!AQueueEmpty(&runQueue))
+    {
+      //printf("Before enter helper.\n");
+      l = AQueueFirst(&runQueue);
+      global_tickets = 0;
+      while(l != NULL)
+	{
+	  //printf("in the while loop.\n");
+	  pcb = AQueueObject(l);
+	  global_tickets += pcb->pnice;
+	  l = AQueueNext(l);
+	}
+      //printf("new global is %d.\n", global_tickets);
+      ProcessSchedule_helper();
+    }
+  else {
+    //printf("wrong.\n");
+    if (!AQueueEmpty(&waitQueue)) 
+      {
+	l = AQueueFirst(&waitQueue);
+	while (l != NULL) 
+	  {
+	    pcb = AQueueObject(l);
+	    printf("Sleeping process %d: ", i++); printf("PID = %d\n", (int)(pcb - pcbs));
+	    if(pcb->flags == PROCESS_STATUS_AUTOWAKE)
+	      {
+		autoWake_flag = 1;
+		pass_time = (int)(curr_time - pcb->sleep_time);
+		if(pass_time >= pcb->wake_time * 1000)
+		  {
+		    ProcessWakeup(pcb);
+		    // update tickets
+		  }
+	      }
+	    l = AQueueNext(l);
+	  }
+	if(!AQueueEmpty(&runQueue))
+	  {
+	    ProcessSchedule_helper();
+	  }
+	else if(autoWake_flag == 1)
+	  {
+	    currentPCB = idle;
+	  }
+	else
+	  {
+	    printf ("ERROR: No runnable processes but sleeping processes- exiting!\n");
+	    exitsim();
+	  }
+    }
+    else
+      {
+	printf ("No runnable processes & sleeping processes- idle!\n");
+	currentPCB = idle;
+      }
+  }
+
+  //printf("Current process is %s.\n", currentPCB->name);
 }
 
 //----------------------------------------------------------------------
@@ -290,6 +432,7 @@ void ProcessSuspend (PCB *suspend) {
     exitsim();
   }
   dbprintf ('p', "ProcessSuspend (%d): function complete\n", GetCurrentPid());
+
 }
 
 //----------------------------------------------------------------------
@@ -322,6 +465,7 @@ void ProcessWakeup (PCB *wakeup) {
     printf("FATAL ERROR: could not insert link into runQueue in ProcessWakeup!\n");
     exitsim();
   }
+  
 }
 
 
@@ -429,8 +573,29 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
 
   /// set the start time and wake time to 0
   pcb->wake_time = 0;
+  pcb->sleep_time = 0;
   pcb->start_time = 0;
+  /// set the tickets and pinfo
+  //pcb->pnice = pnice;
+  pcb->pinfo = pinfo;
 
+
+  if(pcb->name == "idle")
+    {
+      pnice = 0;
+    }
+  else if(pnice <= 1)
+    {
+      pnice = 1;
+    }
+  else if(pnice >= 19)
+    {
+      pnice = 19;
+    }
+
+  pcb->pnice = pnice;
+
+  global_tickets += pnice;
 
   //----------------------------------------------------------------------
   // This section initializes the memory for this process
@@ -498,13 +663,15 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
   stackframe[PROCESS_STACK_PTBITS] = (MEMORY_L1_PAGE_SIZE_BITS
 					  + (MEMORY_L2_PAGE_SIZE_BITS << 16));
 
-
+  //printf("ProcessFork (%d): before memory mapping.\n", GetCurrentPid());
   if (isUser) {
+    //printf("ProcessFork (%d): about to memory mapping.\n", GetCurrentPid());
     dbprintf ('p', "About to load %s\n", name);
     fd = ProcessGetCodeInfo (name, &start, &codeS, &codeL, &dataS, &dataL);
     if (fd < 0) {
       // Free newpage and pcb so we don't run out...
       ProcessFreeResources (pcb);
+      //printf("ProcessFork (%d): error.\n", GetCurrentPid());
       return (-1);
     }
     dbprintf ('p', "File %s -> start=0x%08x\n", name, start);
@@ -550,6 +717,9 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
     // Set the correct address at which to execute a user process.
     stackframe[PROCESS_STACK_IAR] = (uint32)start;
     pcb->flags |= PROCESS_TYPE_USER;
+    
+    //printf("ProcessFork (%d): memory mapping complete.\n", GetCurrentPid());
+
   } else {
     // Set r31 to ProcessExit().  This will only be called for a system
     // process; user processes do an exit() trap.
@@ -574,12 +744,13 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
 
     if(func == idleProcess)
       {
-	dbprintf ("ProcessFork creating idle process, name = %s.\n", name);
+	printf ("ProcessFork creating idle process, name = %s.\n", name);
       }
 	
   }
 
   // Place PCB onto run queue
+  //printf("ProcessFork (%d): before put in run Q.\n", GetCurrentPid());
   intrs = DisableIntrs ();
   if ((pcb->l = AQueueAllocLink(pcb)) == NULL) {
     printf("FATAL ERROR: could not get link for forked PCB in ProcessFork!\n");
@@ -596,7 +767,7 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
     dbprintf ('p', "Setting currentPCB=0x%x, stackframe=0x%x\n", (int)pcb, (int)(pcb->currentSavedFrame));
     currentPCB = pcb;
   }
-
+  
   dbprintf ('p', "Leaving ProcessFork (%s)\n", name);
   // Return the process number (found by subtracting the PCB number
   // from the base of the PCB array).
@@ -652,6 +823,7 @@ ProcessGetCodeInfo (const char *file, uint32 *startAddr,
   if ((fd = FsOpen (file, FS_MODE_READ)) < 0) {
     dbprintf ('f', "ProcessGetCodeInfo: open of %s failed (%d).\n",
 	      file, fd);
+    printf("ProcessGetCodeInfo (%d): error1, filename is %s.\n", GetCurrentPid(), file);
     return (-1);
   }
   dbprintf ('f', "File descriptor is now %d.\n", fd);
@@ -659,10 +831,12 @@ ProcessGetCodeInfo (const char *file, uint32 *startAddr,
     dbprintf ('f', "ProcessGetCodeInfo: read got %d (not %d) bytes from %s\n",
 	      totalsize, (int)sizeof (buf), file);
     FsClose (fd);
+    printf("ProcessGetCodeInfo (%d): error2.\n", GetCurrentPid());
     return (-1);
   }
   if (dstrstr (buf, "start:") == NULL) {
     dbprintf ('f', "ProcessGetCodeInfo: %s missing start line (not a DLX executable?)\n", file);
+    printf("ProcessGetCodeInfo (%d): error3.\n", GetCurrentPid());
     return (-1);
   }
   pos = (char *)dindex (buf, ':') + 1;
@@ -882,6 +1056,8 @@ void main (int argc, char *argv[])
   // Init mbox module
   MboxModuleInit();
 
+  printf("All init completed!\n");
+
   for (i = 0; i < 100; i++) {
     buf[i] = 'a';
   }
@@ -922,6 +1098,8 @@ void main (int argc, char *argv[])
 
   // Start the clock which will in turn trigger periodic ProcessSchedule's
   ClkStart();
+  
+  printf("Clock started!\n");
 
   intrreturn ();
   // Should never be called because the scheduler exits when there
@@ -1012,7 +1190,7 @@ void ProcessUserSleep(int seconds) {
     exitsim();
   }
   dbprintf ('p', "ProcessUserSleep (%d): function complete\n", GetCurrentPid());
-  currentPCB->start_time = ClkGetCurTime();
+  currentPCB->sleep_time = ClkGetCurTime();
   currentPCB->wake_time = seconds;
 }
 

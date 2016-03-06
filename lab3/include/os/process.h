@@ -32,6 +32,9 @@
 #define PROCESS_STATUS_AUTOWAKE 0x300
 #define PROCESS_STATUS_YIELD 0X400
 
+#define RR_SCHED
+#define LT_SCHED
+
 
 typedef	void (*VoidFunc)();
 
@@ -50,7 +53,8 @@ typedef struct PCB {
   int           pnice;          // Used in priority calculation
 
   int wake_time; //if the pcb put into user sleep, store the wake up time
-  double start_time; //and record the time it sleeps
+  double sleep_time; //and record the time it sleeps
+  int start_time; // the jeffies when the process starts
 } PCB;
 
 // Offsets of various registers from the stack pointer in the register
@@ -91,6 +95,10 @@ extern void	ProcessSetResult (PCB *, uint32);
 extern void	ProcessSleep ();
 extern void     ProcessDestroy(PCB *pcb);
 extern unsigned GetCurrentPid();
+
+extern void srandom(unsigned int);
+extern int random(void);
+
 void process_create(char *name, ...);
 int GetPidFromAddress(PCB *pcb);
 

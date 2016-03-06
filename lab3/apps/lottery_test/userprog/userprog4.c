@@ -18,6 +18,7 @@ main (int argc, char *argv[])
   char num_str[10], spage_str[10], handle_str[10];
   DB * db;
 
+
   switch(argc)
   {
     case 2:  
@@ -40,16 +41,18 @@ main (int argc, char *argv[])
       for(i = 0; i < number; i++)
       {
         ditoa(i, num_str);
-        process_create(1 + i, 0, "userprog4.dlx.obj", num_str, 
-                       spage_str, handle_str,
-                       NULL);     // different p_nice for child process
+        process_create("userprog4.dlx.obj", i+1, 0, num_str,  spage_str, handle_str, NULL);     // different p_nice for child process
       }
 
+
       sem_wait(spage);            // wait for the children to reach 200
+      
+      
       db->end = 1;                // terminate children processes
 
       break;
     case 4:
+      //Printf("case 4 entered.\n");
       offset = dstrtol(argv[1], NULL, 10);
       spage = dstrtol(argv[2], NULL, 10);
       handle = dstrtol(argv[3], NULL, 10);
@@ -59,7 +62,7 @@ main (int argc, char *argv[])
           Printf("Could not map the virtual address to the memory, exiting...\n");
           exit();
         }
-
+      //Printf("Before semsignal loop.\n");
       for(i = 0; !db->end; i ++)
       {
         for(j = 0; j < 50000; j++);     //waste some time

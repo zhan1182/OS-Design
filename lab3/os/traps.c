@@ -95,6 +95,7 @@ static void TrapProcessCreateHandler(uint32 *trapArgs, int sysmode) {
 
   // First deal with user-space addresses
   if(!sysmode) {
+    //printf("traps.c process_create (%d): !sysmode.\n", GetCurrentPid());
     dbprintf('p', "TrapProcessCreateHandler: creating user process\n");
     // Get the known arguments into the kernel space.
     // Argument 0: user-space pointer to name of executable
@@ -107,6 +108,7 @@ static void TrapProcessCreateHandler(uint32 *trapArgs, int sysmode) {
       if (name[i] == '\0') break;
     }
     dbprintf('p', "TrapProcessCreateHandler: just parsed executable name (%s) from trapArgs\n", name);
+    //printf("TrapProcessCreateHandler: just parsed executable name (%s) from trapArgs\n", name);
     if (i == PROCESS_MAX_NAME_LENGTH) {
       printf("TrapProcessCreateHandler: length of executable filename longer than allowed!\n");
       exitsim();
@@ -150,6 +152,7 @@ static void TrapProcessCreateHandler(uint32 *trapArgs, int sysmode) {
     numargs = i+1;
     // Arguments are now setup
   } else {
+    printf("traps.c process_create (%d): sysmode.\n", GetCurrentPid());
     // Addresses are already in kernel space, so just copy into our local variables 
     // for simplicity
     // Argument 0: (char *) name of program
@@ -187,6 +190,7 @@ static void TrapProcessCreateHandler(uint32 *trapArgs, int sysmode) {
     numargs = i+1;
   }
 
+  //printf("traps.c process_create (%d): filename is %s.\n", GetCurrentPid(), name);
   ProcessFork(0, (uint32)allargs, pnice, pinfo, name, 1);
 }
 
@@ -451,6 +455,7 @@ dointerrupt (unsigned int cause, unsigned int iar, unsigned int isr,
       break;
     case TRAP_PROCESS_SLEEP:
       dbprintf ('t', "Got a process sleep trap!\n");
+      //printf("a process is going to sleep.\n");
       ProcessSuspend (currentPCB);
       ProcessSchedule ();
       ClkResetProcess();

@@ -84,6 +84,7 @@ FsOpen (const char *name, int mode)
     }
   }
   if (i >= FS_MAX_OPEN_FILES) {
+    //printf("FsOpen (%d): error1, filename is %s.\n", GetCurrentPid(), name);
     return (-1);
   }
   openfiles[i].flags = mode;
@@ -100,6 +101,7 @@ FsOpen (const char *name, int mode)
   if (retval < 0) {
     // Open failed, so return error code
     FsFreeEntry (i);
+    printf("FsOpen (%d): error2, filename is %s.\n", GetCurrentPid(), name);
     return (retval);
   }
   dbprintf ('f', "Opened %s in FS %d, mode=%d slot=%d.\n", name,
