@@ -127,8 +127,10 @@ void ProcessModuleInit () {
 //
 //----------------------------------------------------------------------
 void ProcessSetStatus (PCB *pcb, int status) {
+  //printf("Process %d: original flag is %d, status is %d.\n", GetCurrentPid(),pcb->flags, status);
   pcb->flags &= ~PROCESS_STATUS_MASK;
   pcb->flags |= status;
+  //printf("Process %d: after flag is %d.\n", GetCurrentPid(), pcb->flags);
 }
 
 //----------------------------------------------------------------------
@@ -238,8 +240,9 @@ void ProcessSchedule_helper()
   // reset yield flag
 
   //printf("Entered RR.\n");
-  if (currentPCB->flags == PROCESS_STATUS_YIELD)
+  if (currentPCB->flags == 0x205)
     {
+    // if the process is yield
       ProcessSetStatus (currentPCB, PROCESS_STATUS_RUNNABLE);
     }
   
@@ -266,15 +269,16 @@ void ProcessSchedule_helper()
       counter += pcb->pnice;
       if(counter > win_base)
 	{
-	  if(pcb->flags != PROCESS_STATUS_YIELD)
+	  if(pcb->flags != 0x205)
 	    {
+	      // break as long as the process is not yield
 	      break;
 	    }
 	}
       l = AQueueNext(l);
     }
   //printf("winnerID: %d, ticket = %d, global_t = %d. counter = %d, win = %d.\n", GetCurrentPid(), pcb->pnice, global_tickets, counter, win_base);
-  if (currentPCB->flags == PROCESS_STATUS_YIELD)
+  if (currentPCB->flags == 0x205)
     {
       ProcessSetStatus (currentPCB, PROCESS_STATUS_RUNNABLE);
     }
@@ -284,6 +288,10 @@ void ProcessSchedule_helper()
 
   pcb->start_time = curr_j;
   currentPCB = pcb;
+  if(pcb->pnice > 1)
+    {
+      //printf("Process %d: pnice = %d.\n", GetCurrentPid(), currentPCB->pnice);
+    }
   dbprintf ('p',"About to switch to PCB 0x%x,flags=0x%x @ 0x%x\n",
 	    (int)pcb, pcb->flags, (int)(pcb->sysStackPtr[PROCESS_STACK_IAR]));
 
@@ -323,14 +331,17 @@ void ProcessSchedule () {
   /// test if I/O or CPU process and update tickets
   pass_time = curr_j - currentPCB->start_time;
 
-  
+  //printf("Process %d: flags is %x.\n", GetCurrentPid(), currentPCB->flags);
+  //printf("waiting is %x, autowake is %x.\n", PROCESS_STATUS_WAITING, PROCESS_STATUS_AUTOWAKE);
 
-  
+  //printf("pass time is %d.\n", pass_time);
 
-  
-  if((pass_time < PROCESS_QUANTUM_JIFFIES - 3) && (currentPCB->flags == PROCESS_STATUS_WAITING || currentPCB->flags == PROCESS_STATUS_AUTOWAKE))
+
+  if((pass_time < PROCESS_QUANTUM_JIFFIES - 3) && (currentPCB->flags == 0x204 || currentPCB->flags == 0x203))
     {
+      printf("Process %d: IO caught, original pnice = %d, flag is %x.\n", GetCurrentPid(), currentPCB->pnice, currentPCB->flags);
       currentPCB->pnice = currentPCB->pnice >= 19 ? 19 : currentPCB->pnice + 1; // curent pcb is I/O
+      printf("Process %d: IO caught, new pnice = %d.\n", GetCurrentPid(), currentPCB->pnice);
     }
   else
     {
@@ -366,8 +377,9 @@ void ProcessSchedule () {
 	  {
 	    pcb = AQueueObject(l);
 	    printf("Sleeping process %d: ", i++); printf("PID = %d\n", (int)(pcb - pcbs));
-	    if(pcb->flags == PROCESS_STATUS_AUTOWAKE)
+	    if(pcb->flags == 0x203)
 	      {
+		// if the process is autowake flag
 		autoWake_flag = 1;
 		pass_time = (int)(curr_time - pcb->sleep_time);
 		if(pass_time >= pcb->wake_time * 1000)
@@ -426,7 +438,12 @@ void ProcessSuspend (PCB *suspend) {
   // Make sure it's already a runnable process.
   dbprintf ('p', "ProcessSuspend (%d): function started\n", GetCurrentPid());
   ASSERT (suspend->flags & PROCESS_STATUS_RUNNABLE, "Trying to suspend a non-running process!\n");
+
+  //printf("Process %d: in suspend, original flag is %x.\n", GetCurrentPid(), suspend->flags);
+
   ProcessSetStatus (suspend, PROCESS_STATUS_WAITING);
+
+  //printf("Process %d: in suspend, flag now is %x.\n", GetCurrentPid(), suspend->flags);
 
   if (AQueueRemove(&(suspend->l)) != QUEUE_SUCCESS) {
     printf("FATAL ERROR: could not remove process from run Queue in ProcessSuspend!\n");
@@ -461,7 +478,13 @@ void ProcessWakeup (PCB *wakeup) {
   dbprintf ('p',"Waking up PID %d.\n", (int)(wakeup - pcbs));
   // Make sure it's not yet a runnable process.
   ASSERT (wakeup->flags & PROCESS_STATUS_WAITING, "Trying to wake up a non-sleeping process!\n");
+  
+  //printf("Process %d: in wakeup, original flags is %x.\n", GetCurrentPid(), wakeup->flags);
+
   ProcessSetStatus (wakeup, PROCESS_STATUS_RUNNABLE);
+  
+  //printf("Process %d: in wakeup, now flags is %x.\n", GetCurrentPid(), wakeup->flags);
+
   if (AQueueRemove(&(wakeup->l)) != QUEUE_SUCCESS) {
     printf("FATAL ERROR: could not remove wakeup PCB from waitQueue in ProcessWakeup!\n");
     exitsim();
@@ -605,6 +628,7 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
   pcb->pnice = pnice;
 
   global_tickets += pnice;
+  //printf("pcb->pnice = %d.\n", pcb->pnice);
 
   //----------------------------------------------------------------------
   // This section initializes the memory for this process
