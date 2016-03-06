@@ -327,7 +327,7 @@ void ProcessSchedule () {
 
   
 
-  /*
+  
   if((pass_time < PROCESS_QUANTUM_JIFFIES - 3) && (currentPCB->flags == PROCESS_STATUS_WAITING || currentPCB->flags == PROCESS_STATUS_AUTOWAKE))
     {
       currentPCB->pnice = currentPCB->pnice >= 19 ? 19 : currentPCB->pnice + 1; // curent pcb is I/O
@@ -336,7 +336,7 @@ void ProcessSchedule () {
     {
       currentPCB->pnice = currentPCB->pnice <= 1 ? 1 : currentPCB->pnice - 1;; // current pcb is CPU
     }
-  */
+  
   
   //printf("%d processes in runQ, and %d processes in waitQ.\n", AQueueLength(&runQueue), AQueueLength(&waitQueue));
 
@@ -380,6 +380,15 @@ void ProcessSchedule () {
 	  }
 	if(!AQueueEmpty(&runQueue))
 	  {
+	    l = AQueueFirst(&runQueue);
+	    global_tickets = 0;
+	    while(l != NULL)
+	      {
+		//printf("in the while loop.\n");
+		pcb = AQueueObject(l);
+		global_tickets += pcb->pnice;
+		l = AQueueNext(l);
+	      }
 	    ProcessSchedule_helper();
 	  }
 	else if(autoWake_flag == 1)
