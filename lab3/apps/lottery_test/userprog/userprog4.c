@@ -72,8 +72,12 @@ main (int argc, char *argv[])
       {
         for(j = 0; j < 50000; j++);     //waste some time
         //Printf("%c%d\n",'A'+offset, i);
-	sleep(2);
-        if(i > 200) sem_signal(spage);  //signal end
+   
+        if(i > 200) 
+	  {
+	    sleep(2);
+	    sem_signal(spage);  //signal end
+	  }
       }
       Printf("***** Process %d reached %d *****\n", getpid(), i);
 

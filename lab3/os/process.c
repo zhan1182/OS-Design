@@ -115,7 +115,7 @@ void ProcessModuleInit () {
   // There are no processes running at this point, so currentPCB=NULL
   currentPCB = NULL;
   dbprintf ('p', "ProcessModuleInit: function complete\n");
-  //idle = idleCreate();
+  idle = idleCreate();
   //printf("Idle created finished!\n");
 }
 
@@ -314,13 +314,14 @@ void ProcessSchedule_helper()
 
 void ProcessSchedule () {
   PCB *pcb=NULL;
-  int i=0;
   Link *l=NULL;
 
   double curr_time = ClkGetCurTime();
   int curr_j = ClkGetCurJiffies();
   int pass_time;
   int autoWake_flag = 0;
+
+  //printf("Scheduling.....\n");
 
   dbprintf ('p', "Now entering ProcessSchedule (cur=0x%x, %d ready)\n",
 	    (int)currentPCB, AQueueLength (&runQueue));
@@ -339,7 +340,7 @@ void ProcessSchedule () {
   // Update the total time the process has run
   currentPCB->total_j += pass_time;
   if(currentPCB->pinfo){
-    printf("pass time = %d\n", pass_time);
+    //printf("pass time = %d\n", pass_time);
     printf("CPUStats: Process %d has run for %d jiffies, priority = %d\n", GetCurrentPid(), currentPCB->total_j, currentPCB->pnice);
   }
   
@@ -384,18 +385,19 @@ void ProcessSchedule () {
 	while (l != NULL) 
 	  {
 	    pcb = AQueueObject(l);
-	    printf("Sleeping process %d: ", i++); printf("PID = %d\n", (int)(pcb - pcbs));
+	    //printf("Sleeping process %d: ", i++); printf("PID = %d\n", (int)(pcb - pcbs));
 	    if(pcb->flags == 0x203)
 	      {
 		// if the process is autowake flag
 		autoWake_flag = 1;
 		pass_time = (int)(curr_time - pcb->sleep_time);
-		printf("Process %d: pass time = %d.\n", GetCurrentPid(), pass_time);
-		if(pass_time >= pcb->wake_time * 1000)
+	
+		//printf("Process %d: sleep time = %f, curr = %f, pass time = %d.\n", GetCurrentPid(), pcb->sleep_time, curr_time, pass_time);
+		if(pass_time >= pcb->wake_time)
 		  {
 		    ProcessWakeup(pcb);
 		    // update tickets
-		    printf("Process %d: wake up, sleep time = %f, curr = %f, pass time = %d.\n", GetCurrentPid(), pcb->sleep_time, curr_time, pass_time);
+		    //printf("Process %d: wake up, sleep time = %f, curr = %f, pass time = %d.\n", GetCurrentPid(), pcb->sleep_time, curr_time, pass_time);
 		  }
 	      }
 	    l = AQueueNext(l);
@@ -429,6 +431,7 @@ void ProcessSchedule () {
       {
 	printf ("No runnable processes & sleeping processes- idle!\n");
 	currentPCB = idle;
+	//exitsim();
       }
   }
 
@@ -489,7 +492,7 @@ void ProcessSuspend (PCB *suspend) {
 void ProcessWakeup (PCB *wakeup) {
   dbprintf ('p',"Waking up PID %d.\n", (int)(wakeup - pcbs));
   // Make sure it's not yet a runnable process.
-  ASSERT (wakeup->flags & PROCESS_STATUS_WAITING, "Trying to wake up a non-sleeping process!\n");
+  ASSERT (wakeup->flags & (PROCESS_STATUS_WAITING | PROCESS_STATUS_AUTOWAKE), "Trying to wake up a non-sleeping process!\n");
   
   //printf("Process %d: in wakeup, original flags is %x.\n", GetCurrentPid(), wakeup->flags);
 
