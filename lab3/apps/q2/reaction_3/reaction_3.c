@@ -13,9 +13,9 @@ void main (int argc, char *argv[])
 {
   char h2_buffer[H2_SIZE];
   char o2_buffer[O2_SIZE];
-  char so2_buffer[SO4_SIZE];
+  char so2_buffer[SO2_SIZE];
 
-  char h2so4[H2SO4_SIZE] = {'H', '2', 'S', 'O', '4'};
+  char h2so4_molecule[H2SO4_SIZE] = {'H', '2', 'S', 'O', '4'};
 
   mbox_t h_mbox_h2;
   mbox_t h_mbox_o2;
@@ -45,7 +45,7 @@ void main (int argc, char *argv[])
   }
 
   // Wait for the h2 molecule from the mailbox
-  if (mbox_recv(h_mbox_h2, SO4_SIZE, (void *) so4_buffer) == MBOX_FAIL) {
+  if (mbox_recv(h_mbox_h2, H2_SIZE, (void *) h2_buffer) == MBOX_FAIL) {
     Printf("Reaction 3 (%d): Could not receive message from the mbox %d!\n", getpid(), h_mbox_h2);
     Exit();
   }
