@@ -335,13 +335,21 @@ void ProcessSchedule () {
   //printf("waiting is %x, autowake is %x.\n", PROCESS_STATUS_WAITING, PROCESS_STATUS_AUTOWAKE);
 
   //printf("pass time is %d.\n", pass_time);
+  
+  // Update the total time the process has run
+  currentPCB->total_j += pass_time;
+  if(currentPCB->pinfo){
+    printf("pass time = %d\n", pass_time);
+    printf("CPUStats: Process %d has run for %d jiffies, priority = %d\n", GetCurrentPid(), currentPCB->total_j, pcb->pnice);
+  }
+  
 
 
   if((pass_time < PROCESS_QUANTUM_JIFFIES - 3) && (currentPCB->flags == 0x204 || currentPCB->flags == 0x203))
     {
-      printf("Process %d: IO caught, original pnice = %d, flag is %x.\n", GetCurrentPid(), currentPCB->pnice, currentPCB->flags);
+      //printf("Process %d: IO caught, original pnice = %d, flag is %x.\n", GetCurrentPid(), currentPCB->pnice, currentPCB->flags);
       currentPCB->pnice = currentPCB->pnice >= 19 ? 19 : currentPCB->pnice + 1; // curent pcb is I/O
-      printf("Process %d: IO caught, new pnice = %d.\n", GetCurrentPid(), currentPCB->pnice);
+      //printf("Process %d: IO caught, new pnice = %d.\n", GetCurrentPid(), currentPCB->pnice);
     }
   else
     {
@@ -607,6 +615,7 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
   pcb->wake_time = 0;
   pcb->sleep_time = 0;
   pcb->start_time = 0;
+  pcb->total_j = 0; // init the total jeffies
   /// set the tickets and pinfo
   //pcb->pnice = pnice;
   pcb->pinfo = pinfo;
@@ -1195,7 +1204,7 @@ void process_create(char *name, ...)
     } while(args[i][j-1]!='\0');
   }
   allargs[k] = allargs[k+1] = 0;
-  ProcessFork(0, (uint32)allargs, 0, 0, name, 1);
+  ProcessFork(0, (uint32)allargs, 0, 1, name, 1);// turn on pinfo to 1
 }
 
 int GetPidFromAddress(PCB *pcb) {
