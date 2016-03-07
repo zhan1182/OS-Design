@@ -1,0 +1,8 @@
+1. Build the OS
+cd os
+make
+
+2. Build and run the implementation of q2. The two arguments in the Makefile stand for the initial number of H2O molecules and SO4 molucules respectively.
+cd apps/q2
+make
+make run
