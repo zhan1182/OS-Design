@@ -42,6 +42,7 @@
 
 # tar files
 *.tar.gz
+*.tar
 
 # Build dir
 work
