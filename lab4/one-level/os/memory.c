@@ -279,5 +279,16 @@ void MemoryFreePage(uint32 page) {
   return;
 }
 
+int malloc(PCB * pcb, int ihandle){
+  
+  return 0;
+}
+
+
+int mfree(PCB * pcb, int ihandle){
+  
+  return 0;
+}
+
 
 
