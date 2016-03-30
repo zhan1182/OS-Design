@@ -81,6 +81,9 @@
 #define TRAP_MBOX_RECV          0x464
 #define TRAP_USER_SLEEP         0x465
 #define TRAP_YIELD              0x466
+#define TRAP_MALLOC             0x467
+#define TRAP_MFREE              0x468
+
 
 #define TRAP_USER_EXIT          0x500
 

@@ -20,26 +20,26 @@
 // Feel free to edit the constants as per your needs.
 //--------------------------------------------------------
 
-// 4KB pages, so offset requires ?? bits (positions ?? to 0)
+// 4KB pages, so offset requires 12 bits (positions 4096 to 0)
 // Least significant bit of page number is at position ??
 
-/* #define MEM_L1FIELD_FIRST_BITNUM ?? */
-/* #define MEM_L2FIELD_FIRST_BITNUM MEM_L1FIELD_FIRST_BITNUM */
+#define MEM_L1FIELD_FIRST_BITNUM 12
+#define MEM_L2FIELD_FIRST_BITNUM MEM_L1FIELD_FIRST_BITNUM
 
-/* // 4096KB virtual memory size.  so max address is 1<<22 - 1 */
-/* #define MEM_MAX_VIRTUAL_ADDRESS ?? */
+// 4096KB virtual memory size.  so max address is 1<<22 - 1
+#define MEM_MAX_VIRTUAL_ADDRESS 0x3fffff
 
-/* #define MEM_PTE_READONLY 0x4 */
-/* #define MEM_PTE_DIRTY 0x2 */
-/* #define MEM_PTE_VALID 0x1 */
+#define MEM_PTE_READONLY 0x4
+#define MEM_PTE_DIRTY 0x2
+#define MEM_PTE_VALID 0x1
 
 #define MEM_PAGESIZE (0x1 << MEM_L1FIELD_FIRST_BITNUM) 
-/* #define MEM_L1TABLE_SIZE ((MEM_MAX_VIRTUAL_ADDRESS + 1) >> MEM_L1FIELD_FIRST_BITNUM) */
-/* #define MEM_ADDRESS_OFFSET_MASK (MEM_PAGESIZE - 1) */
+#define MEM_L1TABLE_SIZE ((MEM_MAX_VIRTUAL_ADDRESS + 1) >> MEM_L1FIELD_FIRST_BITNUM)
+#define MEM_ADDRESS_OFFSET_MASK (MEM_PAGESIZE - 1)
 
-/* #define MEM_MAX_PHYS_MEM (0x1 << 21) */
-/* #define MEM_MAX_PAGES (MEM_MAX_PHYS_MEM / MEM_PAGESIZE) */
+#define MEM_MAX_PHYS_MEM (0x1 << 21)
+#define MEM_MAX_PAGES (MEM_MAX_PHYS_MEM / MEM_PAGESIZE)
 
-/* #define MEM_PTE_MASK ~(MEM_PTE_READONLY | MEM_PTE_DIRTY | MEM_PTE_VALID) */
+#define MEM_PTE_MASK ~(MEM_PTE_READONLY | MEM_PTE_DIRTY | MEM_PTE_VALID)
 
 #endif	// _memory_constants_h_

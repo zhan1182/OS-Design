@@ -12,7 +12,8 @@
 #include "queue.h"
 
 // num_pages = size_of_memory / size_of_one_page
-static uint32 freemap[/*size*/];
+// MEM_MAX_PAGES = (MEM_MAX_PHYS_MEM / MEM_PAGESIZE)
+static uint32 freemap[MEM_MAX_PAGES];
 static uint32 pagestart;
 static int nfreepages;
 static int freemapmax;
@@ -56,6 +57,23 @@ int MemoryGetSize() {
 //
 //----------------------------------------------------------------------
 void MemoryModuleInit() {
+  int ct;
+  int os_page_number = lastosaddress >> MEM_L1FIELD_FIRST_BITNUM; // Divide by 4KB
+  int os_page_free_map_index = os_page_number >> 5; // Divide by 32
+  int os_page_free_map_inuse_bit = os_page_number & 0x1f; // >> 0001 1111 == % 32
+
+  // Init every bit of free map to 1
+  for(ct = 0; ct < MEM_MAX_PAGES; ct++){    
+    freemap[ct] = 0xffff;
+  }
+
+  for(ct = 0; ct < os_page_free_map_index; ct++){    
+    freemap[ct] = 0;
+  }
+
+  freemap[ct] = freemap[ct] >> os_page_free_map_inuse_bit;
+ 
+  return;
 }
 
 
@@ -68,6 +86,23 @@ void MemoryModuleInit() {
 //
 //----------------------------------------------------------------------
 uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
+  uint32 page_offset = addr & MEM_ADDRESS_OFFSET_MASK;
+  uint32 page_number = addr >> MEM_L1FIELD_FIRST_BITNUM;
+
+  uint32 pte_value = pcb->pagetable[page_number];
+
+  if((pte_value & MEM_PTE_VALID) == 0){
+    // Set the PROCESS_STACK_FAULT register to the addr
+    pcb->currentSavedFrame[PROCESS_STACK_FAULT] = addr;
+
+    if (MemoryPageFaultHandler(pcb) == MEM_FAIL ) {
+      // Seg fault, the process has been killed
+      return 0;
+    }
+  }
+
+  // Return the physical addr
+  return (pte_value & MEM_PTE_MASK) | page_offset;
 }
 
 
@@ -168,22 +203,26 @@ int MemoryCopyUserToSystem (PCB *pcb, unsigned char *from,unsigned char *to, int
 // Feel free to edit.
 //---------------------------------------------------------------------
 int MemoryPageFaultHandler(PCB *pcb) {
+  uint32 ppagenum;
 
-  /* uint32 addr = pcb->currentSavedFrame[PROCESS_STACK_FAULT]; */
+  uint32 addr = pcb->currentSavedFrame[PROCESS_STACK_FAULT];
 
-  /* // segfault if the faulting address is not part of the stack */
-  /* if (vpagenum < stackpagenum) { */
-  /*   dbprintf('m', "addr = %x\nsp = %x\n", addr, pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]); */
-  /*   printf("FATAL ERROR (%d): segmentation fault at page address %x\n", findpid(pcb), addr); */
-  /*   ProcessKill(); */
-  /*   return MEM_FAIL; */
-  /* } */
+  uint32 vpagenum = addr >> MEM_L1FIELD_FIRST_BITNUM;
+  uint32 stackpagenum = pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] >> MEM_L1FIELD_FIRST_BITNUM;
 
-  /* ppagenum = MemoryAllocPage(); */
-  /* pcb->pagetable[vpagenum] = MemorySetupPte(ppagenum); */
-  /* dbprintf('m', "Returning from page fault handler\n"); */
-  /* return MEM_SUCCESS; */
-  return MEM_FAIL;
+  // segfault if the faulting address is not part of the stack
+  if (vpagenum < stackpagenum) {
+    dbprintf('m', "addr = %x\nsp = %x\n", addr, pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
+    printf("FATAL ERROR (%d): segmentation fault at page address %x\n", findpid(pcb), addr);
+    ProcessKill();
+    return MEM_FAIL;
+  }
+
+  ppagenum = MemoryAllocPage();
+  pcb->pagetable[vpagenum] = MemorySetupPte(ppagenum);
+  dbprintf('m', "Returning from page fault handler\n");
+
+  return MEM_SUCCESS;
 }
 
 
@@ -193,15 +232,52 @@ int MemoryPageFaultHandler(PCB *pcb) {
 //---------------------------------------------------------------------
 
 int MemoryAllocPage(void) {
-  return -1;
+
+  int ct;
+  int bit_index = 31;
+  uint32 freemap_entry_mask = 0x8000;
+  
+  int physical_page_number;
+
+  // Find a chunk of pages that has a least one free page
+  for(ct = 0; ct < MEM_MAX_PAGES; ct++){
+    if(freemap[ct] != 0){
+      break;
+    }
+  }
+  
+  // Find bit index of the free page 
+  while( (freemap[ct] & freemap_entry_mask) == 0){
+    freemap_entry_mask = freemap_entry_mask >> 1;
+    bit_index -= 1;
+  }
+  
+  // Mark the page number in the freemap as inuse
+  freemap[ct] = freemap[ct] & ~(0x1 << bit_index);
+
+  // Return the physical page number
+  physical_page_number = ct * 32 + bit_index;
+
+  return physical_page_number;
 }
 
-
+// page here is the physical page number
 uint32 MemorySetupPte (uint32 page) {
-  return -1;
+  return (page << MEM_L1FIELD_FIRST_BITNUM) | 0x1;
 }
 
 
+// page here is the physical page number
 void MemoryFreePage(uint32 page) {
+  
+  uint32 freemap_index = page >> 5;
+  uint32 freemap_bit_index = page & 0x1f;
+
+  // Set the freemap entry to 1 --> freed!
+  freemap[freemap_index] = freemap[freemap_index] | (0x1 << freemap_bit_index);
+
+  return;
 }
+
+
 
