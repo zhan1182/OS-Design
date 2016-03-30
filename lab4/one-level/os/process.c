@@ -144,7 +144,7 @@ void ProcessFreeResources (PCB *pcb) {
   // STUDENT: Free any memory resources on process death here.
   //------------------------------------------------------------
   for(ct = 0; ct < MEM_L1TABLE_SIZE; ct++){
-    if(pcb->pagetable[ct] & 0x1 == 1){
+    if((pcb->pagetable[ct] & 0x1) == 1){
       // The page table entry is valid, free this page
       MemoryFreePage(pcb->pagetable[ct] >> MEM_L1FIELD_FIRST_BITNUM);
       pcb->pagetable[ct] = 0;
@@ -431,15 +431,15 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
 
   // System stack = Page size x physical page number
   // Set the stackframe equal to the last 4-byte-aligned address
-  stackframe = MEM_PAGESIZE * (MemoryAllocPage() + 1) - 4;
+  stackframe = (uint32 *) (MEM_PAGESIZE * (MemoryAllocPage() + 1) - 4);
 
   // User stack
-  pagetable[MEM_L1TABLE_SIZE - 1] = MemorySetupPte(MemoryAllocPage());
+  pcb->pagetable[MEM_L1TABLE_SIZE - 1] = MemorySetupPte(MemoryAllocPage());
   // Assign 4 pages
-  pagetable[0] = MemorySetupPte(MemoryAllocPage());
-  pagetable[1] = MemorySetupPte(MemoryAllocPage());
-  pagetable[2] = MemorySetupPte(MemoryAllocPage());
-  pagetable[3] = MemorySetupPte(MemoryAllocPage());
+  pcb->pagetable[0] = MemorySetupPte(MemoryAllocPage());
+  pcb->pagetable[1] = MemorySetupPte(MemoryAllocPage());
+  pcb->pagetable[2] = MemorySetupPte(MemoryAllocPage());
+  pcb->pagetable[3] = MemorySetupPte(MemoryAllocPage());
 
   // Now that the stack frame points at the bottom of the system stack memory area, we need to
   // move it up (decrement it) by one stack frame size because we're about to fill in the
@@ -469,7 +469,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
   // STUDENT: setup the PTBASE, PTBITS, and PTSIZE here on the current
   // stack frame.
   //----------------------------------------------------------------------
-  stackframe[PROCESS_STACK_PTBASE] = &(pcb->pagetable[0]);
+  stackframe[PROCESS_STACK_PTBASE] = (uint32) (&(pcb->pagetable[0]));
   stackframe[PROCESS_STACK_PTSIZE] = (MEM_MAX_VIRTUAL_ADDRESS + 1) / MEM_PAGESIZE;
   stackframe[PROCESS_STACK_PTBITS] = MEM_L2FIELD_FIRST_BITNUM << 16 | MEM_L1FIELD_FIRST_BITNUM;
 

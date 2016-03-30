@@ -23,4 +23,8 @@ int MemoryPageFaultHandler(PCB *pcb);
 //---------------------------------------------------------
 // All function prototypes including the malloc and mfree functions go here
 
+int MemoryAllocPage(void);
+uint32 MemorySetupPte (uint32 page);
+void MemoryFreePage(uint32 page);
+
 #endif	// _memory_h_

@@ -89,9 +89,9 @@ uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
   uint32 page_offset = addr & MEM_ADDRESS_OFFSET_MASK;
   uint32 page_number = addr >> MEM_L1FIELD_FIRST_BITNUM;
 
-  uint32 pte_value = pcd->pagetable[page_number];
+  uint32 pte_value = pcb->pagetable[page_number];
 
-  if(pte_value & MEM_PTE_VALID == 0){
+  if((pte_value & MEM_PTE_VALID) == 0){
     // Set the PROCESS_STACK_FAULT register to the addr
     pcb->currentSavedFrame[PROCESS_STACK_FAULT] = addr;
 
@@ -203,6 +203,7 @@ int MemoryCopyUserToSystem (PCB *pcb, unsigned char *from,unsigned char *to, int
 // Feel free to edit.
 //---------------------------------------------------------------------
 int MemoryPageFaultHandler(PCB *pcb) {
+  uint32 ppagenum;
 
   uint32 addr = pcb->currentSavedFrame[PROCESS_STACK_FAULT];
 
@@ -246,7 +247,7 @@ int MemoryAllocPage(void) {
   }
   
   // Find bit index of the free page 
-  while( freemap[ct] & freemap_entry_mask == 0){
+  while( (freemap[ct] & freemap_entry_mask) == 0){
     freemap_entry_mask = freemap_entry_mask >> 1;
     bit_index -= 1;
   }
