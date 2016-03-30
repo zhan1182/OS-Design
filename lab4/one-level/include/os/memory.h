@@ -27,4 +27,7 @@ int MemoryAllocPage(void);
 uint32 MemorySetupPte (uint32 page);
 void MemoryFreePage(uint32 page);
 
+int malloc(PCB * pcb, int ihandle);
+int mfree(PCB * pcb, int ihandle);
+
 #endif	// _memory_h_
