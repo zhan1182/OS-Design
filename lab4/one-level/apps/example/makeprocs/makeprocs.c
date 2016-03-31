@@ -4,6 +4,7 @@
 #define HELLO_WORLD "hello_world.dlx.obj"
 #define Q2_2 "q2_2.dlx.obj"
 #define Q2_3 "q2_3.dlx.obj"
+#define Q2_5 "q2_5.dlx.obj"
 
 void main (int argc, char *argv[])
 {
@@ -21,6 +22,8 @@ void main (int argc, char *argv[])
   sem_t s4; 
   char s4_str[10];
 
+  sem_t s5; 
+  char s5_str[10];
 
 
   if (argc != 2) {
@@ -114,6 +117,24 @@ void main (int argc, char *argv[])
   /*   } */
   /* } */
 
+
+  // Create q2.4 Spawn 30 simutaneous processes and count!
+  if ((s5 = sem_create(0)) == SYNC_FAIL) {
+    Printf("makeprocs (%d): Bad sem_create\n", getpid());
+    Exit();
+  }
+
+  for(i = 0; i < 30; i++) {
+    Printf("makeprocs (%d): Creating counting process #%d\n", getpid(), i);
+
+    // Create Hello World processes
+    process_create(Q2_5, s5_str, NULL);
+
+    if (sem_wait(s5) != SYNC_SUCCESS) {
+      Printf("Bad semaphore s_procs_completed (%d) in %s\n", s5, argv[0]);
+      Exit();
+    }
+  }
 
 
 
