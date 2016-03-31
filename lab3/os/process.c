@@ -417,19 +417,19 @@ void ProcessSchedule () {
 	  }
 	else if(autoWake_flag == 1)
 	  {
-	    printf("Waiting for auto wakeup processes! -- idle!\n");
+	    //printf("Waiting for auto wakeup processes! -- idle!\n");
 	    currentPCB = idle;
 	  }
 	else
 	  {
-	    printf ("No runnable processes but sleeping processes- idle!\n");
+	    //printf ("No runnable processes but sleeping processes- idle!\n");
 	    currentPCB = idle;
 	    
 	  }
     }
     else
       {
-	printf ("No runnable processes & sleeping processes- idle!\n");
+	//printf ("No runnable processes & sleeping processes- idle!\n");
 	currentPCB = idle;
 	//exitsim();
       }

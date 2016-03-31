@@ -6,3 +6,13 @@ make
 cd apps/q2
 make
 make run
+
+
+3 & 4 & 5.
+cd os/
+make
+cd ../apps/lottery_test
+make
+make run
+
+In the process.c, there is no condition to exitsim(), if no process to run, it runs the idle process intentionally.
