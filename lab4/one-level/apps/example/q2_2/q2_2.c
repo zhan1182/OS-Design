@@ -1,11 +1,15 @@
 #include "usertraps.h"
 #include "misc.h"
 
+#define ARRAY_SIZE 1001
+
 void main (int argc, char *argv[])
 {
   sem_t s_procs_completed; // Semaphore to signal the original process that we're done
 
-  int * ptr = NULL;
+  int arr[ARRAY_SIZE];
+  int ct;
+
 
   if (argc != 2) { 
     Printf("Usage: %s <handle_to_procs_completed_semaphore>\n"); 
@@ -22,12 +26,10 @@ void main (int argc, char *argv[])
     Exit();
   }
 
+  for(ct = 0; ct < ARRAY_SIZE; ct++){
+    arr[ct] = ct;
+  }
 
-  ptr = 0x4001;
-
-  Printf("about to access memory outside of page: (%d)\n", getpid());
-
-  /* *ptr = 5; */
 
   Printf("q2.2 access memory outside of currently allocated pages (%d): Done!\n", getpid());
 }
