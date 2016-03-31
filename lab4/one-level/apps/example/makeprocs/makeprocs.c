@@ -10,6 +10,10 @@ void main (int argc, char *argv[])
   int i;                               // Loop index variable
   sem_t s_procs_completed;             // Semaphore used to wait until all spawned processes have completed
   char s_procs_completed_str[10];      // Used as command-line argument to pass page_mapped handle to new processes
+  
+  sem_t s2; 
+  char s2_str[10];
+  
 
   Printf("hello?!\n");
 
@@ -39,12 +43,32 @@ void main (int argc, char *argv[])
   Printf("makeprocs (%d): Creating %d hello world's in a row, but only one runs at a time\n", getpid(), num_hello_world);
   for(i=0; i<num_hello_world; i++) {
     Printf("makeprocs (%d): Creating hello world #%d\n", getpid(), i);
+
+    // Create Hello World processes
     process_create(HELLO_WORLD, s_procs_completed_str, NULL);
+
     if (sem_wait(s_procs_completed) != SYNC_SUCCESS) {
       Printf("Bad semaphore s_procs_completed (%d) in %s\n", s_procs_completed, argv[0]);
       Exit();
     }
   }
+
+  if ((s2 = sem_create(0)) == SYNC_FAIL) {
+    Printf("makeprocs (%d): Bad sem_create\n", getpid());
+    Exit();
+  }
+
+  ditoa(s2, s2_str);
+
+  // Create q2.2 access memory outside of page
+  process_create(Q2_2, s2_str, NULL);
+  
+
+  if (sem_wait(s2) != SYNC_SUCCESS) {
+    Printf("Bad semaphore s_procs_completed (%d) in %s\n", s2, argv[0]);
+    Exit();
+  }
+
 
   Printf("-------------------------------------------------------------------------------------\n");
   Printf("makeprocs (%d): All other processes completed, exiting main process.\n", getpid());
