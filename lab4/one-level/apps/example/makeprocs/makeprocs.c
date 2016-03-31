@@ -128,10 +128,12 @@ void main (int argc, char *argv[])
     Exit();
   }
 
+  ditoa(s5, s5_str);
+
   for(i = 0; i < 30; i++) {
     Printf("makeprocs (%d): Creating counting process #%d\n", getpid(), i);
 
-    // Create Hello World processes
+    // Create Counting processes
     process_create(Q2_5, s5_str, NULL);
 
     if (sem_wait(s5) != SYNC_SUCCESS) {
