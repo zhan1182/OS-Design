@@ -2,6 +2,7 @@
 #include "misc.h"
 
 #define HELLO_WORLD "hello_world.dlx.obj"
+#define Q2_2 "q2_2.dlx.obj"
 
 void main (int argc, char *argv[])
 {
