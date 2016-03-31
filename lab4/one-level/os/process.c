@@ -894,7 +894,9 @@ void main (int argc, char *argv[])
   FsSeek (i, 0, FS_SEEK_SET);
   FsWrite (i, buf, 80);
   FsClose (i);
-
+  
+  //printf("Excuse ME?!!\n");
+  
   // Setup command line arguments
   if (userprog != (char *)0) {
     numargs=0;
