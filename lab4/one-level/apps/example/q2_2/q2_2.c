@@ -27,7 +27,7 @@ void main (int argc, char *argv[])
 
   Printf("about to access memory outside of page: (%d)\n", getpid());
 
-  *ptr = 5;
+  /* *ptr = 5; */
 
   Printf("q2.2 access memory outside of currently allocated pages (%d): Done!\n", getpid());
 }

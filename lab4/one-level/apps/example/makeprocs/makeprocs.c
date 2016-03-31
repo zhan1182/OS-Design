@@ -3,6 +3,7 @@
 
 #define HELLO_WORLD "hello_world.dlx.obj"
 #define Q2_2 "q2_2.dlx.obj"
+#define Q2_3 "q2_3.dlx.obj"
 
 void main (int argc, char *argv[])
 {
@@ -13,9 +14,9 @@ void main (int argc, char *argv[])
   
   sem_t s2; 
   char s2_str[10];
-  
 
-  Printf("hello?!\n");
+  sem_t s3; 
+  char s3_str[10];
 
   if (argc != 2) {
     Printf("Usage: %s <number of hello world processes to create>\n", argv[0]);
@@ -53,6 +54,8 @@ void main (int argc, char *argv[])
     }
   }
 
+
+  // Create q2.2 access memory outside of page
   if ((s2 = sem_create(0)) == SYNC_FAIL) {
     Printf("makeprocs (%d): Bad sem_create\n", getpid());
     Exit();
@@ -60,7 +63,6 @@ void main (int argc, char *argv[])
 
   ditoa(s2, s2_str);
 
-  // Create q2.2 access memory outside of page
   process_create(Q2_2, s2_str, NULL);
   
 
@@ -68,6 +70,24 @@ void main (int argc, char *argv[])
     Printf("Bad semaphore s_procs_completed (%d) in %s\n", s2, argv[0]);
     Exit();
   }
+
+
+  // Create q2.3 Cause the user function call stack to grow larger than 1 page
+  if ((s3 = sem_create(0)) == SYNC_FAIL) {
+    Printf("makeprocs (%d): Bad sem_create\n", getpid());
+    Exit();
+  }
+
+  ditoa(s3, s3_str);
+
+  process_create(Q2_3, s3_str, NULL);
+  
+
+  if (sem_wait(s3) != SYNC_SUCCESS) {
+    Printf("Bad semaphore s_procs_completed (%d) in %s\n", s3, argv[0]);
+    Exit();
+  }
+
 
 
   Printf("-------------------------------------------------------------------------------------\n");

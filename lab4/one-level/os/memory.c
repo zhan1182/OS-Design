@@ -203,6 +203,7 @@ int MemoryCopyUserToSystem (PCB *pcb, unsigned char *from,unsigned char *to, int
 // Feel free to edit.
 //---------------------------------------------------------------------
 int MemoryPageFaultHandler(PCB *pcb) {
+
   uint32 ppagenum;
 
   uint32 addr = pcb->currentSavedFrame[PROCESS_STACK_FAULT];
@@ -221,6 +222,8 @@ int MemoryPageFaultHandler(PCB *pcb) {
   ppagenum = MemoryAllocPage();
   pcb->pagetable[vpagenum] = MemorySetupPte(ppagenum);
   dbprintf('m', "Returning from page fault handler\n");
+
+  printf("allocate new page for stack grows\n");
 
   return MEM_SUCCESS;
 }
