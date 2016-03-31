@@ -119,7 +119,7 @@ void main (int argc, char *argv[])
 
 
   // Create q2.4 Spawn 30 simutaneous processes and count!
-  if ((s5 = sem_create(0)) == SYNC_FAIL) {
+  if ((s5 = sem_create(-29)) == SYNC_FAIL) {
     Printf("makeprocs (%d): Bad sem_create\n", getpid());
     Exit();
   }
@@ -131,13 +131,13 @@ void main (int argc, char *argv[])
 
     // Create Counting processes
     process_create(Q2_5, s5_str, NULL);
-
-    if (sem_wait(s5) != SYNC_SUCCESS) {
-      Printf("Bad semaphore s_procs_completed (%d) in %s\n", s5, argv[0]);
-      Exit();
-    }
   }
 
+
+  if (sem_wait(s5) != SYNC_SUCCESS) {
+    Printf("Bad semaphore s_procs_completed (%d) in %s\n", s5, argv[0]);
+    Exit();
+  }
 
 
 
