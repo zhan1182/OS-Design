@@ -235,7 +235,7 @@ int MemoryAllocPage(void) {
 
   int ct;
   int bit_index = 31;
-  uint32 freemap_entry_mask = 0x8000;
+  uint32 freemap_entry_mask = 0x80000000;
   
   int physical_page_number;
 
@@ -253,7 +253,11 @@ int MemoryAllocPage(void) {
   }
   
   // Mark the page number in the freemap as inuse
-  freemap[ct] = freemap[ct] & ~(0x1 << bit_index);
+  /* printf("bit_index = %d\n", bit_index); */
+  /* printf("mask = %x\n", 0x1 << bit_index); */
+  /* printf("inverted mask = %x\n", 0xffffffff - (0x1 << bit_index)); */
+  /* freemap[ct] = freemap[ct] & ~(0x1 << bit_index); */
+  freemap[ct] = freemap[ct] & (0xffffffff - (0x1 << bit_index));
 
   // Return the physical page number
   physical_page_number = ct * 32 + bit_index;
