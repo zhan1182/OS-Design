@@ -18,6 +18,11 @@ void main (int argc, char *argv[])
   sem_t s3; 
   char s3_str[10];
 
+  sem_t s4; 
+  char s4_str[10];
+
+
+
   if (argc != 2) {
     Printf("Usage: %s <number of hello world processes to create>\n", argv[0]);
     Exit();
@@ -87,6 +92,29 @@ void main (int argc, char *argv[])
     Printf("Bad semaphore s_procs_completed (%d) in %s\n", s3, argv[0]);
     Exit();
   }
+
+  
+  // Call Hello World 100 times!!
+  if ((s4 = sem_create(0)) == SYNC_FAIL) {
+    Printf("makeprocs (%d): Bad sem_create\n", getpid());
+    Exit();
+  }
+
+  ditoa(s4, s4_str);
+
+  for(i = 0; i < 100; i++) {
+    Printf("makeprocs (%d): Creating hello world #%d\n", getpid(), i);
+
+    // Create Hello World processes
+    process_create(HELLO_WORLD, s4_str, NULL);
+
+    if (sem_wait(s4) != SYNC_SUCCESS) {
+      Printf("Bad semaphore s_procs_completed (%d) in %s\n", s4, argv[0]);
+      Exit();
+    }
+  }
+
+
 
 
 
