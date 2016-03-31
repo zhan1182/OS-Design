@@ -26,6 +26,10 @@ void main (int argc, char *argv[])
   char s5_str[10];
 
 
+  sem_t s6;
+  char s6_str[10];
+
+
   if (argc != 2) {
     Printf("Usage: %s <number of hello world processes to create>\n", argv[0]);
     Exit();
