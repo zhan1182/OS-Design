@@ -126,7 +126,7 @@ void ProcessSetStatus (PCB *pcb, int status) {
 void ProcessFreeResources (PCB *pcb) {
   int i = 0;
   int ct;
-
+  uint32 page;
   // Allocate a new link for this pcb on the freepcbs queue
   if ((pcb->l = AQueueAllocLink(pcb)) == NULL) {
     printf("FATAL ERROR: could not get Queue Link in ProcessFreeResources!\n");
@@ -150,7 +150,11 @@ void ProcessFreeResources (PCB *pcb) {
       pcb->pagetable[ct] = 0;
     }
   }
-
+  
+  page = (uint32)(pcb->sysStackPtr) >> MEM_L1FIELD_FIRST_BITNUM;
+  pcb->sysStackArea = 0;
+  MemoryFreePage(page);
+  
   ProcessSetStatus (pcb, PROCESS_STATUS_FREE);
 }
 

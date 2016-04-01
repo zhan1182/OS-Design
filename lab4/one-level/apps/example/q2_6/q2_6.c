@@ -7,7 +7,7 @@ void main (int argc, char *argv[])
 {
   sem_t s_procs_completed; // Semaphore to signal the original process that we're done
 
-  char * ptr = 0x4fffff;
+  char * ptr;
 
 
   if (argc != 2) { 
@@ -26,8 +26,7 @@ void main (int argc, char *argv[])
     Exit();
   }
 
+  Printf("q2.6 access memory outside of virtual memory (%d)\n", getpid());
+  ptr = 0x4fffff;
   *ptr = 5;
-
-
-  Printf("q2.6 access memory outside of virtual memory (%d): Done!\n", getpid());
 }
