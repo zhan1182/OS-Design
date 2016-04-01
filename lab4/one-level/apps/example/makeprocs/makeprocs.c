@@ -100,29 +100,28 @@ void main (int argc, char *argv[])
     Exit();
   }
 
-  
-  /* // Call Hello World 100 times!! */
-  /* if ((s4 = sem_create(0)) == SYNC_FAIL) { */
-  /*   Printf("makeprocs (%d): Bad sem_create\n", getpid()); */
-  /*   Exit(); */
-  /* } */
+  // Call Hello World 100 times!!
+  if ((s4 = sem_create(0)) == SYNC_FAIL) {
+    Printf("makeprocs (%d): Bad sem_create\n", getpid());
+    Exit();
+  }
 
-  /* ditoa(s4, s4_str); */
+  ditoa(s4, s4_str);
 
-  /* for(i = 0; i < 100; i++) { */
-  /*   Printf("makeprocs (%d): Creating hello world #%d\n", getpid(), i); */
+  for(i = 0; i < 100; i++) {
+    Printf("makeprocs (%d): Creating hello world #%d\n", getpid(), i);
 
-  /*   // Create Hello World processes */
-  /*   process_create(HELLO_WORLD, s4_str, NULL); */
+    // Create Hello World processes
+    process_create(HELLO_WORLD, s4_str, NULL);
 
-  /*   if (sem_wait(s4) != SYNC_SUCCESS) { */
-  /*     Printf("Bad semaphore s_procs_completed (%d) in %s\n", s4, argv[0]); */
-  /*     Exit(); */
-  /*   } */
-  /* } */
+    if (sem_wait(s4) != SYNC_SUCCESS) {
+      Printf("Bad semaphore s_procs_completed (%d) in %s\n", s4, argv[0]);
+      Exit();
+    }
+  }
 
-
-  // Create q2.4 Spawn 30 simutaneous processes and count!
+    
+  // Create q2.5 Spawn 30 simutaneous processes and count!
   if ((s5 = sem_create(-29)) == SYNC_FAIL) {
     Printf("makeprocs (%d): Bad sem_create\n", getpid());
     Exit();
