@@ -431,7 +431,10 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
 
   // System stack = Page size x physical page number
   // Set the stackframe equal to the last 4-byte-aligned address
-  stackframe = (uint32 *) (MEM_PAGESIZE * (MemoryAllocPage() + 1) - 4);
+  pcb->sysStackArea = (MEM_PAGESIZE * (MemoryAllocPage() + 1) - 1) & (~0x3);
+  stackframe = (uint32 *) (pcb->sysStackArea);
+
+  /* printf("pcb sys stack area = %d\n", pcb->sysStackArea); */
 
   // User stack
   pcb->pagetable[MEM_L1TABLE_SIZE - 1] = MemorySetupPte(MemoryAllocPage());
@@ -440,6 +443,8 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
   pcb->pagetable[1] = MemorySetupPte(MemoryAllocPage());
   pcb->pagetable[2] = MemorySetupPte(MemoryAllocPage());
   pcb->pagetable[3] = MemorySetupPte(MemoryAllocPage());
+
+  /* printf("1111111111111111111\n"); */
 
   // Now that the stack frame points at the bottom of the system stack memory area, we need to
   // move it up (decrement it) by one stack frame size because we're about to fill in the
@@ -469,9 +474,13 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
   // STUDENT: setup the PTBASE, PTBITS, and PTSIZE here on the current
   // stack frame.
   //----------------------------------------------------------------------
+
   stackframe[PROCESS_STACK_PTBASE] = (uint32) (&(pcb->pagetable[0]));
   stackframe[PROCESS_STACK_PTSIZE] = (MEM_MAX_VIRTUAL_ADDRESS + 1) / MEM_PAGESIZE;
   stackframe[PROCESS_STACK_PTBITS] = MEM_L2FIELD_FIRST_BITNUM << 16 | MEM_L1FIELD_FIRST_BITNUM;
+
+
+  /* printf("22222222222222\n"); */
 
   if (isUser) {
     dbprintf ('p', "About to load %s\n", name);
@@ -503,6 +512,9 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
     //----------------------------------------------------------------------
 
     stackframe[PROCESS_STACK_USER_STACKPOINTER] = MEM_MAX_VIRTUAL_ADDRESS & (~0x3);
+    /* printf("3333333333333\n"); */
+
+
     dbprintf('m', "stackframe[PROCESS_STACK_USER_STACKPOINTER] = %x\n", stackframe[PROCESS_STACK_USER_STACKPOINTER]);
 
     //--------------------------------------------------------------------
@@ -575,7 +587,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
     stackframe[PROCESS_STACK_IREG+31] = (uint32)ProcessExit;
 
     // Set the stack register to the base of the system stack.
-    //stackframe[PROCESS_STACK_IREG+29]=pcb->sysStackArea + MEM_PAGESIZE;
+    /* stackframe[PROCESS_STACK_IREG+29] = pcb->sysStackArea + MEM_PAGESIZE; // ?????????????????????? */
 
     // Set the initial parameter properly by placing it on the stack frame
     // at the location pointed to by the "saved" stack pointer (r29).

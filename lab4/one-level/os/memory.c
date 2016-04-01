@@ -13,7 +13,7 @@
 
 // num_pages = size_of_memory / size_of_one_page
 // MEM_MAX_PAGES = (MEM_MAX_PHYS_MEM / MEM_PAGESIZE)
-static uint32 freemap[MEM_MAX_PAGES];
+static uint32 freemap[MEM_MAX_PAGES >> 5];
 static uint32 pagestart;
 static int nfreepages;
 static int freemapmax;
@@ -58,13 +58,13 @@ int MemoryGetSize() {
 //----------------------------------------------------------------------
 void MemoryModuleInit() {
   int ct;
-  int os_page_number = lastosaddress >> MEM_L1FIELD_FIRST_BITNUM; // Divide by 4KB
-  int os_page_free_map_index = os_page_number >> 5; // Divide by 32
-  int os_page_free_map_inuse_bit = os_page_number & 0x1f; // >> 0001 1111 == % 32
+  uint32 os_page_number = lastosaddress >> MEM_L1FIELD_FIRST_BITNUM; // Divide by 4KB
+  uint32 os_page_free_map_index = os_page_number >> 5; // Divide by 32
+  uint32 os_page_free_map_inuse_bit = os_page_number & 0x1f; // >> 0001 1111 == % 32
 
   // Init every bit of free map to 1
-  for(ct = 0; ct < MEM_MAX_PAGES; ct++){    
-    freemap[ct] = 0xffff;
+  for(ct = 0; ct < (MEM_MAX_PAGES >> 5); ct++){    
+    freemap[ct] = 0xffffffff;
   }
 
   for(ct = 0; ct < os_page_free_map_index; ct++){    
@@ -73,6 +73,8 @@ void MemoryModuleInit() {
 
   freemap[ct] = freemap[ct] >> os_page_free_map_inuse_bit;
  
+
+
   return;
 }
 
@@ -211,6 +213,8 @@ int MemoryPageFaultHandler(PCB *pcb) {
   uint32 vpagenum = addr >> MEM_L1FIELD_FIRST_BITNUM;
   uint32 stackpagenum = pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] >> MEM_L1FIELD_FIRST_BITNUM;
 
+  /* printf("addr = %x\nsp = %x\n", addr, pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]); */
+
   // segfault if the faulting address is not part of the stack
   if (vpagenum < stackpagenum) {
     dbprintf('m', "addr = %x\nsp = %x\n", addr, pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
@@ -260,10 +264,17 @@ int MemoryAllocPage(void) {
   /* printf("mask = %x\n", 0x1 << bit_index); */
   /* printf("inverted mask = %x\n", 0xffffffff - (0x1 << bit_index)); */
   /* freemap[ct] = freemap[ct] & ~(0x1 << bit_index); */
-  freemap[ct] = freemap[ct] & (0xffffffff - (0x1 << bit_index));
+
+
+  /* printf("freemap[%d] = %d\n", ct, freemap[ct]); */
+
+
+  freemap[ct] = freemap[ct] & invert(0x1 << bit_index);
 
   // Return the physical page number
-  physical_page_number = ct * 32 + bit_index;
+  physical_page_number = ct * 32 + (32 - bit_index);
+
+  /* printf("freemap[%d] = %d, bit_index = %d, physical page number = %d\n", ct, freemap[ct], bit_index, physical_page_number); */
 
   return physical_page_number;
 }
