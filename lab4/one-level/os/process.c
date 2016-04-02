@@ -393,6 +393,8 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
                            // beginning of the string to the current argument.
   uint32 initial_user_params_bytes;  // total number of bytes in initial user parameters array
 
+  int physical_page_number;
+  
 
   intrs = DisableIntrs ();
   dbprintf ('I', "Old interrupt value was 0x%x.\n", intrs);
@@ -435,8 +437,9 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
 
   // System stack = Page size x physical page number
   // Set the stackframe equal to the last 4-byte-aligned address
-  pcb->sysStackArea = (MEM_PAGESIZE * (MemoryAllocPage() + 1) - 1) & (~0x3);
-  stackframe = (uint32 *) (pcb->sysStackArea);
+  physical_page_number = MemoryAllocPage();
+  pcb->sysStackArea = MEM_PAGESIZE * physical_page_number;
+  stackframe = (uint32 *) ((MEM_PAGESIZE * (physical_page_number + 1) - 1) & (~0x3));
 
   /* printf("pcb sys stack area = %d\n", pcb->sysStackArea); */
 
