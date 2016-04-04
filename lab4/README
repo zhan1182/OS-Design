@@ -28,3 +28,14 @@ Q3. two-level:
 	  cd ../apps/examples;
 	  make
 	  make run 
+
+Q4. heap-mgmt:
+	1. Build the OS
+		cd heap-mgmt;
+		cd os;
+		make;
+	2. Test
+		cd ../apps/heaptest-bestfit/;
+		make;
+		make run
+		
