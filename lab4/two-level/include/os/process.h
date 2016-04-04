@@ -42,7 +42,7 @@ typedef struct PCB {
   /* Put the size of the L1 page table here */
   // L1 table, size = 4 --> 2 bits
   uint32	*pagetable[MEM_L1_PAGE_TABLE_SIZE]; // Statically allocated page table
-  /* uint32	pagetable[MEM_L1_PAGE_TABLE_SIZE]; // Statically allocated page table */
+  int page_table_array[MEM_L1_PAGE_TABLE_SIZE];
   Link		*l;		// Used for keeping PCB in queues
 } PCB;
 

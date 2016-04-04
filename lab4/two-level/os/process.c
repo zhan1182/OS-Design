@@ -92,6 +92,7 @@ void ProcessModuleInit () {
     for(ct = 0; ct < MEM_L1_PAGE_TABLE_SIZE; ct++){
       /* pcbs[i].pagetable[ct] = MEM_L2_PAGE_TABLE_SIZE; */
       pcbs[i].pagetable[ct] = NULL;
+      pcbs[i].page_table_array[ct] = -1;
     }
 
 
@@ -146,27 +147,13 @@ void ProcessFreeResources (PCB *pcb) {
   //------------------------------------------------------------
   // STUDENT: Free any memory resources on process death here.
   //------------------------------------------------------------
-  /* for(ct = 0; ct < MEM_L1TABLE_SIZE; ct++){ */
-  /*   if((pcb->pagetable[ct] & 0x1) == 1){ */
-  /*     // The page table entry is valid, free this page */
-  /*     MemoryFreePage(pcb->pagetable[ct] >> MEM_L1FIELD_FIRST_BITNUM); */
-  /*     pcb->pagetable[ct] = 0; */
-  /*   } */
-  /* } */
 
-  /* for(ct = 0; ct < MEM_L1_PAGE_TABLE_SIZE; ct++){ */
-  /*   if(pcb->pagetable[ct] < MEM_L2_PAGE_TABLE_SIZE){ */
-  /*     // The l1 page table has a valid index, free the corresponding l2 page table */
-  /*     memory_free_page_from_index(pcb->pagetable[ct]); */
-  /*     pcb->pagetable[ct] = MEM_L2_PAGE_TABLE_SIZE; // Set the l1 table table entry for a invalid index */
-  /*   } */
-  /* } */
-  
   for(ct = 0; ct < MEM_L1_PAGE_TABLE_SIZE; ct++){
-    if(pcb->pagetable[ct] != NULL){
+    if((pcb->pagetable[ct] != NULL) && (pcb->page_table_array[ct] != -1)){
       // The l1 page table has a valid index, free the corresponding l2 page table
-      memory_free_page_from_ptr( (void *) (pcb->pagetable[ct]));
+      memory_free_page_from_ptr(pcb->page_table_array[ct]);
       pcb->pagetable[ct] = NULL; // Set the l1 table table entry for a invalid index
+      pcb->page_table_array[ct] = -1;
     }
   }
 
@@ -258,8 +245,8 @@ void ProcessSchedule () {
   dbprintf ('p',"About to switch to PCB 0x%x,flags=0x%x @ 0x%x\n",
 	    (int)pcb, pcb->flags, (int)(pcb->sysStackPtr[PROCESS_STACK_IAR]));
 
-  printf ("About to switch to PCB 0x%x,flags=0x%x @ 0x%x\n",
-	  (int)pcb, pcb->flags, (int)(pcb->sysStackPtr[PROCESS_STACK_IAR]));
+  /* printf ("About to switch to PCB 0x%x,flags=0x%x @ 0x%x\n", */
+  /* 	  (int)pcb, pcb->flags, (int)(pcb->sysStackPtr[PROCESS_STACK_IAR])); */
 
   // Clean up zombie processes here.  This is done at interrupt time
   // because it can't be done while the process might still be running
@@ -483,7 +470,9 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
   /* printf("pcb->sysStackArea = %d, stackframe = %d\n", pcb->sysStackArea, ((MEM_PAGESIZE * (physical_page_number + 1) - 1) & (~0x3))); */
 
   /* pcb->pagetable[MEM_L1_PAGE_TABLE_SIZE - 1] = allocate_l2_page_table(); */
-  pcb->pagetable[MEM_L1_PAGE_TABLE_SIZE - 1] = (uint32 *) allocate_l2_page_table_ptr();
+  pcb->pagetable[MEM_L1_PAGE_TABLE_SIZE - 1] = (uint32 *) allocate_l2_page_table_ptr(&(pcb->page_table_array[MEM_L1_PAGE_TABLE_SIZE - 1]));
+
+  pcb->pagetable[MEM_L1_PAGE_TABLE_SIZE - 1][MEM_L2_PAGE_TABLE_SIZE - 1] = MemorySetupPte(MemoryAllocPage());
 
   /* printf("pcb->pagetable[MEM_L1_PAGE_TABLE_SIZE - 1] = %x\n", (uint32) (pcb->pagetable[MEM_L1_PAGE_TABLE_SIZE - 1])); */
 
@@ -491,9 +480,9 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
 
   /* printf("MEM_L2_PAGE_TABLE_SIZE - 1 = %d\n", MEM_L2_PAGE_TABLE_SIZE - 1); */
 
-  setup_l2_pte_ptr(MemorySetupPte(MemoryAllocPage()), (void *) (pcb->pagetable[MEM_L1_PAGE_TABLE_SIZE - 1]), MEM_L2_PAGE_TABLE_SIZE - 1);
+  /* setup_l2_pte_ptr(MemorySetupPte(MemoryAllocPage()), (void *) (pcb->pagetable[MEM_L1_PAGE_TABLE_SIZE - 1]), MEM_L2_PAGE_TABLE_SIZE - 1); */
 
-  print_l2_pte((void *) (pcb->pagetable[MEM_L1_PAGE_TABLE_SIZE - 1]), MEM_L2_PAGE_TABLE_SIZE - 1);
+  /* print_l2_pte((void *) (pcb->pagetable[MEM_L1_PAGE_TABLE_SIZE - 1]), MEM_L2_PAGE_TABLE_SIZE - 1); */
 
   // Assign 4 pages
   /* pcb->pagetable[0] = allocate_l2_page_table(); */
@@ -502,21 +491,26 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
   /* setup_l2_pte(MemorySetupPte(MemoryAllocPage()), pcb->pagetable[0], 2); */
   /* setup_l2_pte(MemorySetupPte(MemoryAllocPage()), pcb->pagetable[0], 3); */
 
-  pcb->pagetable[0] = (uint32 *) allocate_l2_page_table_ptr();
+  pcb->pagetable[0] = (uint32 *) allocate_l2_page_table_ptr(&(pcb->page_table_array[0]));
+  pcb->pagetable[0][0] = MemorySetupPte(MemoryAllocPage());
+  pcb->pagetable[0][1] = MemorySetupPte(MemoryAllocPage());
+  pcb->pagetable[0][2] = MemorySetupPte(MemoryAllocPage());
+  pcb->pagetable[0][3] = MemorySetupPte(MemoryAllocPage());
 
-  setup_l2_pte_ptr(MemorySetupPte(MemoryAllocPage()), (void *) (pcb->pagetable[0]), 0);
-  setup_l2_pte_ptr(MemorySetupPte(MemoryAllocPage()), (void *) (pcb->pagetable[0]), 1);
-  setup_l2_pte_ptr(MemorySetupPte(MemoryAllocPage()), (void *) (pcb->pagetable[0]), 2);
-  setup_l2_pte_ptr(MemorySetupPte(MemoryAllocPage()), (void *) (pcb->pagetable[0]), 3);
 
-  printf("base = %x\n", (uint32) (pcb->pagetable[0]));
+  /* setup_l2_pte_ptr(MemorySetupPte(MemoryAllocPage()), (void *) (pcb->pagetable[0]), 0); */
+  /* setup_l2_pte_ptr(MemorySetupPte(MemoryAllocPage()), (void *) (pcb->pagetable[0]), 1); */
+  /* setup_l2_pte_ptr(MemorySetupPte(MemoryAllocPage()), (void *) (pcb->pagetable[0]), 2); */
+  /* setup_l2_pte_ptr(MemorySetupPte(MemoryAllocPage()), (void *) (pcb->pagetable[0]), 3); */
 
-  print_l2_pte((void *) (pcb->pagetable[0]), 0);
-  print_l2_pte((void *) (pcb->pagetable[0]), 1);
-  print_l2_pte((void *) (pcb->pagetable[0]), 2);
-  print_l2_pte((void *) (pcb->pagetable[0]), 3);
+  /* printf("base = %x\n", (uint32) (pcb->pagetable[0])); */
 
-  printf("translate 0x10d4 = %x\n", MemoryTranslateUserToSystem(pcb, 0x10d4));
+  /* print_l2_pte((void *) (pcb->pagetable[0]), 0); */
+  /* print_l2_pte((void *) (pcb->pagetable[0]), 1); */
+  /* print_l2_pte((void *) (pcb->pagetable[0]), 2); */
+  /* print_l2_pte((void *) (pcb->pagetable[0]), 3); */
+
+  /* printf("translate 0x10d4 = %x\n", MemoryTranslateUserToSystem(pcb, 0x10d4)); */
 
   /* print_l2_pte((void *) (pcb->pagetable[0]), 0); */
 
