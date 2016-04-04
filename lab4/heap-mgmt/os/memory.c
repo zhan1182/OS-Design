@@ -343,7 +343,7 @@ void *malloc(PCB * pcb, int memsize){
 	  printf("Found perfect!!!!\n");
 	  return (void *)(l->start); // ?????
 	}
-      else if(ptr->isOccupied == 0 && ptr->size > (memsize + 16))
+      else if(ptr->isOccupied == 0 && ptr->size > (memsize))
 	{
 	  // candidate for best fit
 	  if(ptr->size <= store->size)
