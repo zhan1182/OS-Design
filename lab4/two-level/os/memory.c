@@ -117,25 +117,14 @@ uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
   uint32 l1_page_number;
   uint32 l2_page_number;  
 
-  L2_PAGE_TABLE * l2_page_table_pool_ptr;
   uint32 l2_pte_value;
-
-  /* printf("Page translate\n"); */
 
   page_offset = addr & MEM_ADDRESS_OFFSET_MASK;
 
   l1_page_number = addr >> MEM_L1FIELD_FIRST_BITNUM;
-  l2_page_number = (addr >> MEM_L2FIELD_FIRST_BITNUM) & 0xff;
+  l2_page_number = (addr & 0xff000) >> MEM_L2FIELD_FIRST_BITNUM;
 
-  /* uint32 l2_page_table_index = pcb->pagetable[l1_page_number]; */
-  /* uint32 l2_pte_value = l2_page_table_array[l2_page_table_index][l2_page_number]; */
-
-  l2_page_table_pool_ptr = (L2_PAGE_TABLE *) (pcb->pagetable[l1_page_number]);
-  l2_pte_value = l2_page_table_pool_ptr->page_table[l2_page_number];
-
-  /* printf("addr before translate = %x\n", addr); */
-
-  /* printf("l2 pte value = %x\n", l2_pte_value); */
+  l2_pte_value = pcb->pagetable[l1_page_number][l2_page_number];
 
   if((l2_pte_value & MEM_PTE_VALID) == 0){
     // Set the PROCESS_STACK_FAULT register to the addr
@@ -146,6 +135,10 @@ uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
       return 0;
     }
   }
+
+  dbprintf('m', " l1page: %d, l2page:%d, table content: 0x%08x\n", l1_page_number, l2_page_number, l2_pte_value);
+  dbprintf('m', "vaddr: 0x%08x,paddr: 0x%08x\n", addr, (l2_pte_value & MEM_PTE_MASK) | page_offset);
+
 
   // Return the physical addr
   return (l2_pte_value & MEM_PTE_MASK) | page_offset;
@@ -251,24 +244,15 @@ int MemoryCopyUserToSystem (PCB *pcb, unsigned char *from,unsigned char *to, int
 int MemoryPageFaultHandler(PCB *pcb) {
 
   uint32 ppagenum;
-  uint32 l2_array_index;
-
   uint32 addr = pcb->currentSavedFrame[PROCESS_STACK_FAULT];
 
-  /* uint32 l1_page_number = addr >> (MEM_L1_BITNUM + MEM_L2_BITNUM); */
-  /* uint32 l2_page_number = addr >> MEM_L2_BITNUM; */
-
-  /* uint32 vpagenum = l1_page_number * MEM_L2_PAGE_TABLE_SIZE + l2_page_number; */
-
   uint32 l1_page_number = addr >> MEM_L1FIELD_FIRST_BITNUM;
+  uint32 l2_page_number = (addr & 0xff000) >> MEM_L2FIELD_FIRST_BITNUM;
   uint32 vpagenum = addr >> MEM_L2FIELD_FIRST_BITNUM;
 
   uint32 stackpagenum = pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] >> MEM_L2FIELD_FIRST_BITNUM;
 
   uint32 * l2_array_ptr;
-
-  /* printf("MemoryPageFaultHandler\n"); */
-  /* printf("addr = %x\nsp = %x\n", addr, pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]); */
 
   // segfault if the faulting address is not part of the stack
   if (vpagenum < stackpagenum) {
@@ -280,25 +264,12 @@ int MemoryPageFaultHandler(PCB *pcb) {
 
   ppagenum = MemoryAllocPage();
 
-  /* if(pcb->pagetable[l1_page_number] == MEM_L2_PAGE_TABLE_SIZE){ */
-  /*   // Get a new l2 page table */
-  /*   pcb->pagetable[l1_page_number] = allocate_l2_page_table(); */
-  /* } */
-
-  /* l2_array_index = pcb->pagetable[l1_page_number]; */
-
-  /* setup_l2_pte(MemorySetupPte(ppagenum), l2_array_index, vpagenum & 0xff); */
-
-
   if(pcb->pagetable[l1_page_number] == NULL){
     // Get a new l2 page table
-    pcb->pagetable[l1_page_number] = (uint32 *) allocate_l2_page_table_ptr();
+    pcb->pagetable[l1_page_number] = (uint32 *) allocate_l2_page_table_ptr(&(pcb->pagetable[l1_page_number]));
   }
 
-  l2_array_ptr = pcb->pagetable[l1_page_number];
-
-  setup_l2_pte_ptr(MemorySetupPte(ppagenum), (void *) (l2_array_ptr), vpagenum & 0xff); // Change here
-
+  pcb->pagetable[l1_page_number][l2_page_number] = MemorySetupPte(ppagenum);
 
   dbprintf('m', "Returning from page fault handler\n");
 
@@ -404,20 +375,18 @@ int mfree(PCB * pcb, int ihandle){
 /* } */
 
 
-void memory_free_page_from_ptr(void * l2_page_table_ptr_void){
+void memory_free_page_from_ptr(int index){
   uint32 ct;
-  L2_PAGE_TABLE * l2_page_table_ptr = (L2_PAGE_TABLE *) (l2_page_table_ptr_void);
 
   for(ct = 0; ct < MEM_L2_PAGE_TABLE_SIZE; ct++){
-    if((l2_page_table_ptr->page_table[ct] & 0x1) == 1){
+    if((l2_page_table_pool[index].page_table[ct] & 0x1) == 1){
       // The l2 page table entry is valid, free this page
-      MemoryFreePage(l2_page_table_ptr->page_table[ct] >> MEM_L2FIELD_FIRST_BITNUM);
-      l2_page_table_ptr->page_table[ct] = 0;
+      MemoryFreePage(l2_page_table_pool[index].page_table[ct] >> MEM_L2FIELD_FIRST_BITNUM);
+      l2_page_table_pool[index].page_table[ct] = 0;
     }
   }
   
-  l2_page_table_ptr->inuse = 0;
-  /* l2_page_table_array_occupied[index] = 0; */
+  l2_page_table_pool[index].inuse = 0;
 
   return;
 }
@@ -441,7 +410,7 @@ void memory_free_page_from_ptr(void * l2_page_table_ptr_void){
 /*   return ct; */
 /* } */
 
-void * allocate_l2_page_table_ptr()
+uint32 * allocate_l2_page_table_ptr(int * pcb_page_table_array)
 {
   uint32 ct;
 
@@ -452,8 +421,10 @@ void * allocate_l2_page_table_ptr()
     }
   }
   
+  *pcb_page_table_array = ct;
+
   // return the index
-  return (void *) (&(l2_page_table_pool[ct]));
+  return (uint32 *) (&(l2_page_table_pool[ct].page_table));
 }
 
 
@@ -464,20 +435,20 @@ void * allocate_l2_page_table_ptr()
 /* } */
 
 
-void setup_l2_pte_ptr(uint32 pte_value, void * l2_array_ptr, int index)
-{
-  L2_PAGE_TABLE * l2_page_table_ptr = (L2_PAGE_TABLE *) (l2_array_ptr);
+/* void setup_l2_pte_ptr(uint32 pte_value, void * l2_array_ptr, int index) */
+/* { */
+/*   L2_PAGE_TABLE * l2_page_table_ptr = (L2_PAGE_TABLE *) (l2_array_ptr); */
   
-  if(l2_page_table_ptr->inuse == 0){
-    printf("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
-  }
+/*   if(l2_page_table_ptr->inuse == 0){ */
+/*     printf("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"); */
+/*   } */
 
-  l2_page_table_ptr->page_table[index] = pte_value;
+/*   l2_page_table_ptr->page_table[index] = pte_value; */
 
-  printf("l2_page_table_ptr->page_table[%d] = %x\n", index, l2_page_table_ptr->page_table[index]);
+/*   printf("l2_page_table_ptr->page_table[%d] = %x\n", index, l2_page_table_ptr->page_table[index]); */
 
-  return;
-}
+/*   return; */
+/* } */
 
 /* void setup_l2_ptr_no_index(uint32 pte_value, int l2_array_index) */
 /* { */
@@ -489,14 +460,14 @@ void setup_l2_pte_ptr(uint32 pte_value, void * l2_array_ptr, int index)
 
 /* } */
 
-void print_l2_pte(void * l2_array_ptr, int index)
-{
-  L2_PAGE_TABLE * l2_page_table_ptr = (L2_PAGE_TABLE *) (l2_array_ptr);
+/* void print_l2_pte(void * l2_array_ptr, int index) */
+/* { */
+/*   L2_PAGE_TABLE * l2_page_table_ptr = (L2_PAGE_TABLE *) (l2_array_ptr); */
   
-  if(l2_page_table_ptr->inuse == 0){
-    printf("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
-  }
+/*   if(l2_page_table_ptr->inuse == 0){ */
+/*     printf("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"); */
+/*   } */
   
-  printf("l2_page_table[%d] = %x\n", index, l2_page_table_ptr->page_table[index]);
-  return;
-}
+/*   printf("l2_page_table[%d] = %x\n", index, l2_page_table_ptr->page_table[index]); */
+/*   return; */
+/* } */

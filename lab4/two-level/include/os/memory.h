@@ -34,8 +34,8 @@ void memory_free_page_from_index(uint32 index);
 uint32 allocate_l2_page_table();
 void setup_l2_pte(uint32 pte_value, int l2_array_index, int index);
 
-void memory_free_page_from_ptr(void * l2_page_table_ptr_void);
-void * allocate_l2_page_table_ptr();
+void memory_free_page_from_ptr(int index);
+uint32 * allocate_l2_page_table_ptr(int * pcb_page_table_array);
 void setup_l2_pte_ptr(uint32 pte_value, void * l2_array_ptr, int index);
 
 void print_l2_pte(void * l2_array_ptr, int index);
