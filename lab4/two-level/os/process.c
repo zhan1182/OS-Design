@@ -90,7 +90,6 @@ void ProcessModuleInit () {
     // L1 page table has only 4 entries
     /* printf("MEM_L1_PAGE_TABLE_SIZE = %d\n", MEM_L1_PAGE_TABLE_SIZE); */
     for(ct = 0; ct < MEM_L1_PAGE_TABLE_SIZE; ct++){
-      // Init the l1 page table entry = 256
       /* pcbs[i].pagetable[ct] = MEM_L2_PAGE_TABLE_SIZE; */
       pcbs[i].pagetable[ct] = NULL;
     }
@@ -558,9 +557,9 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
   // stack frame.
   //----------------------------------------------------------------------
 
-  stackframe[PROCESS_STACK_PTBASE] = (uint32) (pcb->pagetable);
+  stackframe[PROCESS_STACK_PTBASE] = (uint32) (&(pcb->pagetable[0]));
   stackframe[PROCESS_STACK_PTSIZE] = (MEM_MAX_VIRTUAL_ADDRESS + 1) / MEM_PAGESIZE;
-  stackframe[PROCESS_STACK_PTBITS] = MEM_L2FIELD_FIRST_BITNUM << 16 | MEM_L1FIELD_FIRST_BITNUM;
+  stackframe[PROCESS_STACK_PTBITS] = (MEM_L2FIELD_FIRST_BITNUM << 16) | MEM_L1FIELD_FIRST_BITNUM;
 
 
   /* printf("22222222222222\n"); */
@@ -678,7 +677,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
     stackframe[PROCESS_STACK_IREG+31] = (uint32)ProcessExit;
 
     // Set the stack register to the base of the system stack.
-    /* stackframe[PROCESS_STACK_IREG+29] = pcb->sysStackArea + MEM_PAGESIZE; // ?????????????????????? */
+    stackframe[PROCESS_STACK_IREG+29] = pcb->sysStackArea + MEM_PAGESIZE; // ??????????????????????
 
     // Set the initial parameter properly by placing it on the stack frame
     // at the location pointed to by the "saved" stack pointer (r29).

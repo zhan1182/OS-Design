@@ -125,7 +125,7 @@ uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
   page_offset = addr & MEM_ADDRESS_OFFSET_MASK;
 
   l1_page_number = addr >> MEM_L1FIELD_FIRST_BITNUM;
-  l2_page_number = (addr >> MEM_L2FIELD_FIRST_BITNUM) & 0xff;
+  l2_page_number = (addr & 0xff000) >> MEM_L2FIELD_FIRST_BITNUM;
 
   /* uint32 l2_page_table_index = pcb->pagetable[l1_page_number]; */
   /* uint32 l2_pte_value = l2_page_table_array[l2_page_table_index][l2_page_number]; */
@@ -146,6 +146,10 @@ uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
       return 0;
     }
   }
+
+  dbprintf('m', " l1page: %d, l2page:%d, table content: 0x%08x\n", l1_page_number, l2_page_number, l2_pte_value);
+  dbprintf('m', "vaddr: 0x%08x,paddr: 0x%08x\n", addr, (l2_pte_value & MEM_PTE_MASK) | page_offset);
+
 
   // Return the physical addr
   return (l2_pte_value & MEM_PTE_MASK) | page_offset;
@@ -297,7 +301,7 @@ int MemoryPageFaultHandler(PCB *pcb) {
 
   l2_array_ptr = pcb->pagetable[l1_page_number];
 
-  setup_l2_pte_ptr(MemorySetupPte(ppagenum), (void *) (l2_array_ptr), vpagenum & 0xff); // Change here
+  setup_l2_pte_ptr(MemorySetupPte(ppagenum), (void *) (l2_array_ptr), (addr & 0xff000) >> MEM_L2FIELD_FIRST_BITNUM); // Change here
 
 
   dbprintf('m', "Returning from page fault handler\n");
