@@ -11,7 +11,7 @@ void main (int argc, char *argv[]) {
   // malloc 4 blocks of different sizes.
   block1 = (int*)malloc(5 * BLOCKSIZE);
   block2 = (int*)malloc(4 * BLOCKSIZE);
-  block3 = (int*)malloc(5 * BLOCKSIZE);
+  block3 = (int*)malloc(3 * BLOCKSIZE);
   block4 = (int*)malloc(2 * BLOCKSIZE);
 
   if ( (block1 == NULL) ||
@@ -31,7 +31,7 @@ void main (int argc, char *argv[]) {
   ret_mfree = mfree((void*)block2);
   ret_mfree += mfree((void*)block4);
   
-  Printf("ret_mfree is %d.\n", ret_mfree);
+  //Printf("ret_mfree is %d.\n", ret_mfree);
   
   if (ret_mfree < (6 * BLOCKSIZE)){
     Printf("test mfree: failed\n");
