@@ -1,0 +1,1981 @@
+cd ../../bin; dlxsim -D m -x os.dlx.obj -a -D m -u makeprocs.dlx.obj 5; ee469_fixterminal
+setting debug flag m
+Stack=0x1fffb8, pc starting at 0x128fc
+Got 5 arguments.
+Available memory: 0x3a5c0 -> 0x200000.
+Argument count is 5.
+Argument 0 is -D.
+Argument 1 is m.
+Argument 2 is -u.
+Argument 3 is makeprocs.dlx.obj.
+Argument 4 is 5.
+Map has 16 entries, memory size is 0x200.
+Free pages start with page # 0x3b.
+Set freemap entry 1 to 0x8000000.
+Set freemap entry 1 to 0x18000000.
+Set freemap entry 1 to 0x38000000.
+Set freemap entry 1 to 0x78000000.
+Set freemap entry 1 to 0xf8000000.
+Set freemap entry 2 to 0x1.
+Set freemap entry 2 to 0x3.
+Set freemap entry 2 to 0x7.
+Set freemap entry 2 to 0xf.
+Set freemap entry 2 to 0x1f.
+Set freemap entry 2 to 0x3f.
+Set freemap entry 2 to 0x7f.
+Set freemap entry 2 to 0xff.
+Set freemap entry 2 to 0x1ff.
+Set freemap entry 2 to 0x3ff.
+Set freemap entry 2 to 0x7ff.
+Set freemap entry 2 to 0xfff.
+Set freemap entry 2 to 0x1fff.
+Set freemap entry 2 to 0x3fff.
+Set freemap entry 2 to 0x7fff.
+Set freemap entry 2 to 0xffff.
+Set freemap entry 2 to 0x1ffff.
+Set freemap entry 2 to 0x3ffff.
+Set freemap entry 2 to 0x7ffff.
+Set freemap entry 2 to 0xfffff.
+Set freemap entry 2 to 0x1fffff.
+Set freemap entry 2 to 0x3fffff.
+Set freemap entry 2 to 0x7fffff.
+Set freemap entry 2 to 0xffffff.
+Set freemap entry 2 to 0x1ffffff.
+Set freemap entry 2 to 0x3ffffff.
+Set freemap entry 2 to 0x7ffffff.
+Set freemap entry 2 to 0xfffffff.
+Set freemap entry 2 to 0x1fffffff.
+Set freemap entry 2 to 0x3fffffff.
+Set freemap entry 2 to 0x7fffffff.
+Set freemap entry 2 to 0xffffffff.
+Set freemap entry 3 to 0x1.
+Set freemap entry 3 to 0x3.
+Set freemap entry 3 to 0x7.
+Set freemap entry 3 to 0xf.
+Set freemap entry 3 to 0x1f.
+Set freemap entry 3 to 0x3f.
+Set freemap entry 3 to 0x7f.
+Set freemap entry 3 to 0xff.
+Set freemap entry 3 to 0x1ff.
+Set freemap entry 3 to 0x3ff.
+Set freemap entry 3 to 0x7ff.
+Set freemap entry 3 to 0xfff.
+Set freemap entry 3 to 0x1fff.
+Set freemap entry 3 to 0x3fff.
+Set freemap entry 3 to 0x7fff.
+Set freemap entry 3 to 0xffff.
+Set freemap entry 3 to 0x1ffff.
+Set freemap entry 3 to 0x3ffff.
+Set freemap entry 3 to 0x7ffff.
+Set freemap entry 3 to 0xfffff.
+Set freemap entry 3 to 0x1fffff.
+Set freemap entry 3 to 0x3fffff.
+Set freemap entry 3 to 0x7fffff.
+Set freemap entry 3 to 0xffffff.
+Set freemap entry 3 to 0x1ffffff.
+Set freemap entry 3 to 0x3ffffff.
+Set freemap entry 3 to 0x7ffffff.
+Set freemap entry 3 to 0xfffffff.
+Set freemap entry 3 to 0x1fffffff.
+Set freemap entry 3 to 0x3fffffff.
+Set freemap entry 3 to 0x7fffffff.
+Set freemap entry 3 to 0xffffffff.
+Set freemap entry 4 to 0x1.
+Set freemap entry 4 to 0x3.
+Set freemap entry 4 to 0x7.
+Set freemap entry 4 to 0xf.
+Set freemap entry 4 to 0x1f.
+Set freemap entry 4 to 0x3f.
+Set freemap entry 4 to 0x7f.
+Set freemap entry 4 to 0xff.
+Set freemap entry 4 to 0x1ff.
+Set freemap entry 4 to 0x3ff.
+Set freemap entry 4 to 0x7ff.
+Set freemap entry 4 to 0xfff.
+Set freemap entry 4 to 0x1fff.
+Set freemap entry 4 to 0x3fff.
+Set freemap entry 4 to 0x7fff.
+Set freemap entry 4 to 0xffff.
+Set freemap entry 4 to 0x1ffff.
+Set freemap entry 4 to 0x3ffff.
+Set freemap entry 4 to 0x7ffff.
+Set freemap entry 4 to 0xfffff.
+Set freemap entry 4 to 0x1fffff.
+Set freemap entry 4 to 0x3fffff.
+Set freemap entry 4 to 0x7fffff.
+Set freemap entry 4 to 0xffffff.
+Set freemap entry 4 to 0x1ffffff.
+Set freemap entry 4 to 0x3ffffff.
+Set freemap entry 4 to 0x7ffffff.
+Set freemap entry 4 to 0xfffffff.
+Set freemap entry 4 to 0x1fffffff.
+Set freemap entry 4 to 0x3fffffff.
+Set freemap entry 4 to 0x7fffffff.
+Set freemap entry 4 to 0xffffffff.
+Set freemap entry 5 to 0x1.
+Set freemap entry 5 to 0x3.
+Set freemap entry 5 to 0x7.
+Set freemap entry 5 to 0xf.
+Set freemap entry 5 to 0x1f.
+Set freemap entry 5 to 0x3f.
+Set freemap entry 5 to 0x7f.
+Set freemap entry 5 to 0xff.
+Set freemap entry 5 to 0x1ff.
+Set freemap entry 5 to 0x3ff.
+Set freemap entry 5 to 0x7ff.
+Set freemap entry 5 to 0xfff.
+Set freemap entry 5 to 0x1fff.
+Set freemap entry 5 to 0x3fff.
+Set freemap entry 5 to 0x7fff.
+Set freemap entry 5 to 0xffff.
+Set freemap entry 5 to 0x1ffff.
+Set freemap entry 5 to 0x3ffff.
+Set freemap entry 5 to 0x7ffff.
+Set freemap entry 5 to 0xfffff.
+Set freemap entry 5 to 0x1fffff.
+Set freemap entry 5 to 0x3fffff.
+Set freemap entry 5 to 0x7fffff.
+Set freemap entry 5 to 0xffffff.
+Set freemap entry 5 to 0x1ffffff.
+Set freemap entry 5 to 0x3ffffff.
+Set freemap entry 5 to 0x7ffffff.
+Set freemap entry 5 to 0xfffffff.
+Set freemap entry 5 to 0x1fffffff.
+Set freemap entry 5 to 0x3fffffff.
+Set freemap entry 5 to 0x7fffffff.
+Set freemap entry 5 to 0xffffffff.
+Set freemap entry 6 to 0x1.
+Set freemap entry 6 to 0x3.
+Set freemap entry 6 to 0x7.
+Set freemap entry 6 to 0xf.
+Set freemap entry 6 to 0x1f.
+Set freemap entry 6 to 0x3f.
+Set freemap entry 6 to 0x7f.
+Set freemap entry 6 to 0xff.
+Set freemap entry 6 to 0x1ff.
+Set freemap entry 6 to 0x3ff.
+Set freemap entry 6 to 0x7ff.
+Set freemap entry 6 to 0xfff.
+Set freemap entry 6 to 0x1fff.
+Set freemap entry 6 to 0x3fff.
+Set freemap entry 6 to 0x7fff.
+Set freemap entry 6 to 0xffff.
+Set freemap entry 6 to 0x1ffff.
+Set freemap entry 6 to 0x3ffff.
+Set freemap entry 6 to 0x7ffff.
+Set freemap entry 6 to 0xfffff.
+Set freemap entry 6 to 0x1fffff.
+Set freemap entry 6 to 0x3fffff.
+Set freemap entry 6 to 0x7fffff.
+Set freemap entry 6 to 0xffffff.
+Set freemap entry 6 to 0x1ffffff.
+Set freemap entry 6 to 0x3ffffff.
+Set freemap entry 6 to 0x7ffffff.
+Set freemap entry 6 to 0xfffffff.
+Set freemap entry 6 to 0x1fffffff.
+Set freemap entry 6 to 0x3fffffff.
+Set freemap entry 6 to 0x7fffffff.
+Set freemap entry 6 to 0xffffffff.
+Set freemap entry 7 to 0x1.
+Set freemap entry 7 to 0x3.
+Set freemap entry 7 to 0x7.
+Set freemap entry 7 to 0xf.
+Set freemap entry 7 to 0x1f.
+Set freemap entry 7 to 0x3f.
+Set freemap entry 7 to 0x7f.
+Set freemap entry 7 to 0xff.
+Set freemap entry 7 to 0x1ff.
+Set freemap entry 7 to 0x3ff.
+Set freemap entry 7 to 0x7ff.
+Set freemap entry 7 to 0xfff.
+Set freemap entry 7 to 0x1fff.
+Set freemap entry 7 to 0x3fff.
+Set freemap entry 7 to 0x7fff.
+Set freemap entry 7 to 0xffff.
+Set freemap entry 7 to 0x1ffff.
+Set freemap entry 7 to 0x3ffff.
+Set freemap entry 7 to 0x7ffff.
+Set freemap entry 7 to 0xfffff.
+Set freemap entry 7 to 0x1fffff.
+Set freemap entry 7 to 0x3fffff.
+Set freemap entry 7 to 0x7fffff.
+Set freemap entry 7 to 0xffffff.
+Set freemap entry 7 to 0x1ffffff.
+Set freemap entry 7 to 0x3ffffff.
+Set freemap entry 7 to 0x7ffffff.
+Set freemap entry 7 to 0xfffffff.
+Set freemap entry 7 to 0x1fffffff.
+Set freemap entry 7 to 0x3fffffff.
+Set freemap entry 7 to 0x7fffffff.
+Set freemap entry 7 to 0xffffffff.
+Set freemap entry 8 to 0x1.
+Set freemap entry 8 to 0x3.
+Set freemap entry 8 to 0x7.
+Set freemap entry 8 to 0xf.
+Set freemap entry 8 to 0x1f.
+Set freemap entry 8 to 0x3f.
+Set freemap entry 8 to 0x7f.
+Set freemap entry 8 to 0xff.
+Set freemap entry 8 to 0x1ff.
+Set freemap entry 8 to 0x3ff.
+Set freemap entry 8 to 0x7ff.
+Set freemap entry 8 to 0xfff.
+Set freemap entry 8 to 0x1fff.
+Set freemap entry 8 to 0x3fff.
+Set freemap entry 8 to 0x7fff.
+Set freemap entry 8 to 0xffff.
+Set freemap entry 8 to 0x1ffff.
+Set freemap entry 8 to 0x3ffff.
+Set freemap entry 8 to 0x7ffff.
+Set freemap entry 8 to 0xfffff.
+Set freemap entry 8 to 0x1fffff.
+Set freemap entry 8 to 0x3fffff.
+Set freemap entry 8 to 0x7fffff.
+Set freemap entry 8 to 0xffffff.
+Set freemap entry 8 to 0x1ffffff.
+Set freemap entry 8 to 0x3ffffff.
+Set freemap entry 8 to 0x7ffffff.
+Set freemap entry 8 to 0xfffffff.
+Set freemap entry 8 to 0x1fffffff.
+Set freemap entry 8 to 0x3fffffff.
+Set freemap entry 8 to 0x7fffffff.
+Set freemap entry 8 to 0xffffffff.
+Set freemap entry 9 to 0x1.
+Set freemap entry 9 to 0x3.
+Set freemap entry 9 to 0x7.
+Set freemap entry 9 to 0xf.
+Set freemap entry 9 to 0x1f.
+Set freemap entry 9 to 0x3f.
+Set freemap entry 9 to 0x7f.
+Set freemap entry 9 to 0xff.
+Set freemap entry 9 to 0x1ff.
+Set freemap entry 9 to 0x3ff.
+Set freemap entry 9 to 0x7ff.
+Set freemap entry 9 to 0xfff.
+Set freemap entry 9 to 0x1fff.
+Set freemap entry 9 to 0x3fff.
+Set freemap entry 9 to 0x7fff.
+Set freemap entry 9 to 0xffff.
+Set freemap entry 9 to 0x1ffff.
+Set freemap entry 9 to 0x3ffff.
+Set freemap entry 9 to 0x7ffff.
+Set freemap entry 9 to 0xfffff.
+Set freemap entry 9 to 0x1fffff.
+Set freemap entry 9 to 0x3fffff.
+Set freemap entry 9 to 0x7fffff.
+Set freemap entry 9 to 0xffffff.
+Set freemap entry 9 to 0x1ffffff.
+Set freemap entry 9 to 0x3ffffff.
+Set freemap entry 9 to 0x7ffffff.
+Set freemap entry 9 to 0xfffffff.
+Set freemap entry 9 to 0x1fffffff.
+Set freemap entry 9 to 0x3fffffff.
+Set freemap entry 9 to 0x7fffffff.
+Set freemap entry 9 to 0xffffffff.
+Set freemap entry 10 to 0x1.
+Set freemap entry 10 to 0x3.
+Set freemap entry 10 to 0x7.
+Set freemap entry 10 to 0xf.
+Set freemap entry 10 to 0x1f.
+Set freemap entry 10 to 0x3f.
+Set freemap entry 10 to 0x7f.
+Set freemap entry 10 to 0xff.
+Set freemap entry 10 to 0x1ff.
+Set freemap entry 10 to 0x3ff.
+Set freemap entry 10 to 0x7ff.
+Set freemap entry 10 to 0xfff.
+Set freemap entry 10 to 0x1fff.
+Set freemap entry 10 to 0x3fff.
+Set freemap entry 10 to 0x7fff.
+Set freemap entry 10 to 0xffff.
+Set freemap entry 10 to 0x1ffff.
+Set freemap entry 10 to 0x3ffff.
+Set freemap entry 10 to 0x7ffff.
+Set freemap entry 10 to 0xfffff.
+Set freemap entry 10 to 0x1fffff.
+Set freemap entry 10 to 0x3fffff.
+Set freemap entry 10 to 0x7fffff.
+Set freemap entry 10 to 0xffffff.
+Set freemap entry 10 to 0x1ffffff.
+Set freemap entry 10 to 0x3ffffff.
+Set freemap entry 10 to 0x7ffffff.
+Set freemap entry 10 to 0xfffffff.
+Set freemap entry 10 to 0x1fffffff.
+Set freemap entry 10 to 0x3fffffff.
+Set freemap entry 10 to 0x7fffffff.
+Set freemap entry 10 to 0xffffffff.
+Set freemap entry 11 to 0x1.
+Set freemap entry 11 to 0x3.
+Set freemap entry 11 to 0x7.
+Set freemap entry 11 to 0xf.
+Set freemap entry 11 to 0x1f.
+Set freemap entry 11 to 0x3f.
+Set freemap entry 11 to 0x7f.
+Set freemap entry 11 to 0xff.
+Set freemap entry 11 to 0x1ff.
+Set freemap entry 11 to 0x3ff.
+Set freemap entry 11 to 0x7ff.
+Set freemap entry 11 to 0xfff.
+Set freemap entry 11 to 0x1fff.
+Set freemap entry 11 to 0x3fff.
+Set freemap entry 11 to 0x7fff.
+Set freemap entry 11 to 0xffff.
+Set freemap entry 11 to 0x1ffff.
+Set freemap entry 11 to 0x3ffff.
+Set freemap entry 11 to 0x7ffff.
+Set freemap entry 11 to 0xfffff.
+Set freemap entry 11 to 0x1fffff.
+Set freemap entry 11 to 0x3fffff.
+Set freemap entry 11 to 0x7fffff.
+Set freemap entry 11 to 0xffffff.
+Set freemap entry 11 to 0x1ffffff.
+Set freemap entry 11 to 0x3ffffff.
+Set freemap entry 11 to 0x7ffffff.
+Set freemap entry 11 to 0xfffffff.
+Set freemap entry 11 to 0x1fffffff.
+Set freemap entry 11 to 0x3fffffff.
+Set freemap entry 11 to 0x7fffffff.
+Set freemap entry 11 to 0xffffffff.
+Set freemap entry 12 to 0x1.
+Set freemap entry 12 to 0x3.
+Set freemap entry 12 to 0x7.
+Set freemap entry 12 to 0xf.
+Set freemap entry 12 to 0x1f.
+Set freemap entry 12 to 0x3f.
+Set freemap entry 12 to 0x7f.
+Set freemap entry 12 to 0xff.
+Set freemap entry 12 to 0x1ff.
+Set freemap entry 12 to 0x3ff.
+Set freemap entry 12 to 0x7ff.
+Set freemap entry 12 to 0xfff.
+Set freemap entry 12 to 0x1fff.
+Set freemap entry 12 to 0x3fff.
+Set freemap entry 12 to 0x7fff.
+Set freemap entry 12 to 0xffff.
+Set freemap entry 12 to 0x1ffff.
+Set freemap entry 12 to 0x3ffff.
+Set freemap entry 12 to 0x7ffff.
+Set freemap entry 12 to 0xfffff.
+Set freemap entry 12 to 0x1fffff.
+Set freemap entry 12 to 0x3fffff.
+Set freemap entry 12 to 0x7fffff.
+Set freemap entry 12 to 0xffffff.
+Set freemap entry 12 to 0x1ffffff.
+Set freemap entry 12 to 0x3ffffff.
+Set freemap entry 12 to 0x7ffffff.
+Set freemap entry 12 to 0xfffffff.
+Set freemap entry 12 to 0x1fffffff.
+Set freemap entry 12 to 0x3fffffff.
+Set freemap entry 12 to 0x7fffffff.
+Set freemap entry 12 to 0xffffffff.
+Set freemap entry 13 to 0x1.
+Set freemap entry 13 to 0x3.
+Set freemap entry 13 to 0x7.
+Set freemap entry 13 to 0xf.
+Set freemap entry 13 to 0x1f.
+Set freemap entry 13 to 0x3f.
+Set freemap entry 13 to 0x7f.
+Set freemap entry 13 to 0xff.
+Set freemap entry 13 to 0x1ff.
+Set freemap entry 13 to 0x3ff.
+Set freemap entry 13 to 0x7ff.
+Set freemap entry 13 to 0xfff.
+Set freemap entry 13 to 0x1fff.
+Set freemap entry 13 to 0x3fff.
+Set freemap entry 13 to 0x7fff.
+Set freemap entry 13 to 0xffff.
+Set freemap entry 13 to 0x1ffff.
+Set freemap entry 13 to 0x3ffff.
+Set freemap entry 13 to 0x7ffff.
+Set freemap entry 13 to 0xfffff.
+Set freemap entry 13 to 0x1fffff.
+Set freemap entry 13 to 0x3fffff.
+Set freemap entry 13 to 0x7fffff.
+Set freemap entry 13 to 0xffffff.
+Set freemap entry 13 to 0x1ffffff.
+Set freemap entry 13 to 0x3ffffff.
+Set freemap entry 13 to 0x7ffffff.
+Set freemap entry 13 to 0xfffffff.
+Set freemap entry 13 to 0x1fffffff.
+Set freemap entry 13 to 0x3fffffff.
+Set freemap entry 13 to 0x7fffffff.
+Set freemap entry 13 to 0xffffffff.
+Set freemap entry 14 to 0x1.
+Set freemap entry 14 to 0x3.
+Set freemap entry 14 to 0x7.
+Set freemap entry 14 to 0xf.
+Set freemap entry 14 to 0x1f.
+Set freemap entry 14 to 0x3f.
+Set freemap entry 14 to 0x7f.
+Set freemap entry 14 to 0xff.
+Set freemap entry 14 to 0x1ff.
+Set freemap entry 14 to 0x3ff.
+Set freemap entry 14 to 0x7ff.
+Set freemap entry 14 to 0xfff.
+Set freemap entry 14 to 0x1fff.
+Set freemap entry 14 to 0x3fff.
+Set freemap entry 14 to 0x7fff.
+Set freemap entry 14 to 0xffff.
+Set freemap entry 14 to 0x1ffff.
+Set freemap entry 14 to 0x3ffff.
+Set freemap entry 14 to 0x7ffff.
+Set freemap entry 14 to 0xfffff.
+Set freemap entry 14 to 0x1fffff.
+Set freemap entry 14 to 0x3fffff.
+Set freemap entry 14 to 0x7fffff.
+Set freemap entry 14 to 0xffffff.
+Set freemap entry 14 to 0x1ffffff.
+Set freemap entry 14 to 0x3ffffff.
+Set freemap entry 14 to 0x7ffffff.
+Set freemap entry 14 to 0xfffffff.
+Set freemap entry 14 to 0x1fffffff.
+Set freemap entry 14 to 0x3fffffff.
+Set freemap entry 14 to 0x7fffffff.
+Set freemap entry 14 to 0xffffffff.
+Set freemap entry 15 to 0x1.
+Set freemap entry 15 to 0x3.
+Set freemap entry 15 to 0x7.
+Set freemap entry 15 to 0xf.
+Set freemap entry 15 to 0x1f.
+Set freemap entry 15 to 0x3f.
+Set freemap entry 15 to 0x7f.
+Set freemap entry 15 to 0xff.
+Set freemap entry 15 to 0x1ff.
+Set freemap entry 15 to 0x3ff.
+Set freemap entry 15 to 0x7ff.
+Set freemap entry 15 to 0xfff.
+Set freemap entry 15 to 0x1fff.
+Set freemap entry 15 to 0x3fff.
+Set freemap entry 15 to 0x7fff.
+Set freemap entry 15 to 0xffff.
+Set freemap entry 15 to 0x1ffff.
+Set freemap entry 15 to 0x3ffff.
+Set freemap entry 15 to 0x7ffff.
+Set freemap entry 15 to 0xfffff.
+Set freemap entry 15 to 0x1fffff.
+Set freemap entry 15 to 0x3fffff.
+Set freemap entry 15 to 0x7fffff.
+Set freemap entry 15 to 0xffffff.
+Set freemap entry 15 to 0x1ffffff.
+Set freemap entry 15 to 0x3ffffff.
+Set freemap entry 15 to 0x7ffffff.
+Set freemap entry 15 to 0xfffffff.
+Set freemap entry 15 to 0x1fffffff.
+Set freemap entry 15 to 0x3fffffff.
+Set freemap entry 15 to 0x7fffffff.
+Set freemap entry 15 to 0xffffffff.
+Allocating memory, starting with page 0
+Allocated memory, from map 1, page 59, map=0xf0000000.
+Allocating memory, starting with page 1
+Allocated memory, from map 1, page 60, map=0xe0000000.
+Allocating 4 pages for user code
+Allocating memory, starting with page 1
+Allocated memory, from map 1, page 61, map=0xc0000000.
+Allocating memory, starting with page 1
+Allocated memory, from map 1, page 62, map=0x80000000.
+Allocating memory, starting with page 1
+Allocated memory, from map 1, page 63, map=0x0.
+Allocating memory, starting with page 1
+Allocated memory, from map 2, page 64, map=0xfffffffe.
+ProcessFork: stackframe = 0x3bea8
+(uint32)(pcb->pagetable) = 36068
+stackframe[PROCESS_STACK_PTBITS] = c000c
+ProcessFork: set process stack PT info
+Translating vaddr: 1000
+pagenum = 1
+Returning paddr: 3e000
+Translating vaddr: 104c
+pagenum = 1
+Returning paddr: 3e04c
+Translating vaddr: 109c
+pagenum = 1
+Returning paddr: 3e09c
+Translating vaddr: 3000
+pagenum = 3
+Returning paddr: 40000
+Translating vaddr: 3020
+pagenum = 3
+Returning paddr: 40020
+Translating vaddr: 3030
+pagenum = 3
+Returning paddr: 40030
+Translating vaddr: 10d4
+pagenum = 1
+Returning paddr: 3e0d4
+Translating vaddr: 1120
+pagenum = 1
+Returning paddr: 3e120
+Translating vaddr: 1170
+pagenum = 1
+Returning paddr: 3e170
+Translating vaddr: 11c0
+pagenum = 1
+Returning paddr: 3e1c0
+Translating vaddr: 1210
+pagenum = 1
+Returning paddr: 3e210
+Translating vaddr: 1260
+pagenum = 1
+Returning paddr: 3e260
+Translating vaddr: 12b0
+pagenum = 1
+Returning paddr: 3e2b0
+Translating vaddr: 1300
+pagenum = 1
+Returning paddr: 3e300
+Translating vaddr: 1350
+pagenum = 1
+Returning paddr: 3e350
+Translating vaddr: 13a0
+pagenum = 1
+Returning paddr: 3e3a0
+Translating vaddr: 13f0
+pagenum = 1
+Returning paddr: 3e3f0
+Translating vaddr: 1440
+pagenum = 1
+Returning paddr: 3e440
+Translating vaddr: 1490
+pagenum = 1
+Returning paddr: 3e490
+Translating vaddr: 14e0
+pagenum = 1
+Returning paddr: 3e4e0
+Translating vaddr: 1530
+pagenum = 1
+Returning paddr: 3e530
+Translating vaddr: 1580
+pagenum = 1
+Returning paddr: 3e580
+Translating vaddr: 15d0
+pagenum = 1
+Returning paddr: 3e5d0
+Translating vaddr: 1620
+pagenum = 1
+Returning paddr: 3e620
+Translating vaddr: 1670
+pagenum = 1
+Returning paddr: 3e670
+Translating vaddr: 16c0
+pagenum = 1
+Returning paddr: 3e6c0
+Translating vaddr: 1710
+pagenum = 1
+Returning paddr: 3e710
+Translating vaddr: 1760
+pagenum = 1
+Returning paddr: 3e760
+Translating vaddr: 17b0
+pagenum = 1
+Returning paddr: 3e7b0
+Translating vaddr: 1800
+pagenum = 1
+Returning paddr: 3e800
+Translating vaddr: 1850
+pagenum = 1
+Returning paddr: 3e850
+Translating vaddr: 18a0
+pagenum = 1
+Returning paddr: 3e8a0
+Translating vaddr: 18f0
+pagenum = 1
+Returning paddr: 3e8f0
+Translating vaddr: 1940
+pagenum = 1
+Returning paddr: 3e940
+Translating vaddr: 1990
+pagenum = 1
+Returning paddr: 3e990
+Translating vaddr: 19e0
+pagenum = 1
+Returning paddr: 3e9e0
+Translating vaddr: 1a30
+pagenum = 1
+Returning paddr: 3ea30
+Translating vaddr: 1a80
+pagenum = 1
+Returning paddr: 3ea80
+Translating vaddr: 1ad0
+pagenum = 1
+Returning paddr: 3ead0
+Translating vaddr: 1b20
+pagenum = 1
+Returning paddr: 3eb20
+Translating vaddr: 1b70
+pagenum = 1
+Returning paddr: 3eb70
+Translating vaddr: 1bc0
+pagenum = 1
+Returning paddr: 3ebc0
+Translating vaddr: 1c10
+pagenum = 1
+Returning paddr: 3ec10
+Translating vaddr: 1c60
+pagenum = 1
+Returning paddr: 3ec60
+Translating vaddr: 1cb0
+pagenum = 1
+Returning paddr: 3ecb0
+Translating vaddr: 1d00
+pagenum = 1
+Returning paddr: 3ed00
+Translating vaddr: 1d50
+pagenum = 1
+Returning paddr: 3ed50
+Translating vaddr: 1da0
+pagenum = 1
+Returning paddr: 3eda0
+Translating vaddr: 1df0
+pagenum = 1
+Returning paddr: 3edf0
+Translating vaddr: 1e40
+pagenum = 1
+Returning paddr: 3ee40
+Translating vaddr: 1e90
+pagenum = 1
+Returning paddr: 3ee90
+Translating vaddr: 1ee0
+pagenum = 1
+Returning paddr: 3eee0
+Translating vaddr: 1f30
+pagenum = 1
+Returning paddr: 3ef30
+Translating vaddr: 1f80
+pagenum = 1
+Returning paddr: 3ef80
+Translating vaddr: 1fd0
+pagenum = 1
+Returning paddr: 3efd0
+Translating vaddr: 2000
+pagenum = 2
+Returning paddr: 3f000
+Translating vaddr: 2020
+pagenum = 2
+Returning paddr: 3f020
+Translating vaddr: 2070
+pagenum = 2
+Returning paddr: 3f070
+stackframe[PROCESS_STACK_USER_STACKPOINTER] = 3ffffc
+Translating vaddr: 3ffefc
+pagenum = 3ff
+Returning paddr: 3cefc
+Translating vaddr: 3ffeec
+pagenum = 3ff
+Returning paddr: 3ceec
+(m) Leaving ProcessFork (makeprocs.dlx.obj)
+Translating 0x10d4
+0x10d4 => 0x3e0d4 (=afbefffc) using base1=0x36068/12, entry 1
+Translating 0x3ffee8
+0x3ffee8 => 0x3cee8 (=00000000) using base1=0x36068/12, entry 1023
+Translating 0x10d8
+0x10d8 => 0x3e0d8 (=001df020) using base1=0x36068/12, entry 1
+Translating 0x10dc
+0x10dc => 0x3e0dc (=afbffff8) using base1=0x36068/12, entry 1
+Translating 0x3ffee4
+0x3ffee4 => 0x3cee4 (=00000000) using base1=0x36068/12, entry 1023
+Translating 0x10e0
+0x10e0 => 0x3e0e0 (=2fbd0018) using base1=0x36068/12, entry 1
+Translating 0x10e4
+0x10e4 => 0x3e0e4 (=0c000fcc) using base1=0x36068/12, entry 1
+Translating 0x20b4
+0x20b4 => 0x3f0b4 (=4be00000) using base1=0x36068/12, entry 2
+Translating 0x10e8
+0x10e8 => 0x3e0e8 (=54000000) using base1=0x36068/12, entry 1
+Translating 0x10ec
+0x10ec => 0x3e0ec (=23bdfff8) using base1=0x36068/12, entry 1
+Translating 0x10f0
+0x10f0 => 0x3e0f0 (=20040000) using base1=0x36068/12, entry 1
+Translating 0x10f4
+0x10f4 => 0x3e0f4 (=afa40000) using base1=0x36068/12, entry 1
+Translating 0x3ffecc
+0x3ffecc => 0x3cecc (=00000000) using base1=0x36068/12, entry 1023
+Translating 0x10f8
+0x10f8 => 0x3e0f8 (=0c000134) using base1=0x36068/12, entry 1
+Translating 0x1230
+0x1230 => 0x3e230 (=44000450) using base1=0x36068/12, entry 1
+Translating vaddr: 3ffecc
+pagenum = 3ff
+Returning paddr: 3cecc
+Translating 0x1234
+0x1234 => 0x3e234 (=4be00000) using base1=0x36068/12, entry 1
+Translating 0x10fc
+0x10fc => 0x3e0fc (=54000000) using base1=0x36068/12, entry 1
+Translating 0x1100
+0x1100 => 0x3e100 (=00011820) using base1=0x36068/12, entry 1
+Translating 0x1104
+0x1104 => 0x3e104 (=23bd0008) using base1=0x36068/12, entry 1
+Translating 0x1108
+0x1108 => 0x3e108 (=6061ffff) using base1=0x36068/12, entry 1
+Translating 0x110c
+0x110c => 0x3e10c (=10200034) using base1=0x36068/12, entry 1
+Translating 0x1144
+0x1144 => 0x3e144 (=23bdfff8) using base1=0x36068/12, entry 1
+Translating 0x1148
+0x1148 => 0x3e148 (=afa30000) using base1=0x36068/12, entry 1
+Translating 0x3ffecc
+0x3ffecc => 0x3cecc (=00000000) using base1=0x36068/12, entry 1023
+Translating 0x114c
+0x114c => 0x3e14c (=23c2ffe8) using base1=0x36068/12, entry 1
+Translating 0x1150
+0x1150 => 0x3e150 (=afa20004) using base1=0x36068/12, entry 1
+Translating 0x3ffed0
+0x3ffed0 => 0x3ced0 (=00000000) using base1=0x36068/12, entry 1023
+Translating 0x1154
+0x1154 => 0x3e154 (=0c0008d4) using base1=0x36068/12, entry 1
+Translating 0x1a2c
+0x1a2c => 0x3ea2c (=afbefffc) using base1=0x36068/12, entry 1
+Translating 0x3ffec8
+0x3ffec8 => 0x3cec8 (=00000000) using base1=0x36068/12, entry 1023
+Translating 0x1a30
+0x1a30 => 0x3ea30 (=001df020) using base1=0x36068/12, entry 1
+Translating 0x1a34
+0x1a34 => 0x3ea34 (=afbffff8) using base1=0x36068/12, entry 1
+Translating 0x3ffec4
+0x3ffec4 => 0x3cec4 (=00000000) using base1=0x36068/12, entry 1023
+Translating 0x1a38
+0x1a38 => 0x3ea38 (=2fbd0018) using base1=0x36068/12, entry 1
+Translating 0x1a3c
+0x1a3c => 0x3ea3c (=afa20000) using base1=0x36068/12, entry 1
+Translating 0x3ffeb4
+0x3ffeb4 => 0x3ceb4 (=00000000) using base1=0x36068/12, entry 1023
+Translating 0x1a40
+0x1a40 => 0x3ea40 (=afa30004) using base1=0x36068/12, entry 1
+Translating 0x3ffeb8
+0x3ffeb8 => 0x3ceb8 (=00000000) using base1=0x36068/12, entry 1023
+Translating 0x1a44
+0x1a44 => 0x3ea44 (=8fc10000) using base1=0x36068/12, entry 1
+Translating 0x3ffecc
+0x3ffecc => 0x3cecc (=00000000) using base1=0x36068/12, entry 1023
+Translating 0x1a48
+0x1a48 => 0x3ea48 (=68220000) using base1=0x36068/12, entry 1
+Translating 0x1a4c
+0x1a4c => 0x3ea4c (=1040002c) using base1=0x36068/12, entry 1
+Translating 0x1a7c
+0x1a7c => 0x3ea7c (=8fc10000) using base1=0x36068/12, entry 1
+Translating 0x3ffecc
+0x3ffecc => 0x3cecc (=00000000) using base1=0x36068/12, entry 1023
+Translating 0x1a80
+0x1a80 => 0x3ea80 (=64220000) using base1=0x36068/12, entry 1
+Translating 0x1a84
+0x1a84 => 0x3ea84 (=14400020) using base1=0x36068/12, entry 1
+Translating 0x1a88
+0x1a88 => 0x3ea88 (=54000000) using base1=0x36068/12, entry 1
+Translating 0x1a8c
+0x1a8c => 0x3ea8c (=8fc10004) using base1=0x36068/12, entry 1
+Translating 0x3ffed0
+0x3ffed0 => 0x3ced0 (=003ffed4) using base1=0x36068/12, entry 1023
+Translating 0x1a90
+0x1a90 => 0x3ea90 (=20220001) using base1=0x36068/12, entry 1
+Translating 0x1a94
+0x1a94 => 0x3ea94 (=afc20004) using base1=0x36068/12, entry 1
+Translating 0x3ffed0
+0x3ffed0 => 0x3ced0 (=003ffed4) using base1=0x36068/12, entry 1023
+Translating 0x1a98
+0x1a98 => 0x3ea98 (=20020030) using base1=0x36068/12, entry 1
+Translating 0x1a9c
+0x1a9c => 0x3ea9c (=a0220000) using base1=0x36068/12, entry 1
+Translating 0x3ffed4
+0x3ffed4 => 0x3ced4 (=00000000) using base1=0x36068/12, entry 1023
+Translating 0x3ffed4
+0x3ffed4 => 0x3ced4 (=00000000) using base1=0x36068/12, entry 1023
+Translating 0x1aa0
+0x1aa0 => 0x3eaa0 (=080000ec) using base1=0x36068/12, entry 1
+Translating 0x1b90
+0x1b90 => 0x3eb90 (=8fc10004) using base1=0x36068/12, entry 1
+Translating 0x3ffed0
+0x3ffed0 => 0x3ced0 (=003ffed5) using base1=0x36068/12, entry 1023
+Translating 0x1b94
+0x1b94 => 0x3eb94 (=20020000) using base1=0x36068/12, entry 1
+Translating 0x1b98
+0x1b98 => 0x3eb98 (=a0220000) using base1=0x36068/12, entry 1
+Translating 0x3ffed4
+0x3ffed4 => 0x3ced4 (=30000000) using base1=0x36068/12, entry 1023
+Translating 0x3ffed4
+0x3ffed4 => 0x3ced4 (=30000000) using base1=0x36068/12, entry 1023
+Translating 0x1b9c
+0x1b9c => 0x3eb9c (=8fa20000) using base1=0x36068/12, entry 1
+Translating 0x3ffeb4
+0x3ffeb4 => 0x3ceb4 (=003ffed4) using base1=0x36068/12, entry 1023
+Translating 0x1ba0
+0x1ba0 => 0x3eba0 (=8fa30004) using base1=0x36068/12, entry 1
+Translating 0x3ffeb8
+0x3ffeb8 => 0x3ceb8 (=00000000) using base1=0x36068/12, entry 1023
+Translating 0x1ba4
+0x1ba4 => 0x3eba4 (=8fdffff8) using base1=0x36068/12, entry 1
+Translating 0x3ffec4
+0x3ffec4 => 0x3cec4 (=00001158) using base1=0x36068/12, entry 1023
+Translating 0x1ba8
+0x1ba8 => 0x3eba8 (=001ee820) using base1=0x36068/12, entry 1
+Translating 0x1bac
+0x1bac => 0x3ebac (=8fdefffc) using base1=0x36068/12, entry 1
+Translating 0x3ffec8
+0x3ffec8 => 0x3cec8 (=003ffeec) using base1=0x36068/12, entry 1023
+Translating 0x1bb0
+0x1bb0 => 0x3ebb0 (=4be00000) using base1=0x36068/12, entry 1
+Translating 0x1158
+0x1158 => 0x3e158 (=54000000) using base1=0x36068/12, entry 1
+Translating 0x115c
+0x115c => 0x3e15c (=23bdfff8) using base1=0x36068/12, entry 1
+Translating 0x1160
+0x1160 => 0x3e160 (=3c040000) using base1=0x36068/12, entry 1
+Translating 0x1164
+0x1164 => 0x3e164 (=24843020) using base1=0x36068/12, entry 1
+Translating 0x1168
+0x1168 => 0x3e168 (=afa40000) using base1=0x36068/12, entry 1
+Translating 0x3ffec4
+0x3ffec4 => 0x3cec4 (=00001158) using base1=0x36068/12, entry 1023
+Translating 0x116c
+0x116c => 0x3e16c (=afa20004) using base1=0x36068/12, entry 1
+Translating 0x3ffec8
+0x3ffec8 => 0x3cec8 (=003ffeec) using base1=0x36068/12, entry 1023
+Translating 0x1170
+0x1170 => 0x3e170 (=20040000) using base1=0x36068/12, entry 1
+Translating 0x1174
+0x1174 => 0x3e174 (=afa40008) using base1=0x36068/12, entry 1
+Translating 0x3ffecc
+0x3ffecc => 0x3cecc (=00000000) using base1=0x36068/12, entry 1023
+Translating 0x1178
+0x1178 => 0x3e178 (=0c000090) using base1=0x36068/12, entry 1
+Translating 0x120c
+0x120c => 0x3e20c (=44000432) using base1=0x36068/12, entry 1
+Translating vaddr: 3ffec4
+pagenum = 3ff
+Returning paddr: 3cec4
+Translating vaddr: 3020
+pagenum = 3
+Returning paddr: 40020
+Translating vaddr: 3021
+pagenum = 3
+Returning paddr: 40021
+Translating vaddr: 3022
+pagenum = 3
+Returning paddr: 40022
+Translating vaddr: 3023
+pagenum = 3
+Returning paddr: 40023
+Translating vaddr: 3024
+pagenum = 3
+Returning paddr: 40024
+Translating vaddr: 3025
+pagenum = 3
+Returning paddr: 40025
+Translating vaddr: 3026
+pagenum = 3
+Returning paddr: 40026
+Translating vaddr: 3027
+pagenum = 3
+Returning paddr: 40027
+Translating vaddr: 3028
+pagenum = 3
+Returning paddr: 40028
+Translating vaddr: 3029
+pagenum = 3
+Returning paddr: 40029
+Translating vaddr: 302a
+pagenum = 3
+Returning paddr: 4002a
+Translating vaddr: 302b
+pagenum = 3
+Returning paddr: 4002b
+Translating vaddr: 302c
+pagenum = 3
+Returning paddr: 4002c
+Translating vaddr: 302d
+pagenum = 3
+Returning paddr: 4002d
+Translating vaddr: 3ffec8
+pagenum = 3ff
+Returning paddr: 3cec8
+Translating vaddr: 3ffed4
+pagenum = 3ff
+Returning paddr: 3ced4
+Translating vaddr: 3ffed5
+pagenum = 3ff
+Returning paddr: 3ced5
+Translating vaddr: 3ffecc
+pagenum = 3ff
+Returning paddr: 3cecc
+Allocating memory, starting with page 2
+Allocated memory, from map 2, page 65, map=0xfffffffc.
+Allocating memory, starting with page 2
+Allocated memory, from map 2, page 66, map=0xfffffff8.
+Allocating 4 pages for user code
+Allocating memory, starting with page 2
+Allocated memory, from map 2, page 67, map=0xfffffff0.
+Allocating memory, starting with page 2
+Allocated memory, from map 2, page 68, map=0xffffffe0.
+Allocating memory, starting with page 2
+Allocated memory, from map 2, page 69, map=0xffffffc0.
+Allocating memory, starting with page 2
+Allocated memory, from map 2, page 70, map=0xffffff80.
+ProcessFork: stackframe = 0x41ea8
+(uint32)(pcb->pagetable) = 35004
+stackframe[PROCESS_STACK_PTBITS] = c000c
+ProcessFork: set process stack PT info
+Translating vaddr: 1000
+pagenum = 1
+Returning paddr: 44000
+Translating vaddr: 104c
+pagenum = 1
+Returning paddr: 4404c
+Translating vaddr: 109c
+pagenum = 1
+Returning paddr: 4409c
+Translating vaddr: 3000
+pagenum = 3
+Returning paddr: 46000
+Translating vaddr: 3046
+pagenum = 3
+Returning paddr: 46046
+Translating vaddr: 3058
+pagenum = 3
+Returning paddr: 46058
+Translating vaddr: 307c
+pagenum = 3
+Returning paddr: 4607c
+Translating vaddr: 30c6
+pagenum = 3
+Returning paddr: 460c6
+Translating vaddr: 10d4
+pagenum = 1
+Returning paddr: 440d4
+Translating vaddr: 1120
+pagenum = 1
+Returning paddr: 44120
+Translating vaddr: 1170
+pagenum = 1
+Returning paddr: 44170
+Translating vaddr: 11c0
+pagenum = 1
+Returning paddr: 441c0
+Translating vaddr: 1210
+pagenum = 1
+Returning paddr: 44210
+Translating vaddr: 1260
+pagenum = 1
+Returning paddr: 44260
+Translating vaddr: 12b0
+pagenum = 1
+Returning paddr: 442b0
+Translating vaddr: 1300
+pagenum = 1
+Returning paddr: 44300
+Translating vaddr: 1350
+pagenum = 1
+Returning paddr: 44350
+Translating vaddr: 13a0
+pagenum = 1
+Returning paddr: 443a0
+Translating vaddr: 13f0
+pagenum = 1
+Returning paddr: 443f0
+Translating vaddr: 1440
+pagenum = 1
+Returning paddr: 44440
+Translating vaddr: 1490
+pagenum = 1
+Returning paddr: 44490
+Translating vaddr: 14e0
+pagenum = 1
+Returning paddr: 444e0
+Translating vaddr: 1530
+pagenum = 1
+Returning paddr: 44530
+Translating vaddr: 1580
+pagenum = 1
+Returning paddr: 44580
+Translating vaddr: 15d0
+pagenum = 1
+Returning paddr: 445d0
+Translating vaddr: 1620
+pagenum = 1
+Returning paddr: 44620
+Translating vaddr: 1670
+pagenum = 1
+Returning paddr: 44670
+Translating vaddr: 16c0
+pagenum = 1
+Returning paddr: 446c0
+Translating vaddr: 1710
+pagenum = 1
+Returning paddr: 44710
+Translating vaddr: 1760
+pagenum = 1
+Returning paddr: 44760
+Translating vaddr: 17b0
+pagenum = 1
+Returning paddr: 447b0
+Translating vaddr: 1800
+pagenum = 1
+Returning paddr: 44800
+Translating vaddr: 1850
+pagenum = 1
+Returning paddr: 44850
+Translating vaddr: 18a0
+pagenum = 1
+Returning paddr: 448a0
+Translating vaddr: 18f0
+pagenum = 1
+Returning paddr: 448f0
+Translating vaddr: 1940
+pagenum = 1
+Returning paddr: 44940
+Translating vaddr: 1990
+pagenum = 1
+Returning paddr: 44990
+Translating vaddr: 19e0
+pagenum = 1
+Returning paddr: 449e0
+Translating vaddr: 1a30
+pagenum = 1
+Returning paddr: 44a30
+Translating vaddr: 1a80
+pagenum = 1
+Returning paddr: 44a80
+Translating vaddr: 1ad0
+pagenum = 1
+Returning paddr: 44ad0
+Translating vaddr: 1b20
+pagenum = 1
+Returning paddr: 44b20
+Translating vaddr: 1b70
+pagenum = 1
+Returning paddr: 44b70
+Translating vaddr: 1bc0
+pagenum = 1
+Returning paddr: 44bc0
+Translating vaddr: 1c10
+pagenum = 1
+Returning paddr: 44c10
+Translating vaddr: 1c60
+pagenum = 1
+Returning paddr: 44c60
+Translating vaddr: 1cb0
+pagenum = 1
+Returning paddr: 44cb0
+Translating vaddr: 1d00
+pagenum = 1
+Returning paddr: 44d00
+Translating vaddr: 1d50
+pagenum = 1
+Returning paddr: 44d50
+Translating vaddr: 1da0
+pagenum = 1
+Returning paddr: 44da0
+Translating vaddr: 1df0
+pagenum = 1
+Returning paddr: 44df0
+Translating vaddr: 1e40
+pagenum = 1
+Returning paddr: 44e40
+Translating vaddr: 1e90
+pagenum = 1
+Returning paddr: 44e90
+Translating vaddr: 1ee0
+pagenum = 1
+Returning paddr: 44ee0
+Translating vaddr: 1f30
+pagenum = 1
+Returning paddr: 44f30
+Translating vaddr: 1f80
+pagenum = 1
+Returning paddr: 44f80
+Translating vaddr: 1fd0
+pagenum = 1
+Returning paddr: 44fd0
+Translating vaddr: 2000
+pagenum = 2
+Returning paddr: 45000
+Translating vaddr: 2020
+pagenum = 2
+Returning paddr: 45020
+Translating vaddr: 2070
+pagenum = 2
+Returning paddr: 45070
+stackframe[PROCESS_STACK_USER_STACKPOINTER] = 3ffffc
+Translating vaddr: 3ffefc
+pagenum = 3ff
+Returning paddr: 42efc
+Translating vaddr: 3ffeec
+pagenum = 3ff
+Returning paddr: 42eec
+(m) Leaving ProcessFork (test2.dlx.obj)
+Translating 0x1210
+0x1210 => 0x3e210 (=4be00000) using base1=0x36068/12, entry 1
+Translating 0x117c
+0x117c => 0x3e17c (=54000000) using base1=0x36068/12, entry 1
+Translating 0x1180
+0x1180 => 0x3e180 (=afa30000) using base1=0x36068/12, entry 1
+Translating 0x3ffec4
+0x3ffec4 => 0x3cec4 (=00003020) using base1=0x36068/12, entry 1023
+Translating 0x1184
+0x1184 => 0x3e184 (=0c0000b4) using base1=0x36068/12, entry 1
+Translating 0x123c
+0x123c => 0x3e23c (=44000451) using base1=0x36068/12, entry 1
+Translating vaddr: 3ffec4
+pagenum = 3ff
+Returning paddr: 3cec4
+Translating 0x10d4
+0x10d4 => 0x440d4 (=afbefffc) using base1=0x35004/12, entry 1
+Translating 0x3ffee8
+0x3ffee8 => 0x42ee8 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x10d8
+0x10d8 => 0x440d8 (=001df020) using base1=0x35004/12, entry 1
+Translating 0x10dc
+0x10dc => 0x440dc (=afbffff8) using base1=0x35004/12, entry 1
+Translating 0x3ffee4
+0x3ffee4 => 0x42ee4 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x10e0
+0x10e0 => 0x440e0 (=2fbd0008) using base1=0x35004/12, entry 1
+Translating 0x10e4
+0x10e4 => 0x440e4 (=8fc20004) using base1=0x35004/12, entry 1
+Translating 0x3ffef0
+0x3ffef0 => 0x42ef0 (=003ffef4) using base1=0x35004/12, entry 1023
+Translating 0x10e8
+0x10e8 => 0x440e8 (=0c000fb8) using base1=0x35004/12, entry 1
+Translating 0x20a4
+0x20a4 => 0x450a4 (=4be00000) using base1=0x35004/12, entry 2
+Translating 0x10ec
+0x10ec => 0x440ec (=54000000) using base1=0x35004/12, entry 1
+Translating 0x10f0
+0x10f0 => 0x440f0 (=23bdfff0) using base1=0x35004/12, entry 1
+Translating 0x10f4
+0x10f4 => 0x440f4 (=8c420004) using base1=0x35004/12, entry 1
+Translating 0x3ffef8
+0x3ffef8 => 0x42ef8 (=003fff0a) using base1=0x35004/12, entry 1023
+Translating 0x10f8
+0x10f8 => 0x440f8 (=afa20000) using base1=0x35004/12, entry 1
+Translating 0x3ffed4
+0x3ffed4 => 0x42ed4 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x10fc
+0x10fc => 0x440fc (=20030000) using base1=0x35004/12, entry 1
+Translating 0x1100
+0x1100 => 0x44100 (=afa30004) using base1=0x35004/12, entry 1
+Translating 0x3ffed8
+0x3ffed8 => 0x42ed8 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1104
+0x1104 => 0x44104 (=2003000a) using base1=0x35004/12, entry 1
+Translating 0x1108
+0x1108 => 0x44108 (=afa30008) using base1=0x35004/12, entry 1
+Translating 0x3ffedc
+0x3ffedc => 0x42edc (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x110c
+0x110c => 0x4410c (=0c000a98) using base1=0x35004/12, entry 1
+Translating 0x1ba8
+0x1ba8 => 0x44ba8 (=afbefffc) using base1=0x35004/12, entry 1
+Translating 0x3ffed0
+0x3ffed0 => 0x42ed0 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1bac
+0x1bac => 0x44bac (=001df020) using base1=0x35004/12, entry 1
+Translating 0x1bb0
+0x1bb0 => 0x44bb0 (=afbffff8) using base1=0x35004/12, entry 1
+Translating 0x3ffecc
+0x3ffecc => 0x42ecc (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1bb4
+0x1bb4 => 0x44bb4 (=2fbd0020) using base1=0x35004/12, entry 1
+Translating 0x1bb8
+0x1bb8 => 0x44bb8 (=afa20000) using base1=0x35004/12, entry 1
+Translating 0x3ffeb4
+0x3ffeb4 => 0x42eb4 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1bbc
+0x1bbc => 0x44bbc (=20010000) using base1=0x35004/12, entry 1
+Translating 0x1bc0
+0x1bc0 => 0x44bc0 (=afc1fff4) using base1=0x35004/12, entry 1
+Translating 0x3ffec8
+0x3ffec8 => 0x42ec8 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1bc4
+0x1bc4 => 0x44bc4 (=8fc10000) using base1=0x35004/12, entry 1
+Translating 0x3ffed4
+0x3ffed4 => 0x42ed4 (=003fff0a) using base1=0x35004/12, entry 1023
+Translating 0x1bc8
+0x1bc8 => 0x44bc8 (=90220000) using base1=0x35004/12, entry 1
+Translating 0x3fff08
+0x3fff08 => 0x42f08 (=6a003000) using base1=0x35004/12, entry 1023
+Translating 0x1bcc
+0x1bcc => 0x44bcc (=60410020) using base1=0x35004/12, entry 1
+Translating 0x1bd0
+0x1bd0 => 0x44bd0 (=14200034) using base1=0x35004/12, entry 1
+Translating 0x1bd4
+0x1bd4 => 0x44bd4 (=54000000) using base1=0x35004/12, entry 1
+Translating 0x1bd8
+0x1bd8 => 0x44bd8 (=8fc10000) using base1=0x35004/12, entry 1
+Translating 0x3ffed4
+0x3ffed4 => 0x42ed4 (=003fff0a) using base1=0x35004/12, entry 1023
+Translating 0x1bdc
+0x1bdc => 0x44bdc (=90220000) using base1=0x35004/12, entry 1
+Translating 0x3fff08
+0x3fff08 => 0x42f08 (=6a003000) using base1=0x35004/12, entry 1023
+Translating 0x1be0
+0x1be0 => 0x44be0 (=60410009) using base1=0x35004/12, entry 1
+Translating 0x1be4
+0x1be4 => 0x44be4 (=14200020) using base1=0x35004/12, entry 1
+Translating 0x1be8
+0x1be8 => 0x44be8 (=54000000) using base1=0x35004/12, entry 1
+Translating 0x1bec
+0x1bec => 0x44bec (=8fc10000) using base1=0x35004/12, entry 1
+Translating 0x3ffed4
+0x3ffed4 => 0x42ed4 (=003fff0a) using base1=0x35004/12, entry 1023
+Translating 0x1bf0
+0x1bf0 => 0x44bf0 (=90220000) using base1=0x35004/12, entry 1
+Translating 0x3fff08
+0x3fff08 => 0x42f08 (=6a003000) using base1=0x35004/12, entry 1023
+Translating 0x1bf4
+0x1bf4 => 0x44bf4 (=6041000a) using base1=0x35004/12, entry 1
+Translating 0x1bf8
+0x1bf8 => 0x44bf8 (=1420000c) using base1=0x35004/12, entry 1
+Translating 0x1bfc
+0x1bfc => 0x44bfc (=54000000) using base1=0x35004/12, entry 1
+Translating 0x1c00
+0x1c00 => 0x44c00 (=0800001c) using base1=0x35004/12, entry 1
+Translating 0x1c20
+0x1c20 => 0x44c20 (=8fc10004) using base1=0x35004/12, entry 1
+Translating 0x3ffed8
+0x3ffed8 => 0x42ed8 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1c24
+0x1c24 => 0x44c24 (=64220000) using base1=0x35004/12, entry 1
+Translating 0x1c28
+0x1c28 => 0x44c28 (=10400010) using base1=0x35004/12, entry 1
+Translating 0x1c3c
+0x1c3c => 0x44c3c (=8fc10000) using base1=0x35004/12, entry 1
+Translating 0x3ffed4
+0x3ffed4 => 0x42ed4 (=003fff0a) using base1=0x35004/12, entry 1023
+Translating 0x1c40
+0x1c40 => 0x44c40 (=90220000) using base1=0x35004/12, entry 1
+Translating 0x3fff08
+0x3fff08 => 0x42f08 (=6a003000) using base1=0x35004/12, entry 1023
+Translating 0x1c44
+0x1c44 => 0x44c44 (=64410000) using base1=0x35004/12, entry 1
+Translating 0x1c48
+0x1c48 => 0x44c48 (=14200010) using base1=0x35004/12, entry 1
+Translating 0x1c5c
+0x1c5c => 0x44c5c (=8fc10000) using base1=0x35004/12, entry 1
+Translating 0x3ffed4
+0x3ffed4 => 0x42ed4 (=003fff0a) using base1=0x35004/12, entry 1023
+Translating 0x1c60
+0x1c60 => 0x44c60 (=90220000) using base1=0x35004/12, entry 1
+Translating 0x3fff08
+0x3fff08 => 0x42f08 (=6a003000) using base1=0x35004/12, entry 1023
+Translating 0x1c64
+0x1c64 => 0x44c64 (=6041002d) using base1=0x35004/12, entry 1
+Translating 0x1c68
+0x1c68 => 0x44c68 (=10200024) using base1=0x35004/12, entry 1
+Translating 0x1c90
+0x1c90 => 0x44c90 (=20010001) using base1=0x35004/12, entry 1
+Translating 0x1c94
+0x1c94 => 0x44c94 (=afc1ffec) using base1=0x35004/12, entry 1
+Translating 0x3ffec0
+0x3ffec0 => 0x42ec0 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1c98
+0x1c98 => 0x44c98 (=8fc10008) using base1=0x35004/12, entry 1
+Translating 0x3ffedc
+0x3ffedc => 0x42edc (=0000000a) using base1=0x35004/12, entry 1023
+Translating 0x1c9c
+0x1c9c => 0x44c9c (=64220000) using base1=0x35004/12, entry 1
+Translating 0x1ca0
+0x1ca0 => 0x44ca0 (=14400090) using base1=0x35004/12, entry 1
+Translating 0x1d34
+0x1d34 => 0x44d34 (=8fc10008) using base1=0x35004/12, entry 1
+Translating 0x3ffedc
+0x3ffedc => 0x42edc (=0000000a) using base1=0x35004/12, entry 1023
+Translating 0x1d38
+0x1d38 => 0x44d38 (=70220000) using base1=0x35004/12, entry 1
+Translating 0x1d3c
+0x1d3c => 0x44d3c (=1440001c) using base1=0x35004/12, entry 1
+Translating 0x1d40
+0x1d40 => 0x44d40 (=54000000) using base1=0x35004/12, entry 1
+Translating 0x1d44
+0x1d44 => 0x44d44 (=8fc10008) using base1=0x35004/12, entry 1
+Translating 0x3ffedc
+0x3ffedc => 0x42edc (=0000000a) using base1=0x35004/12, entry 1023
+Translating 0x1d48
+0x1d48 => 0x44d48 (=6c220010) using base1=0x35004/12, entry 1
+Translating 0x1d4c
+0x1d4c => 0x44d4c (=1440000c) using base1=0x35004/12, entry 1
+Translating 0x1d50
+0x1d50 => 0x44d50 (=54000000) using base1=0x35004/12, entry 1
+Translating 0x1d54
+0x1d54 => 0x44d54 (=08000010) using base1=0x35004/12, entry 1
+Translating 0x1d68
+0x1d68 => 0x44d68 (=54000000) using base1=0x35004/12, entry 1
+Translating 0x1d6c
+0x1d6c => 0x44d6c (=8fc10000) using base1=0x35004/12, entry 1
+Translating 0x3ffed4
+0x3ffed4 => 0x42ed4 (=003fff0a) using base1=0x35004/12, entry 1023
+Translating 0x1d70
+0x1d70 => 0x44d70 (=90220000) using base1=0x35004/12, entry 1
+Translating 0x3fff08
+0x3fff08 => 0x42f08 (=6a003000) using base1=0x35004/12, entry 1023
+Translating 0x1d74
+0x1d74 => 0x44d74 (=6c41002f) using base1=0x35004/12, entry 1
+Translating 0x1d78
+0x1d78 => 0x44d78 (=10200030) using base1=0x35004/12, entry 1
+Translating 0x1d7c
+0x1d7c => 0x44d7c (=54000000) using base1=0x35004/12, entry 1
+Translating 0x1d80
+0x1d80 => 0x44d80 (=8fc10000) using base1=0x35004/12, entry 1
+Translating 0x3ffed4
+0x3ffed4 => 0x42ed4 (=003fff0a) using base1=0x35004/12, entry 1023
+Translating 0x1d84
+0x1d84 => 0x44d84 (=90220000) using base1=0x35004/12, entry 1
+Translating 0x3fff08
+0x3fff08 => 0x42f08 (=6a003000) using base1=0x35004/12, entry 1023
+Translating 0x1d88
+0x1d88 => 0x44d88 (=70410039) using base1=0x35004/12, entry 1
+Translating 0x1d8c
+0x1d8c => 0x44d8c (=1020001c) using base1=0x35004/12, entry 1
+Translating 0x1d90
+0x1d90 => 0x44d90 (=54000000) using base1=0x35004/12, entry 1
+Translating 0x1d94
+0x1d94 => 0x44d94 (=8fc10000) using base1=0x35004/12, entry 1
+Translating 0x3ffed4
+0x3ffed4 => 0x42ed4 (=003fff0a) using base1=0x35004/12, entry 1023
+Translating 0x1d98
+0x1d98 => 0x44d98 (=90220000) using base1=0x35004/12, entry 1
+Translating 0x3fff08
+0x3fff08 => 0x42f08 (=6a003000) using base1=0x35004/12, entry 1023
+Translating 0x1d9c
+0x1d9c => 0x44d9c (=2041ffd0) using base1=0x35004/12, entry 1
+Translating 0x1da0
+0x1da0 => 0x44da0 (=afc1fff0) using base1=0x35004/12, entry 1
+Translating 0x3ffec4
+0x3ffec4 => 0x42ec4 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1da4
+0x1da4 => 0x44da4 (=0800008c) using base1=0x35004/12, entry 1
+Translating 0x1e34
+0x1e34 => 0x44e34 (=8fc1fff0) using base1=0x35004/12, entry 1
+Translating 0x3ffec4
+0x3ffec4 => 0x42ec4 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1e38
+0x1e38 => 0x44e38 (=8fc20008) using base1=0x35004/12, entry 1
+Translating 0x3ffedc
+0x3ffedc => 0x42edc (=0000000a) using base1=0x35004/12, entry 1023
+Translating 0x1e3c
+0x1e3c => 0x44e3c (=0022082a) using base1=0x35004/12, entry 1
+Translating 0x1e40
+0x1e40 => 0x44e40 (=10200040) using base1=0x35004/12, entry 1
+Translating 0x1e44
+0x1e44 => 0x44e44 (=54000000) using base1=0x35004/12, entry 1
+Translating 0x1e48
+0x1e48 => 0x44e48 (=8fc1fff4) using base1=0x35004/12, entry 1
+Translating 0x3ffec8
+0x3ffec8 => 0x42ec8 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1e4c
+0x1e4c => 0x44e4c (=8fc20008) using base1=0x35004/12, entry 1
+Translating 0x3ffedc
+0x3ffedc => 0x42edc (=0000000a) using base1=0x35004/12, entry 1023
+Translating 0x1e50
+0x1e50 => 0x44e50 (=00200035) using base1=0x35004/12, entry 1
+Translating 0x1e54
+0x1e54 => 0x44e54 (=00400835) using base1=0x35004/12, entry 1
+Translating 0x1e58
+0x1e58 => 0x44e58 (=0401000e) using base1=0x35004/12, entry 1
+Translating 0x1e5c
+0x1e5c => 0x44e5c (=00000834) using base1=0x35004/12, entry 1
+Translating 0x1e60
+0x1e60 => 0x44e60 (=afc1fff4) using base1=0x35004/12, entry 1
+Translating 0x3ffec8
+0x3ffec8 => 0x42ec8 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1e64
+0x1e64 => 0x44e64 (=8fc1fff4) using base1=0x35004/12, entry 1
+Translating 0x3ffec8
+0x3ffec8 => 0x42ec8 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1e68
+0x1e68 => 0x44e68 (=8fc2fff0) using base1=0x35004/12, entry 1
+Translating 0x3ffec4
+0x3ffec4 => 0x42ec4 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1e6c
+0x1e6c => 0x44e6c (=00220820) using base1=0x35004/12, entry 1
+Translating 0x1e70
+0x1e70 => 0x44e70 (=afc1fff4) using base1=0x35004/12, entry 1
+Translating 0x3ffec8
+0x3ffec8 => 0x42ec8 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1e74
+0x1e74 => 0x44e74 (=8fc20000) using base1=0x35004/12, entry 1
+Translating 0x3ffed4
+0x3ffed4 => 0x42ed4 (=003fff0a) using base1=0x35004/12, entry 1023
+Translating 0x1e78
+0x1e78 => 0x44e78 (=20410001) using base1=0x35004/12, entry 1
+Translating 0x1e7c
+0x1e7c => 0x44e7c (=00011020) using base1=0x35004/12, entry 1
+Translating 0x1e80
+0x1e80 => 0x44e80 (=afc20000) using base1=0x35004/12, entry 1
+Translating 0x3ffed4
+0x3ffed4 => 0x42ed4 (=003fff0a) using base1=0x35004/12, entry 1023
+Translating 0x1e84
+0x1e84 => 0x44e84 (=8fc1fff0) using base1=0x35004/12, entry 1
+Translating 0x3ffec4
+0x3ffec4 => 0x42ec4 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1e88
+0x1e88 => 0x44e88 (=8fc20008) using base1=0x35004/12, entry 1
+Translating 0x3ffedc
+0x3ffedc => 0x42edc (=0000000a) using base1=0x35004/12, entry 1023
+Translating 0x1e8c
+0x1e8c => 0x44e8c (=0022082a) using base1=0x35004/12, entry 1
+Translating 0x1e90
+0x1e90 => 0x44e90 (=1420000c) using base1=0x35004/12, entry 1
+Translating 0x1ea0
+0x1ea0 => 0x44ea0 (=0bfffec8) using base1=0x35004/12, entry 1
+Translating 0x1d6c
+0x1d6c => 0x44d6c (=8fc10000) using base1=0x35004/12, entry 1
+Translating 0x3ffed4
+0x3ffed4 => 0x42ed4 (=003fff0b) using base1=0x35004/12, entry 1023
+Translating 0x1d70
+0x1d70 => 0x44d70 (=90220000) using base1=0x35004/12, entry 1
+Translating 0x3fff08
+0x3fff08 => 0x42f08 (=6a003000) using base1=0x35004/12, entry 1023
+Translating 0x1d74
+0x1d74 => 0x44d74 (=6c41002f) using base1=0x35004/12, entry 1
+Translating 0x1d78
+0x1d78 => 0x44d78 (=10200030) using base1=0x35004/12, entry 1
+Translating 0x1dac
+0x1dac => 0x44dac (=8fc10000) using base1=0x35004/12, entry 1
+Translating 0x3ffed4
+0x3ffed4 => 0x42ed4 (=003fff0b) using base1=0x35004/12, entry 1023
+Translating 0x1db0
+0x1db0 => 0x44db0 (=90220000) using base1=0x35004/12, entry 1
+Translating 0x3fff08
+0x3fff08 => 0x42f08 (=6a003000) using base1=0x35004/12, entry 1023
+Translating 0x1db4
+0x1db4 => 0x44db4 (=6c410060) using base1=0x35004/12, entry 1
+Translating 0x1db8
+0x1db8 => 0x44db8 (=10200030) using base1=0x35004/12, entry 1
+Translating 0x1dec
+0x1dec => 0x44dec (=8fc10000) using base1=0x35004/12, entry 1
+Translating 0x3ffed4
+0x3ffed4 => 0x42ed4 (=003fff0b) using base1=0x35004/12, entry 1023
+Translating 0x1df0
+0x1df0 => 0x44df0 (=90220000) using base1=0x35004/12, entry 1
+Translating 0x3fff08
+0x3fff08 => 0x42f08 (=6a003000) using base1=0x35004/12, entry 1023
+Translating 0x1df4
+0x1df4 => 0x44df4 (=6c410040) using base1=0x35004/12, entry 1
+Translating 0x1df8
+0x1df8 => 0x44df8 (=10200030) using base1=0x35004/12, entry 1
+Translating 0x1e2c
+0x1e2c => 0x44e2c (=200103e8) using base1=0x35004/12, entry 1
+Translating 0x1e30
+0x1e30 => 0x44e30 (=afc1fff0) using base1=0x35004/12, entry 1
+Translating 0x3ffec4
+0x3ffec4 => 0x42ec4 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1e34
+0x1e34 => 0x44e34 (=8fc1fff0) using base1=0x35004/12, entry 1
+Translating 0x3ffec4
+0x3ffec4 => 0x42ec4 (=000003e8) using base1=0x35004/12, entry 1023
+Translating 0x1e38
+0x1e38 => 0x44e38 (=8fc20008) using base1=0x35004/12, entry 1
+Translating 0x3ffedc
+0x3ffedc => 0x42edc (=0000000a) using base1=0x35004/12, entry 1023
+Translating 0x1e3c
+0x1e3c => 0x44e3c (=0022082a) using base1=0x35004/12, entry 1
+Translating 0x1e40
+0x1e40 => 0x44e40 (=10200040) using base1=0x35004/12, entry 1
+Translating 0x1e84
+0x1e84 => 0x44e84 (=8fc1fff0) using base1=0x35004/12, entry 1
+Translating 0x3ffec4
+0x3ffec4 => 0x42ec4 (=000003e8) using base1=0x35004/12, entry 1023
+Translating 0x1e88
+0x1e88 => 0x44e88 (=8fc20008) using base1=0x35004/12, entry 1
+Translating 0x3ffedc
+0x3ffedc => 0x42edc (=0000000a) using base1=0x35004/12, entry 1023
+Translating 0x1e8c
+0x1e8c => 0x44e8c (=0022082a) using base1=0x35004/12, entry 1
+Translating 0x1e90
+0x1e90 => 0x44e90 (=1420000c) using base1=0x35004/12, entry 1
+Translating 0x1e94
+0x1e94 => 0x44e94 (=54000000) using base1=0x35004/12, entry 1
+Translating 0x1e98
+0x1e98 => 0x44e98 (=0800000c) using base1=0x35004/12, entry 1
+Translating 0x1ea8
+0x1ea8 => 0x44ea8 (=8fc10004) using base1=0x35004/12, entry 1
+Translating 0x3ffed8
+0x3ffed8 => 0x42ed8 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1eac
+0x1eac => 0x44eac (=64220000) using base1=0x35004/12, entry 1
+Translating 0x1eb0
+0x1eb0 => 0x44eb0 (=10400010) using base1=0x35004/12, entry 1
+Translating 0x1ec4
+0x1ec4 => 0x44ec4 (=8fc1fff4) using base1=0x35004/12, entry 1
+Translating 0x3ffec8
+0x3ffec8 => 0x42ec8 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1ec8
+0x1ec8 => 0x44ec8 (=8fc2ffec) using base1=0x35004/12, entry 1
+Translating 0x3ffec0
+0x3ffec0 => 0x42ec0 (=00000001) using base1=0x35004/12, entry 1023
+Translating 0x1ecc
+0x1ecc => 0x44ecc (=00200035) using base1=0x35004/12, entry 1
+Translating 0x1ed0
+0x1ed0 => 0x44ed0 (=00400835) using base1=0x35004/12, entry 1
+Translating 0x1ed4
+0x1ed4 => 0x44ed4 (=0401000e) using base1=0x35004/12, entry 1
+Translating 0x1ed8
+0x1ed8 => 0x44ed8 (=00000834) using base1=0x35004/12, entry 1
+Translating 0x1edc
+0x1edc => 0x44edc (=afc1fff4) using base1=0x35004/12, entry 1
+Translating 0x3ffec8
+0x3ffec8 => 0x42ec8 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1ee0
+0x1ee0 => 0x44ee0 (=8fc1fff4) using base1=0x35004/12, entry 1
+Translating 0x3ffec8
+0x3ffec8 => 0x42ec8 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1ee4
+0x1ee4 => 0x44ee4 (=08000004) using base1=0x35004/12, entry 1
+Translating 0x1eec
+0x1eec => 0x44eec (=8fa20000) using base1=0x35004/12, entry 1
+Translating 0x3ffeb4
+0x3ffeb4 => 0x42eb4 (=003fff0a) using base1=0x35004/12, entry 1023
+Translating 0x1ef0
+0x1ef0 => 0x44ef0 (=8fdffff8) using base1=0x35004/12, entry 1
+Translating 0x3ffecc
+0x3ffecc => 0x42ecc (=00001110) using base1=0x35004/12, entry 1023
+Translating 0x1ef4
+0x1ef4 => 0x44ef4 (=001ee820) using base1=0x35004/12, entry 1
+Translating 0x1ef8
+0x1ef8 => 0x44ef8 (=8fdefffc) using base1=0x35004/12, entry 1
+Translating 0x3ffed0
+0x3ffed0 => 0x42ed0 (=003ffeec) using base1=0x35004/12, entry 1023
+Translating 0x1efc
+0x1efc => 0x44efc (=4be00000) using base1=0x35004/12, entry 1
+Translating 0x1110
+0x1110 => 0x44110 (=54000000) using base1=0x35004/12, entry 1
+Translating 0x1114
+0x1114 => 0x44114 (=00011020) using base1=0x35004/12, entry 1
+Translating 0x1118
+0x1118 => 0x44118 (=3c030000) using base1=0x35004/12, entry 1
+Translating 0x111c
+0x111c => 0x4411c (=24633000) using base1=0x35004/12, entry 1
+Translating 0x1120
+0x1120 => 0x44120 (=afa30000) using base1=0x35004/12, entry 1
+Translating 0x3ffed4
+0x3ffed4 => 0x42ed4 (=003fff0b) using base1=0x35004/12, entry 1023
+Translating 0x1124
+0x1124 => 0x44124 (=0c0000bc) using base1=0x35004/12, entry 1
+Translating 0x11e4
+0x11e4 => 0x441e4 (=44000201) using base1=0x35004/12, entry 1
+Translating vaddr: 3ffed4
+pagenum = 3ff
+Returning paddr: 42ed4
+Translating vaddr: 3000
+pagenum = 3
+Returning paddr: 46000
+Translating vaddr: 3001
+pagenum = 3
+Returning paddr: 46001
+Translating vaddr: 3002
+pagenum = 3
+Returning paddr: 46002
+Translating vaddr: 3003
+pagenum = 3
+Returning paddr: 46003
+Translating vaddr: 3004
+pagenum = 3
+Returning paddr: 46004
+Translating vaddr: 3005
+pagenum = 3
+Returning paddr: 46005
+Translating vaddr: 3006
+pagenum = 3
+Returning paddr: 46006
+Translating vaddr: 3007
+pagenum = 3
+Returning paddr: 46007
+Translating vaddr: 3008
+pagenum = 3
+Returning paddr: 46008
+Translating vaddr: 3009
+pagenum = 3
+Returning paddr: 46009
+Translating vaddr: 300a
+pagenum = 3
+Returning paddr: 4600a
+Translating vaddr: 300b
+pagenum = 3
+Returning paddr: 4600b
+Translating vaddr: 300c
+pagenum = 3
+Returning paddr: 4600c
+Translating vaddr: 300d
+pagenum = 3
+Returning paddr: 4600d
+Translating vaddr: 300e
+pagenum = 3
+Returning paddr: 4600e
+Translating vaddr: 300f
+pagenum = 3
+Returning paddr: 4600f
+Translating vaddr: 3010
+pagenum = 3
+Returning paddr: 46010
+Translating vaddr: 3011
+pagenum = 3
+Returning paddr: 46011
+Translating vaddr: 3012
+pagenum = 3
+Returning paddr: 46012
+Translating vaddr: 3013
+pagenum = 3
+Returning paddr: 46013
+Translating vaddr: 3014
+pagenum = 3
+Returning paddr: 46014
+Translating vaddr: 3015
+pagenum = 3
+Returning paddr: 46015
+Translating vaddr: 3016
+pagenum = 3
+Returning paddr: 46016
+Translating vaddr: 3017
+pagenum = 3
+Returning paddr: 46017
+Translating vaddr: 3018
+pagenum = 3
+Returning paddr: 46018
+Translating vaddr: 3019
+pagenum = 3
+Returning paddr: 46019
+Translating vaddr: 301a
+pagenum = 3
+Returning paddr: 4601a
+Translating vaddr: 301b
+pagenum = 3
+Returning paddr: 4601b
+Translating vaddr: 301c
+pagenum = 3
+Returning paddr: 4601c
+Translating vaddr: 301d
+pagenum = 3
+Returning paddr: 4601d
+Translating vaddr: 301e
+pagenum = 3
+Returning paddr: 4601e
+Translating vaddr: 301f
+pagenum = 3
+Returning paddr: 4601f
+Translating vaddr: 3020
+pagenum = 3
+Returning paddr: 46020
+Translating vaddr: 3021
+pagenum = 3
+Returning paddr: 46021
+Translating vaddr: 3022
+pagenum = 3
+Returning paddr: 46022
+Translating vaddr: 3023
+pagenum = 3
+Returning paddr: 46023
+Translating vaddr: 3024
+pagenum = 3
+Returning paddr: 46024
+Translating vaddr: 3025
+pagenum = 3
+Returning paddr: 46025
+Translating vaddr: 3026
+pagenum = 3
+Returning paddr: 46026
+Translating vaddr: 3027
+pagenum = 3
+Returning paddr: 46027
+Translating vaddr: 3028
+pagenum = 3
+Returning paddr: 46028
+Translating vaddr: 3029
+pagenum = 3
+Returning paddr: 46029
+Translating vaddr: 302a
+pagenum = 3
+Returning paddr: 4602a
+Translating vaddr: 302b
+pagenum = 3
+Returning paddr: 4602b
+Translating vaddr: 302c
+pagenum = 3
+Returning paddr: 4602c
+Translating vaddr: 302d
+pagenum = 3
+Returning paddr: 4602d
+Translating vaddr: 302e
+pagenum = 3
+Returning paddr: 4602e
+Translating vaddr: 302f
+pagenum = 3
+Returning paddr: 4602f
+Translating vaddr: 3030
+pagenum = 3
+Returning paddr: 46030
+Translating vaddr: 3031
+pagenum = 3
+Returning paddr: 46031
+Translating vaddr: 3032
+pagenum = 3
+Returning paddr: 46032
+Translating vaddr: 3033
+pagenum = 3
+Returning paddr: 46033
+Translating vaddr: 3034
+pagenum = 3
+Returning paddr: 46034
+Translating vaddr: 3035
+pagenum = 3
+Returning paddr: 46035
+Translating vaddr: 3036
+pagenum = 3
+Returning paddr: 46036
+Translating vaddr: 3037
+pagenum = 3
+Returning paddr: 46037
+Translating vaddr: 3038
+pagenum = 3
+Returning paddr: 46038
+Translating vaddr: 3039
+pagenum = 3
+Returning paddr: 46039
+Translating vaddr: 303a
+pagenum = 3
+Returning paddr: 4603a
+Translating vaddr: 303b
+pagenum = 3
+Returning paddr: 4603b
+Translating vaddr: 303c
+pagenum = 3
+Returning paddr: 4603c
+Translating vaddr: 303d
+pagenum = 3
+Returning paddr: 4603d
+Translating vaddr: 303e
+pagenum = 3
+Returning paddr: 4603e
+Translating vaddr: 303f
+pagenum = 3
+Returning paddr: 4603f
+Translating vaddr: 3040
+pagenum = 3
+Returning paddr: 46040
+Translating vaddr: 3041
+pagenum = 3
+Returning paddr: 46041
+Translating vaddr: 3042
+pagenum = 3
+Returning paddr: 46042
+Translating vaddr: 3043
+pagenum = 3
+Returning paddr: 46043
+Translating vaddr: 3044
+pagenum = 3
+Returning paddr: 46044
+Translating vaddr: 3045
+pagenum = 3
+Returning paddr: 46045
+Translating vaddr: 3046
+pagenum = 3
+Returning paddr: 46046
+Translating vaddr: 3047
+pagenum = 3
+Returning paddr: 46047
+Translating vaddr: 3048
+pagenum = 3
+Returning paddr: 46048
+Translating vaddr: 3049
+pagenum = 3
+Returning paddr: 46049
+Translating vaddr: 304a
+pagenum = 3
+Returning paddr: 4604a
+Translating vaddr: 304b
+pagenum = 3
+Returning paddr: 4604b
+Translating vaddr: 304c
+pagenum = 3
+Returning paddr: 4604c
+Translating vaddr: 304d
+pagenum = 3
+Returning paddr: 4604d
+Translating vaddr: 304e
+pagenum = 3
+Returning paddr: 4604e
+Translating vaddr: 304f
+pagenum = 3
+Returning paddr: 4604f
+Translating vaddr: 3050
+pagenum = 3
+Returning paddr: 46050
+Translating vaddr: 3051
+pagenum = 3
+Returning paddr: 46051
+Translating vaddr: 3052
+pagenum = 3
+Returning paddr: 46052
+Translating vaddr: 3053
+pagenum = 3
+Returning paddr: 46053
+Translating vaddr: 3054
+pagenum = 3
+Returning paddr: 46054
+Translating vaddr: 3055
+pagenum = 3
+Returning paddr: 46055
+Translating vaddr: 3056
+pagenum = 3
+Returning paddr: 46056
+Translating vaddr: 3057
+pagenum = 3
+Returning paddr: 46057
+--------------------Running test 2.0 (accessing illegal address) ---------------------
+Translating 0x11e8
+0x11e8 => 0x441e8 (=4be00000) using base1=0x35004/12, entry 1
+Translating 0x1128
+0x1128 => 0x44128 (=54000000) using base1=0x35004/12, entry 1
+Translating 0x112c
+0x112c => 0x4412c (=0c0000c0) using base1=0x35004/12, entry 1
+Translating 0x11f0
+0x11f0 => 0x441f0 (=44000431) using base1=0x35004/12, entry 1
+Translating 0x11f4
+0x11f4 => 0x441f4 (=4be00000) using base1=0x35004/12, entry 1
+Translating 0x1130
+0x1130 => 0x44130 (=54000000) using base1=0x35004/12, entry 1
+Translating 0x1134
+0x1134 => 0x44134 (=3c030000) using base1=0x35004/12, entry 1
+Translating 0x1138
+0x1138 => 0x44138 (=24633058) using base1=0x35004/12, entry 1
+Translating 0x113c
+0x113c => 0x4413c (=afa30000) using base1=0x35004/12, entry 1
+Translating 0x3ffed4
+0x3ffed4 => 0x42ed4 (=00003000) using base1=0x35004/12, entry 1023
+Translating 0x1140
+0x1140 => 0x44140 (=afa10004) using base1=0x35004/12, entry 1
+Translating 0x3ffed8
+0x3ffed8 => 0x42ed8 (=00000000) using base1=0x35004/12, entry 1023
+Translating 0x1144
+0x1144 => 0x44144 (=0c00009c) using base1=0x35004/12, entry 1
+Translating 0x11e4
+0x11e4 => 0x441e4 (=44000201) using base1=0x35004/12, entry 1
+Translating vaddr: 3ffed4
+pagenum = 3ff
+Returning paddr: 42ed4
+Translating vaddr: 3058
+pagenum = 3
+Returning paddr: 46058
+Translating vaddr: 3059
+pagenum = 3
+Returning paddr: 46059
+Translating vaddr: 305a
+pagenum = 3
+Returning paddr: 4605a
+Translating vaddr: 305b
+pagenum = 3
+Returning paddr: 4605b
+Translating vaddr: 305c
+pagenum = 3
+Returning paddr: 4605c
+Translating vaddr: 305d
+pagenum = 3
+Returning paddr: 4605d
+Translating vaddr: 305e
+pagenum = 3
+Returning paddr: 4605e
+Translating vaddr: 305f
+pagenum = 3
+Returning paddr: 4605f
+Translating vaddr: 3060
+pagenum = 3
+Returning paddr: 46060
+Translating vaddr: 3061
+pagenum = 3
+Returning paddr: 46061
+Translating vaddr: 3062
+pagenum = 3
+Returning paddr: 46062
+Translating vaddr: 3063
+pagenum = 3
+Returning paddr: 46063
+Translating vaddr: 3064
+pagenum = 3
+Returning paddr: 46064
+Translating vaddr: 3065
+pagenum = 3
+Returning paddr: 46065
+Translating vaddr: 3066
+pagenum = 3
+Returning paddr: 46066
+Translating vaddr: 3067
+pagenum = 3
+Returning paddr: 46067
+Translating vaddr: 3068
+pagenum = 3
+Returning paddr: 46068
+Translating vaddr: 3069
+pagenum = 3
+Returning paddr: 46069
+Translating vaddr: 306a
+pagenum = 3
+Returning paddr: 4606a
+Translating vaddr: 306b
+pagenum = 3
+Returning paddr: 4606b
+Translating vaddr: 306c
+pagenum = 3
+Returning paddr: 4606c
+Translating vaddr: 306d
+pagenum = 3
+Returning paddr: 4606d
+Translating vaddr: 306e
+pagenum = 3
+Returning paddr: 4606e
+Translating vaddr: 306f
+pagenum = 3
+Returning paddr: 4606f
+Translating vaddr: 3070
+pagenum = 3
+Returning paddr: 46070
+Translating vaddr: 3071
+pagenum = 3
+Returning paddr: 46071
+Translating vaddr: 3072
+pagenum = 3
+Returning paddr: 46072
+Translating vaddr: 3073
+pagenum = 3
+Returning paddr: 46073
+Translating vaddr: 3074
+pagenum = 3
+Returning paddr: 46074
+Translating vaddr: 3075
+pagenum = 3
+Returning paddr: 46075
+Translating vaddr: 3076
+pagenum = 3
+Returning paddr: 46076
+Translating vaddr: 3077
+pagenum = 3
+Returning paddr: 46077
+Translating vaddr: 3078
+pagenum = 3
+Returning paddr: 46078
+Translating vaddr: 3ffed8
+pagenum = 3ff
+Returning paddr: 42ed8
+Test (30): accessing 0xFFFF0000
+Translating 0x11e8
+0x11e8 => 0x441e8 (=4be00000) using base1=0x35004/12, entry 1
+Translating 0x1148
+0x1148 => 0x44148 (=54000000) using base1=0x35004/12, entry 1
+Translating 0x114c
+0x114c => 0x4414c (=3c030000) using base1=0x35004/12, entry 1
+Translating 0x1150
+0x1150 => 0x44150 (=2463307c) using base1=0x35004/12, entry 1
+Translating 0x1154
+0x1154 => 0x44154 (=afa30000) using base1=0x35004/12, entry 1
+Translating 0x3ffed4
+0x3ffed4 => 0x42ed4 (=00003058) using base1=0x35004/12, entry 1023
+Translating 0x1158
+0x1158 => 0x44158 (=3c01ffff) using base1=0x35004/12, entry 1
+Translating 0x115c
+0x115c => 0x4415c (=24210000) using base1=0x35004/12, entry 1
+Translating 0x1160
+0x1160 => 0x44160 (=8c210000) using base1=0x35004/12, entry 1
+Translating 0xffff0000
+Out of range (L1 = 12b, L2 = 12b size=1024 entry=1048560)
+Exiting after illegal access at iar=0x1160, isr=0x100
+Exiting at program request.
+Instructions executed: 6798542
+Time simulated: 6.799 secs
+Real time elapsed: 0.533 secs
+Execution rate: 12.75M simulated instructions per real second.
