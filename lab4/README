@@ -1,0 +1,30 @@
+Q1. one-level:
+	1. Build the OS
+	  cd one-level;
+	  cd os;
+	  make;
+	2. Use the test cases written for question 2 to test
+	  cd ../apps/examples;
+	  make
+	  make run 
+
+Q2. test program:
+    The same program is in two places for testing one-level paging and two-level paging. 1. one-level/apps/example/ 2.two-level/apps/example/
+    The program will do the following sequentially:
+    	1. Print "Hello World"
+	2. Allocate a static array larger than 4KB
+	3. User recursion to create 10000 call stacks
+	4. Call "Hello World" program 100 times
+	5. Create 30 simultaneous processes. Each of them count 0 to 1000000. This step needs about 10 seconds to run.
+	6. Access memory beyond the maximum virtual address. This step will create an error
+
+
+Q3. two-level:
+    	1. Build the OS
+	  cd two-level;
+	  cd os;
+	  make;
+	2. Use the test cases written for question 2 to test
+	  cd ../apps/examples;
+	  make
+	  make run 
