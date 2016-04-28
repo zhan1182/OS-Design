@@ -20,7 +20,8 @@ void main (int argc, char *argv[])
   int num_filesystem_blocks;
 	// STUDENT: put your code here. Follow the guidelines below. They are just the main steps. 
 	// You need to think of the finer details. You can use bzero() to zero out bytes in memory
-  bzero(0, DFS_MAX_FILESYSTEM_SIZE); // ????
+
+  //bzero(0, DFS_MAX_FILESYSTEM_SIZE); // ????
 
   //Initializations and argc check
   for(ct = 0; ct < DFS_BLOCKSIZE; ct++)
@@ -78,6 +79,7 @@ void main (int argc, char *argv[])
       Printf("fdisk (%d): Fail to write superblock into physical disk.\n", getpid());
     }
   Printf("fdisk (%d): Formatted DFS disk for %d bytes.\n", getpid(), disksize);
+  
 }
 
 int FdiskWriteBlock(uint32 blocknum, dfs_block *b) {
