@@ -54,7 +54,7 @@ void main (int argc, char *argv[])
     {
       inodes[ct].inuse = 0;
       inodes[ct].file_size = 0;
-      inodes[ct].indirect_num = -1; //not allocated yet
+      inodes[ct].indirect_num = 0; //not allocated yet
     }
   // Next, setup free block vector (fbv) and write free block vector to the disk
   // set all the currently used to 1, and not used to 0, first 19 blocks are occupied
@@ -78,6 +78,17 @@ void main (int argc, char *argv[])
     {
       Printf("fdisk (%d): Fail to write superblock into physical disk.\n", getpid());
     }
+  if(disk_write_block(2, (char *) (inodes)) == DFS_FAIL)
+    {
+      Printf("fdisk (%d): Fail to write inodes into physical disk.\n", getpid());
+    }
+  if(disk_write_block(38, (char *) (fbv)) == DFS_FAIL)
+    {
+      Printf("fdisk (%d): Fail to write fbv into physical disk.\n", getpid());
+    }
+
+
+
   Printf("fdisk (%d): Formatted DFS disk for %d bytes.\n", getpid(), disksize);
   
 }
