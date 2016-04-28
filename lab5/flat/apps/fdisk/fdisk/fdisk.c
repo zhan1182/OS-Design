@@ -16,7 +16,7 @@ int FdiskWriteBlock(uint32 blocknum, dfs_block *b); //You can use your own funct
 void main (int argc, char *argv[])
 {
   int ct = 0;
-  dfs_block block;
+  char block[512];
   int num_filesystem_blocks;
 	// STUDENT: put your code here. Follow the guidelines below. They are just the main steps. 
 	// You need to think of the finer details. You can use bzero() to zero out bytes in memory
@@ -25,7 +25,7 @@ void main (int argc, char *argv[])
   //Initializations and argc check
   for(ct = 0; ct < DFS_BLOCKSIZE; ct++)
     {
-      block.data[ct] = 0;
+      block[ct] = 0;
     }
 
   // Need to invalidate filesystem before writing to it to make sure that the OS
@@ -72,8 +72,8 @@ void main (int argc, char *argv[])
       Printf("fdisk (%d): Fail to write boot record into physical disk.\n", getpid());
     }
   // write super block into p block 1
-  block.data = sb; // ???
-  if(disk_write_block(1, block) == DFS_FAIL)
+  /* block = (char *) (&sb); // ??? */
+  if(disk_write_block(1, (char *) (&sb)) == DFS_FAIL)
     {
       Printf("fdisk (%d): Fail to write superblock into physical disk.\n", getpid());
     }
@@ -82,4 +82,5 @@ void main (int argc, char *argv[])
 
 int FdiskWriteBlock(uint32 blocknum, dfs_block *b) {
   // STUDENT: put your code here
+  return 0;
 }
