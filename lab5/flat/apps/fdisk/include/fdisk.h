@@ -20,5 +20,10 @@ typedef unsigned int uint32;
 //STUDENT: define additional parameters here, if any
 #define DFS_INODE_MAX_NUM 192
 #define DFS_FBV_MAX_NUM_WORDS 512 // 2 blocks, 2048 bytes, 2048 / 4 = 512
+#define P_BLOCKSIZE 512 // physical block size
+typedef struct p_block {
+  char data[P_BLOCKSIZE];
+} p_block;
+
 
 #endif

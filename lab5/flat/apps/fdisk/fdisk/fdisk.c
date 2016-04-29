@@ -18,6 +18,8 @@ void main (int argc, char *argv[])
   int ct = 0;
   char block[512];
   int num_filesystem_blocks;
+  p_block pBlock;
+  char *ptr = NULL;
 	// STUDENT: put your code here. Follow the guidelines below. They are just the main steps. 
 	// You need to think of the finer details. You can use bzero() to zero out bytes in memory
 
@@ -54,7 +56,7 @@ void main (int argc, char *argv[])
     {
       inodes[ct].inuse = 0;
       inodes[ct].file_size = 0;
-      inodes[ct].indirect_num = 0; //not allocated yet
+      inodes[ct].indirect_num = -1; //not allocated yet
     }
   // Next, setup free block vector (fbv) and write free block vector to the disk
   // set all the currently used to 1, and not used to 0, first 19 blocks are occupied
@@ -74,19 +76,34 @@ void main (int argc, char *argv[])
     }
   // write super block into p block 1
   /* block = (char *) (&sb); // ??? */
-  if(disk_write_block(1, (char *) (&sb)) == DFS_FAIL)
+  bcopy((char *)&sb, pBlock.data, sizeof(dfs_superblock));
+  if(disk_write_block(1, pBlock.data) == DFS_FAIL)
     {
       Printf("fdisk (%d): Fail to write superblock into physical disk.\n", getpid());
     }
-  if(disk_write_block(2, (char *) (inodes)) == DFS_FAIL)
+  
+  ptr = (char *)inodes;
+  for(ct = 2; ct < 38; ct++)
     {
-      Printf("fdisk (%d): Fail to write inodes into physical disk.\n", getpid());
+      bcopy(ptr, block, 512);
+      ptr += 512;
+      
+      if(disk_write_block(ct, block) == DFS_FAIL)
+	{
+	  Printf("fdisk (%d): Fail to write inodes into physical disk.\n", getpid());
+	}
     }
-  if(disk_write_block(38, (char *) (fbv)) == DFS_FAIL)
+  ptr = (char *)fbv;
+  for(ct = 38; ct < 42; ct++)
     {
-      Printf("fdisk (%d): Fail to write fbv into physical disk.\n", getpid());
-    }
+      bcopy(ptr, block, 512);
+      ptr += 512;
 
+      if(disk_write_block(ct, block) == DFS_FAIL)
+	{
+	  Printf("fdisk (%d): Fail to write fbv into physical disk.\n", getpid());
+	}
+    }
 
 
   Printf("fdisk (%d): Formatted DFS disk for %d bytes.\n", getpid(), disksize);
