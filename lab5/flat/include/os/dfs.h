@@ -3,11 +3,14 @@
 
 #include "dfs_shared.h"
 
+#define DFS_INODE_MAX_NUM 192
+#define DFS_FBV_MAX_NUM_WORDS 512 // 2 blocks, 2048 bytes, 2048 / 4 = 512
+
 void DfsModuleInit();
 void DfsInvalidate();
 int DfsOpenFileSystem();
 int DfsCloseFileSystem();
-uint32 DfsAllocateBlock();
+int DfsAllocateBlock();
 int DfsFreeBlock(uint32 blocknum);
 int DfsReadBlock(uint32 blocknum, dfs_block *b);
 int DfsWriteBlock(uint32 blocknum, dfs_block *b);

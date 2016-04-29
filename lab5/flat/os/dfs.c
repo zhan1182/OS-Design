@@ -6,9 +6,12 @@
 #include "dfs.h"
 #include "synch.h"
 
-//static dfs_inode inodes[/*specify size*/ ]; // all inodes
-//static dfs_superblock sb; // superblock
-//static uint32 fbv[/*specify size*/]; // Free block vector
+static dfs_inode inodes[DFS_INODE_MAX_NUM]; // all inodes
+static dfs_superblock sb; // superblock
+static uint32 fbv[DFS_FBV_MAX_NUM_WORDS]; // Free block vector
+
+// New added variable to check if filesystem has been opened
+static int fs_open = 0;
 
 static uint32 negativeone = 0xFFFFFFFF;
 static inline uint32 invert(uint32 n) { return n ^ negativeone; }
@@ -29,9 +32,10 @@ static inline uint32 invert(uint32 n) { return n ^ negativeone; }
 //-----------------------------------------------------------------
 
 void DfsModuleInit() {
-// You essentially set the file system as invalid and then open 
-// using DfsOpenFileSystem().
-
+  // You essentially set the file system as invalid and then open 
+  // using DfsOpenFileSystem().
+  DfsInvalidate();
+  DfsOpenFileSystem();
 }
 
 //-----------------------------------------------------------------
@@ -44,7 +48,7 @@ void DfsModuleInit() {
 void DfsInvalidate() {
 // This is just a one-line function which sets the valid bit of the 
 // superblock to 0.
-
+  sb.valid = 0;
 }
 
 //-------------------------------------------------------------------
@@ -54,22 +58,67 @@ void DfsInvalidate() {
 //-------------------------------------------------------------------
 
 int DfsOpenFileSystem() {
-//Basic steps:
-// Check that filesystem is not already open
 
-// Read superblock from disk.  Note this is using the disk read rather 
-// than the DFS read function because the DFS read requires a valid 
-// filesystem in memory already, and the filesystem cannot be valid 
-// until we read the superblock. Also, we don't know the block size 
-// until we read the superblock, either.
+  int ct;
+  disk_block db_tmp;
+  disk_block db_tmp_36[36];
+  disk_block db_tmp_4[4];
 
-// Copy the data from the block we just read into the superblock in memory
+  //Basic steps:
+  // Check that filesystem is not already open
+  if(fs_open == 1){
+    return DFS_FAIL;
+  }
 
-// All other blocks are sized by virtual block size:
-// Read inodes
-// Read free block vector
-// Change superblock to be invalid, write back to disk, then change 
-// it back to be valid in memory
+  fs_open = 1;
+
+  // Read superblock from disk.  Note this is using the disk read rather 
+  // than the DFS read function because the DFS read requires a valid 
+  // filesystem in memory already, and the filesystem cannot be valid 
+  // until we read the superblock. Also, we don't know the block size 
+  // until we read the superblock, either.
+
+  // Read the disk block No.1
+  if(DiskReadBlock(1, &db_tmp) != DISK_BLOCKSIZE){
+    return DFS_FAIL;
+  }
+
+  // Copy the data from the block we just read into the superblock in memory
+  /* sb = (dfs_superblock) db_tmp; */
+  // superblock has 24 bytes
+  bcopy(&db_tmp, &sb, 24);
+
+
+  // All other blocks are sized by virtual block size:
+  // Read inodes
+  for(ct = 0; ct < 36; ct ++){
+    if(DiskReadBlock(ct + 2, &(db_tmp_36[ct])) != DISK_BLOCKSIZE){
+      return DFS_FAIL;
+    }
+  }
+  /* inodes = (dfs_inode *) db_tmp_36; */
+  bcopy((char *)db_tmp_36, (char *)inodes, 192 * 96);
+
+  // Read free block vector
+  for(ct = 0; ct < 4; ct ++){
+    if(DiskReadBlock(ct + 38, &(db_tmp_4[ct])) != DISK_BLOCKSIZE){
+      return DFS_FAIL;
+    }
+  }
+  
+  /* fbv = (uint32 *) db_tmp_4; */
+  bcopy((char *) db_tmp_4, (char *) fbv, 512 * 4);
+
+  // Change superblock to be invalid, write back to disk, then change 
+  sb.valid = 0;
+
+  if(DfsWriteBlock(1, (dfs_block *) (&sb)) != DISK_BLOCKSIZE){
+    return DFS_FAIL;
+  }
+
+  // it back to be valid in memory
+  sb.valid = 1;
+
   return 0;
 }
 
@@ -81,8 +130,53 @@ int DfsOpenFileSystem() {
 //-------------------------------------------------------------------
 
 int DfsCloseFileSystem() {
-  return 0;
 
+  int ct;
+  disk_block db_tmp;
+  disk_block db_tmp_36[36];
+  disk_block db_tmp_4[4];
+
+  // Write the current memory verison of the filesystem metadata
+
+  // Write sb
+  /* db_tmp = (disk_block) sb; */
+  /* dstrncpy(&db_tmp, &sb, 24); */
+
+  bcopy(&sb, &db_tmp, 24);
+  
+  if(DiskWriteBlock(1, &db_tmp) != DISK_BLOCKSIZE){
+    return DFS_FAIL;
+  }
+
+  // Write inodes
+  /* db_tmp_36 = (disk_block *) inodes; */
+  /* dstrncpy(db_tmp_36, inodes, 192 * 96); */
+  bcopy((char *) inodes, (char *) db_tmp_36, 192 * 96);
+
+  for(ct = 0; ct < 36; ct++){
+    if(DiskWriteBlock(ct + 2, &db_tmp_36[ct]) != DISK_BLOCKSIZE){
+      return DFS_FAIL;
+    }
+  }
+
+  // Write fbv
+  /* db_tmp_4 = (disk_block *) fbv; */
+  /* dstrncpy(db_tmp_4, fbv, 512 * 4); */
+
+  bcopy((char *) fbv, (char *) db_tmp_4, 512 * 4);
+
+  for(ct = 0; ct < 4; ct++){
+    if(DiskWriteBlock(ct + 38, &db_tmp_4[ct]) != DISK_BLOCKSIZE){
+      return DFS_FAIL;
+    }
+  }
+
+
+  // Invalidates the memory's version of filesystem
+  fs_open = 0;
+  sb.valid = 0;
+
+  return DFS_SUCCESS;
 }
 
 
@@ -91,11 +185,39 @@ int DfsCloseFileSystem() {
 // locks where necessary.
 //-----------------------------------------------------------------
 
-uint32 DfsAllocateBlock() {
-// Check that file system has been validly loaded into memory
-// Find the first free block using the free block vector (FBV), mark it in use
-// Return handle to block
-  return 0;
+int DfsAllocateBlock() {
+  // Check that file system has been validly loaded into memory
+  // Find the first free block using the free block vector (FBV), mark it in use
+  // Return handle to block
+  int ct;
+  int bit_index = 31;
+  uint32 fbv_entry_mask = 0x80000000;
+  int dfs_block_number;
+
+  if(fs_open == 0 || sb.valid == 0){
+    return DFS_FAIL;
+  }
+
+  // Find a chunk of pages that has a least one free page
+  for(ct = 0; ct < DFS_FBV_MAX_NUM_WORDS; ct++){
+    if(fbv[ct] != 0){
+      break;
+    }
+  }
+  
+  // Find bit index of the free page 
+  while( (fbv[ct] & fbv_entry_mask) == 0){
+    fbv_entry_mask = fbv_entry_mask >> 1;
+    bit_index -= 1;
+  }
+  
+  // Mark the block number as inuse
+  fbv[ct] = fbv[ct] & invert(0x1 << bit_index);
+
+  // Return the block number
+  dfs_block_number = ct * 32 + (32 - bit_index);
+
+  return dfs_block_number;
 }
 
 
@@ -104,7 +226,19 @@ uint32 DfsAllocateBlock() {
 //-----------------------------------------------------------------
 
 int DfsFreeBlock(uint32 blocknum) {
-  return 0;
+  
+  // Mart the block num in fbv as unused block
+  uint32 fbv_index = blocknum >> 5;
+  uint32 fbv_bit_index = blocknum & 0x1f;
+
+  if(fs_open == 0 || sb.valid == 0){
+    return DFS_FAIL;
+  }
+  
+  // Set the freemap entry to 1 --> freed!
+  fbv[fbv_index] = fbv[fbv_index] | (0x1 << fbv_bit_index);
+
+  return DFS_SUCCESS;
 }
 
 
@@ -116,8 +250,24 @@ int DfsFreeBlock(uint32 blocknum) {
 //-----------------------------------------------------------------
 
 int DfsReadBlock(uint32 blocknum, dfs_block *b) {
+  
+  int ct;
+  uint32 disk_block_num = blocknum * 2;
+  disk_block db_tmp_2[2];
 
-  return 0;
+  if(fs_open == 0 || sb.valid == 0){
+    return DFS_FAIL;
+  }
+
+  for(ct = 0; ct < 2; ct ++){
+    if(DiskReadBlock(ct + disk_block_num, &(db_tmp_2[ct])) != DISK_BLOCKSIZE){
+      return DFS_FAIL;
+    }
+  }
+  
+  bcopy((char *) db_tmp_2, b->data, 2 * DISK_BLOCKSIZE);
+
+  return 2 * DISK_BLOCKSIZE;
 }
 
 
@@ -129,7 +279,24 @@ int DfsReadBlock(uint32 blocknum, dfs_block *b) {
 //-----------------------------------------------------------------
 
 int DfsWriteBlock(uint32 blocknum, dfs_block *b){
-  return 0;
+
+  int ct;
+  uint32 disk_block_num = blocknum * 2;
+  disk_block db_tmp_2[2];
+
+  if(fs_open == 0 || sb.valid == 0){
+    return DFS_FAIL;
+  }
+
+  bcopy(b->data, (char *) db_tmp_2, 2 * DISK_BLOCKSIZE);
+
+  for(ct = 0; ct < 2; ct ++){
+    if(DiskWriteBlock(ct + disk_block_num, &(db_tmp_2[ct])) != DISK_BLOCKSIZE){
+      return DFS_FAIL;
+    }
+  }
+
+  return 2 * DISK_BLOCKSIZE;
 }
 
 
