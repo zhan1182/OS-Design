@@ -37,7 +37,7 @@ void main (int argc, char *argv[])
   // sb.valid = 0
   sb.valid = 0;
   disksize = DFS_MAX_FILESYSTEM_SIZE; // 16MB
-  diskblocksize = 512;
+  diskblocksize = DFS_BLOCKSIZE / 2;
   num_filesystem_blocks = disksize / DFS_BLOCKSIZE;
 
   sb.fsb_size = DFS_BLOCKSIZE; // 1024
