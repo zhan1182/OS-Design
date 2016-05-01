@@ -666,10 +666,243 @@ int DfsInodeReadBytes(uint32 handle, void *mem, int start_byte, int num_bytes) {
 
 int DfsInodeWriteBytes(uint32 handle, void *mem, int start_byte, int num_bytes) {
   
-  int ct;
+  int start_virtual_block = start_byte / sb.fsb_size;
+  int start_virtual_byte = start_byte % sb.fsb_size;
+  int fs_blocknum;
+  dfs_block tmp;
+
+  int first_block_bytes;
+  int rest_of_bytes;
+
+  int num_of_block;
+  int bytes_exceed;
+
+  int ct = 0;
+  int blk_number_array[DFS_BLOCKSIZE / 4];
 
   if(fs_open == 0 || sb.valid == 0){
     return DFS_FAIL;
+  }
+  
+  // Check if the inode is inuse
+  if(inodes[handle].inuse == 0){
+    return DFS_FAIL;
+  }
+
+  // The start virtual block is within the direct table
+  if(start_virtual_block <= 9){
+
+    // Read the fs block as the starting point
+    fs_blocknum = inodes[handle].direct_table[start_virtual_block];
+    
+    // Check if the block has been allocated
+    if(fs_blocknum == -1){
+      fs_blocknum = DfsAllocateBlock();
+      inodes[handle].direct_table[start_virtual_block] = fs_blocknum;
+    }
+
+    if(DfsReadBlock(fs_blocknum, &tmp) != sb.fsb_size){
+      return DFS_FAIL;
+    }
+    
+    // If num_bytes can be written to the single block
+    if(start_virtual_byte + num_bytes <= 1024){
+      bcopy((char *) mem, (char *) (tmp.data + start_virtual_byte), num_bytes);
+      if(DfsWriteBlock(fs_blocknum, &tmp) != sb.fsb_size){
+	return DFS_FAIL;
+      } 
+    }
+    else{
+      // Read the rest of the first block 
+      first_block_bytes = 1024 - start_virtual_byte;
+      bcopy((char *) mem, (char *) (tmp.data + start_virtual_byte), first_block_bytes);
+      if(DfsWriteBlock(fs_blocknum, &tmp) != first_block_bytes){
+	return DFS_FAIL;
+      }
+      mem += first_block_bytes;
+
+      // Determine the rest of bytes and blocks
+      rest_of_bytes = num_bytes - first_block_bytes;
+      num_of_block = rest_of_bytes / sb.fsb_size;
+      bytes_exceed = rest_of_bytes % sb.fsb_size;
+
+      if(start_virtual_block + num_of_block <= 8){
+	// if the rest block does not exceed 8
+	for(ct = 1; ct <= num_of_block; ct++){
+	  fs_blocknum = inodes[handle].direct_table[start_virtual_block + ct];
+	  if(fs_blocknum == -1){
+	    fs_blocknum = DfsAllocateBlock();
+	    inodes[handle].direct_table[start_virtual_block] = fs_blocknum;
+	  }
+	  bcopy((char *) mem, (char *) (tmp.data), sb.fsb_size);
+	  mem += sb.fsb_size;
+	  if(DfsWriteBlock(fs_blocknum, &tmp) != sb.fsb_size){
+	    return DFS_FAIL;
+	  }
+	}
+
+	// Read & write the last block to cover the rest of the bytes
+	fs_blocknum = inodes[handle].direct_table[start_virtual_block + ct];	
+	if(fs_blocknum == -1){
+	  fs_blocknum = DfsAllocateBlock();
+	  inodes[handle].direct_table[start_virtual_block] = fs_blocknum;
+	}
+	if(DfsReadBlock(fs_blocknum, &tmp) != sb.fsb_size){
+	  return DFS_FAIL;
+	}
+	bcopy((char *) mem, (char *) (tmp.data), bytes_exceed);
+	if(DfsWriteBlock(fs_blocknum, &tmp) != bytes_exceed){
+	  return DFS_FAIL;
+	}
+      }
+      else{
+	// if the rest block exceeds 9
+	
+	// Overwrte all the remaining blocks from the 10 blocks
+	for(ct = start_virtual_block + 1; ct < 10; ct++){
+	  bcopy((char *) mem, (char *) (tmp.data), sb.fsb_size);
+	  mem += sb.fsb_size;
+	  
+	  fs_blocknum = inodes[handle].direct_table[ct];  
+	  if(fs_blocknum == -1){
+	    fs_blocknum = DfsAllocateBlock();
+	    inodes[handle].direct_table[start_virtual_block] = fs_blocknum;
+	  }
+	  if(DfsWriteBlock(fs_blocknum, &tmp) != sb.fsb_size){
+	    return DFS_FAIL;
+	  }
+	}
+	
+	// read the block from the indirect table
+	if(inodes[handle].indirect_num != -1){
+	  if(DfsReadBlock(inodes[handle].indirect_num, &tmp) != sb.fsb_size){
+	    return DFS_FAIL;
+	  }
+	  bcopy((char *) (&tmp), (char *) blk_number_array, sb.fsb_size);
+	}
+	else{
+	  // Allocate an indirect block
+	  inodes[handle].indirect_num = DfsAllocateBlock();
+	  for(ct = 0; ct < DFS_BLOCKSIZE / 4; ct++){
+	    blk_number_array[ct] = -1;
+	  }
+	}
+	
+	// Determine the rest of bytes and how many blocks read from the indirect block
+	rest_of_bytes -= sb.fsb_size * (10 - start_virtual_block - 1);
+	num_of_block = rest_of_bytes / sb.fsb_size;
+	bytes_exceed = rest_of_bytes % sb.fsb_size;
+
+	// Read the data from the indirect block
+	for(ct = 0; ct < num_of_block; ct++){
+	  fs_blocknum = blk_number_array[ct];
+	  if(fs_blocknum == -1){
+	    fs_blocknum = DfsAllocateBlock();
+	    blk_number_array[ct] = fs_blocknum;
+	  }
+	  bcopy((char *) mem,(char *) (tmp.data), sb.fsb_size);
+	  mem += sb.fsb_size;
+	  if(DfsWriteBlock(fs_blocknum, &tmp) != sb.fsb_size){
+	    return DFS_FAIL;
+	  }
+	}
+	// Read one more block to cover the exceeded bytes
+	fs_blocknum = blk_number_array[ct];  
+	if(fs_blocknum == -1){
+	  fs_blocknum = DfsAllocateBlock();
+	  blk_number_array[ct] = fs_blocknum;
+	}
+	if(DfsReadBlock(fs_blocknum, &tmp) != sb.fsb_size){
+	  return DFS_FAIL;
+	}
+	bcopy((char *) mem, (char *) (tmp.data), bytes_exceed);
+	if(DfsWriteBlock(fs_blocknum, &tmp) != bytes_exceed){
+	  return DFS_FAIL;
+	}
+      }
+    }
+  }
+  else{
+    // Start from the indirect block
+    // read the block from the indirect table
+    if(inodes[handle].indirect_num != -1){
+      if(DfsReadBlock(inodes[handle].indirect_num, &tmp) != sb.fsb_size){
+	return DFS_FAIL;
+      }
+      bcopy((char *) (&tmp), (char *) blk_number_array, sb.fsb_size);
+    }
+    else{
+      inodes[handle].indirect_num = DfsAllocateBlock();
+      for(ct = 0; ct < DFS_BLOCKSIZE / 4; ct++){
+	blk_number_array[ct] = -1;
+      }
+    }
+    
+    // Indirect block start from block 11
+    start_virtual_block -= 10;
+
+    // Read the fs block as the starting point
+    fs_blocknum = blk_number_array[start_virtual_block];
+    if(fs_blocknum == -1){
+      fs_blocknum = DfsAllocateBlock();
+      blk_number_array[start_virtual_block] = fs_blocknum;
+    }
+    if(DfsReadBlock(fs_blocknum, &tmp) != sb.fsb_size){
+      return DFS_FAIL;
+    }
+
+    // If num_bytes can be read from a single block
+    if(start_virtual_byte + num_bytes <= 1024){
+      bcopy((char *) mem, (char *) (tmp.data + start_virtual_byte),  num_bytes);
+      if(DfsWriteBlock(fs_blocknum, &tmp) != sb.fsb_size){
+	return DFS_FAIL;
+      } 
+    }
+    else{
+      // Read the rest of the first block 
+      first_block_bytes = 1024 - start_virtual_byte;
+      bcopy( (char *) mem, (char *) (tmp.data + start_virtual_byte), first_block_bytes);
+      mem += first_block_bytes;
+      if(DfsWriteBlock(fs_blocknum, &tmp) != sb.fsb_size){
+	return DFS_FAIL;
+      } 
+      // Determine the rest of bytes and blocks
+      rest_of_bytes = num_bytes - first_block_bytes;
+      num_of_block = rest_of_bytes / sb.fsb_size;
+      bytes_exceed = rest_of_bytes % sb.fsb_size;
+
+      // Read the data from the indirect block
+      for(ct = 1; ct <= num_of_block; ct++){
+	fs_blocknum = blk_number_array[start_virtual_block + ct];  
+	if(fs_blocknum == -1){
+	  fs_blocknum = DfsAllocateBlock();
+	  blk_number_array[start_virtual_block] = fs_blocknum;
+	}
+	bcopy( (char *) mem, (char *) (tmp.data), sb.fsb_size);
+	mem += sb.fsb_size;
+	if(DfsWriteBlock(fs_blocknum, &tmp) != sb.fsb_size){
+	  return DFS_FAIL;
+	}
+      }
+      // Read one more block to cover the exceeded bytes
+      fs_blocknum = blk_number_array[start_virtual_block + ct];  
+      if(fs_blocknum == -1){
+	fs_blocknum = DfsAllocateBlock();
+	blk_number_array[start_virtual_block] = fs_blocknum;
+      }
+      if(DfsReadBlock(fs_blocknum, &tmp) != sb.fsb_size){
+	return DFS_FAIL;
+      }
+      bcopy( (char *) mem, (char *) (tmp.data), bytes_exceed);
+      if(DfsWriteBlock(fs_blocknum, &tmp) != bytes_exceed){
+	return DFS_FAIL;
+      }
+    }
+  }
+
+
+  if(start_byte + num_bytes - inodes[handle].file_size > 0){
+    inodes[handle].file_size = start_byte + num_bytes;
   }
 
 
