@@ -16,6 +16,7 @@ int FdiskWriteBlock(uint32 blocknum, dfs_block *b); //You can use your own funct
 void main (int argc, char *argv[])
 {
   int ct = 0;
+  int i = 0;
   char block[512];
   int num_filesystem_blocks;
   p_block pBlock;
@@ -57,6 +58,10 @@ void main (int argc, char *argv[])
       inodes[ct].inuse = 0;
       inodes[ct].file_size = 0;
       inodes[ct].indirect_num = -1; //not allocated yet
+      for(i = 0; i < 10; i++)
+	{
+	  inodes[ct].direct_table[i] = -1;
+	}
     }
   // Next, setup free block vector (fbv) and write free block vector to the disk
   // set all the currently used to 1, and not used to 0, first 19 blocks are occupied
