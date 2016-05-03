@@ -18,7 +18,8 @@ static int fs_open = 0;
 static uint32 negativeone = 0xFFFFFFFF;
 static inline uint32 invert(uint32 n) { return n ^ negativeone; }
 
-lock_t lock; // global lock for later use
+// Add static?
+static lock_t lock; // global lock for later use
 
 // You have already been told about the most likely places where you should use locks. You may use 
 // additional locks if it is really necessary.
@@ -405,6 +406,13 @@ int DfsInodeOpen(char *filename) {
     }
   }
   
+  if(ct >= sb.inode_num_inArray){
+    if(LockHandleRelease(lock) == SYNC_SUCCESS){
+      dbprintf('s', "dfs (%d): released a lock after free fbv.\n", GetCurrentPid());
+    }
+    return DFS_FAIL;
+  }
+
   // Set the inode as inuse and set the filename
   inodes[ct].inuse = 1;
   dstrncpy(inodes[ct].filename, filename, dstrlen(filename));
@@ -510,6 +518,18 @@ int DfsInodeReadBytes(uint32 handle, void *mem, int start_byte, int num_bytes) {
   if(inodes[handle].inuse == 0){
     return DFS_FAIL;
   }
+
+  // Check if the start byte is out of the file
+  if(start_byte < 0 || start_byte > inodes[handle].file_size){
+    return DFS_FAIL;
+  }
+
+  // Check if reach the end of the file
+  if(start_byte + num_bytes > inodes[handle].file_size){
+    // Only read to the end of the file
+    num_bytes = inodes[handle].file_size - start_byte;
+  }
+
 
   // The start virtual block is within the direct table
   if(start_virtual_block <= 9){

@@ -11,6 +11,12 @@
 
 typedef struct file_descriptor {
   // STUDENT: put file descriptor info here
+  char filename[44];
+  int inode_handle;
+  int pid;
+  int current_byte;
+  int mode_num;
+  int end_flag;
 } file_descriptor;
 
 #define FILE_FAIL -1
