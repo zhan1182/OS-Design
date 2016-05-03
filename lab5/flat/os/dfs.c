@@ -901,6 +901,7 @@ int DfsInodeWriteBytes(uint32 handle, void *mem, int start_byte, int num_bytes) 
   }
 
 
+  // Update the file size
   if(start_byte + num_bytes - inodes[handle].file_size > 0){
     inodes[handle].file_size = start_byte + num_bytes;
   }
@@ -917,7 +918,16 @@ int DfsInodeWriteBytes(uint32 handle, void *mem, int start_byte, int num_bytes) 
 //-----------------------------------------------------------------
 
 int DfsInodeFilesize(uint32 handle) {
-  return 0;
+  // Check if the filesystem opens
+  if(fs_open == 0 || sb.valid == 0){
+    return DFS_FAIL;
+  }
+  
+  // Check if the inode is inuse
+  if(inodes[handle].inuse == 0){
+    return DFS_FAIL;
+  }
+  return inodes[handle].file_size;
 }
 
 
@@ -932,8 +942,59 @@ int DfsInodeFilesize(uint32 handle) {
 //-----------------------------------------------------------------
 
 int DfsInodeAllocateVirtualBlock(uint32 handle, uint32 virtual_blocknum) {
+  int ct;
+  int fs_blocknum;
+  dfs_block tmp;
+  int blk_number_array[DFS_BLOCKSIZE / 4];
 
-  return 0;
+  // Check if the filesystem opens
+  if(fs_open == 0 || sb.valid == 0){
+    return DFS_FAIL;
+  }
+  
+  // Check if the inode is inuse
+  if(inodes[handle].inuse == 0){
+    return DFS_FAIL;
+  }
+
+  // Allocate a filesystem block
+  fs_blocknum = DfsAllocateBlock();
+
+  // Store the blocknum in the direct translation table
+  if(virtual_blocknum <= 9){
+    inodes[handle].direct_table[virtual_blocknum] = fs_blocknum;
+  }
+  else{
+    // read the block from the indirect table
+    if(inodes[handle].indirect_num != -1){
+      if(DfsReadBlock(inodes[handle].indirect_num, &tmp) != sb.fsb_size){
+	return DFS_FAIL;
+      }
+      bcopy((char *) (&tmp), (char *) blk_number_array, sb.fsb_size);
+    }
+    else{
+      inodes[handle].indirect_num = DfsAllocateBlock();
+      for(ct = 0; ct < DFS_BLOCKSIZE / 4; ct++){
+	blk_number_array[ct] = -1;
+      }
+    }
+
+    // Update the blk number array
+    if(virtual_blocknum - 10 < DFS_BLOCKSIZE / 4){
+      blk_number_array[virtual_blocknum - 10] = fs_blocknum;
+
+      // Write the blk number array back
+      bcopy( (char *) blk_number_array, (char *) (tmp.data), sb.fsb_size);
+      if(DfsWriteBlock(fs_blocknum, &tmp) != sb.fsb_size){
+	return DFS_FAIL;
+      }
+    }
+    else{
+      return DFS_FAIL;
+    }
+  }
+
+  return sb.fsb_size;
 }
 
 
@@ -945,5 +1006,33 @@ int DfsInodeAllocateVirtualBlock(uint32 handle, uint32 virtual_blocknum) {
 //-----------------------------------------------------------------
 
 int DfsInodeTranslateVirtualToFilesys(uint32 handle, uint32 virtual_blocknum) {
-  return 0;
+  
+  dfs_block tmp;
+  int blk_number_array[DFS_BLOCKSIZE / 4];
+
+  // Check if the filesystem opens
+  if(fs_open == 0 || sb.valid == 0){
+    return DFS_FAIL;
+  }
+  
+  // Check if the inode is inuse
+  if(inodes[handle].inuse == 0){
+    return DFS_FAIL;
+  }
+
+  // Return the direct table if virtual blocknum less than 10
+  if(virtual_blocknum <= 9){
+    return inodes[handle].direct_table[virtual_blocknum];
+  }
+
+  // read the block from the indirect table
+  if(inodes[handle].indirect_num != -1){
+    if(DfsReadBlock(inodes[handle].indirect_num, &tmp) != sb.fsb_size){
+      return DFS_FAIL;
+    }
+    bcopy((char *) (&tmp), (char *) blk_number_array, sb.fsb_size);
+    return blk_number_array[virtual_blocknum - 10];
+  }
+
+  return DFS_FAIL;
 }
