@@ -828,6 +828,13 @@ void main (int argc, char *argv[])
   KbdModuleInit ();
   dbprintf ('i', "After initializing keyboard.\n");
   ClkModuleInit();
+
+  // Init fs module
+  DfsModuleInit();
+
+  // Init files setting
+  files_initialize();
+
   for (i = 0; i < 100; i++) {
     buf[i] = 'a';
   }
