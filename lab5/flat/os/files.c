@@ -249,12 +249,19 @@ int FileSeek(int handle, int num_bytes, int from_where)
     files[handle].current_byte = num_bytes;
   }
   else if(from_where == FILE_SEEK_END){
+    // Seek from the end
     files[handle].current_byte = DfsInodeFilesize(files[handle].inode_handle) + num_bytes;
   }
   else if(from_where == FILE_SEEK_CUR){
+    // Seek from the current position
     files[handle].current_byte += num_bytes;
   }
   else{
+    return FILE_FAIL;
+  }
+
+  // Check if the current starting byte makes sense
+  if(files[handle].current_byte < 0 || files[handle].current_byte > DfsInodeFilesize(files[handle].inode_handle)){
     return FILE_FAIL;
   }
 
