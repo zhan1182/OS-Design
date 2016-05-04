@@ -1100,5 +1100,5 @@ int DfsInodeReset(uint32 handle){
     inodes[handle].indirect_num = -1;
   }
   
-
+  return DFS_SUCCESS;
 }
