@@ -81,7 +81,7 @@ int DfsOpenFileSystem() {
     return DFS_FAIL;
   }
 
-  printf("This is open file syste\n");
+  printf("This is open file system\n");
 
   fs_open = 1;
 
@@ -94,19 +94,16 @@ int DfsOpenFileSystem() {
   // Read the disk block No.1
   tmp = DiskReadBlock(1, &db_tmp);
   if(tmp != DISK_BLOCKSIZE){
-    /* printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"); */
-    /* for(ct = 0; ct < DISK_BLOCKSIZE; ct++){ */
-    /*   printf("data[%d] = %c\n", ct, db_tmp.data[ct]); */
-    /* } */
     return DFS_FAIL;
   }
-
-  return DFS_FAIL;
+  
+  printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
 
   // Copy the data from the block we just read into the superblock in memory
   // superblock has 24 bytes
   bcopy((char *) (&db_tmp), (char *) (&sb), sizeof(dfs_superblock));
 
+  printf("sb.fsb_size = %d, sb.valid = %d, sb.fsb_num = %d\n", sb.fsb_size, sb.valid, sb.fsb_num);
 
   // All other blocks are sized by virtual block size:
   // Read inodes
@@ -137,7 +134,8 @@ int DfsOpenFileSystem() {
 
   // it back to be valid in memory
   sb.valid = 1;
-  
+
+  printf("sb.fsb_size = %d, sb.valid = %d, sb.fsb_num = %d\n", sb.fsb_size, sb.valid, sb.fsb_num);
 
   return DFS_SUCCESS;
 }
@@ -161,11 +159,14 @@ int DfsCloseFileSystem() {
 
   // Write sb
   bzero((char *) (&db_tmp), sizeof(disk_block));
-  bcopy((char *) (&sb), (char *) (&db_tmp), sizeof(dfs_superblock)); // no cast??
+
+  printf("sb.fsb_size = %d, sb.valid = %d, sb.fsb_num = %d\n", sb.fsb_size, sb.valid, sb.fsb_num);
+
+  bcopy((char *) (&sb), (char *) (db_tmp.data), sizeof(dfs_superblock)); // no cast??
   
-  for(ct = 0; ct < DISK_BLOCKSIZE; ct++){
-    printf("db_tmp ");
-  }
+  /* for(ct = 0; ct < DISK_BLOCKSIZE; ct++){ */
+  /*   printf("db_tmp[%d] = %d\n", ct, db_tmp.data[ct]); */
+  /* } */
 
   if(DiskWriteBlock(1, &db_tmp) != DISK_BLOCKSIZE){
     return DFS_FAIL;
