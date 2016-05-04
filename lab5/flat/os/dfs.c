@@ -1056,3 +1056,49 @@ int DfsInodeTranslateVirtualToFilesys(uint32 handle, uint32 virtual_blocknum) {
 
   return DFS_FAIL;
 }
+
+
+int DfsInodeReset(uint32 handle){
+  
+  int ct;
+  dfs_block tmp;
+  int blk_number_array[DFS_BLOCKSIZE / 4];
+
+  // Check if the filesystem opens
+  if(fs_open == 0 || sb.valid == 0){
+    return DFS_FAIL;
+  }
+  
+  // Check if the inode is inuse
+  if(inodes[handle].inuse == 0){
+    return DFS_FAIL;
+  }
+
+  // Set filesize to 0
+  inodes[handle].file_size = 0;
+
+  // Free direct block 
+  for(ct = 0; ct < 10; ct++){
+    if(inodes[handle].direct_table[ct] != -1){
+      DfsFreeBlock(inodes[handle].direct_table[ct]);
+      inodes[handle].direct_table[ct] = -1;
+    }
+  }
+
+  // Free indirect block
+  if(inodes[handle].indirect_num != -1){
+    if(DfsReadBlock(inodes[handle].indirect_num, &tmp) != sb.fsb_size){
+      return DFS_FAIL;
+    }
+    bcopy((char *) (&tmp), (char *) blk_number_array, DFS_BLOCKSIZE);
+    for(ct = 0; ct < DFS_BLOCKSIZE / 4; ct++){
+      if(blk_number_array[ct] != -1){
+	DfsFreeBlock(blk_number_array[ct]);
+      }
+    }
+    // Set the indirect number to -1
+    inodes[handle].indirect_num = -1;
+  }
+  
+
+}
