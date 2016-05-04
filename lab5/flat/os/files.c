@@ -20,7 +20,7 @@ void file_init(int handle){
   files[handle].current_byte = 0;
   files[handle].mode_num = -1;
   files[handle].end_flag = 0;
-  bzero(files[handle].filename, 44);
+  bzero(files[handle].filename, FILE_MAX_FILENAME_LENGTH);
 }
 
 void files_initialize(){
@@ -155,6 +155,9 @@ int FileOpen(char *filename, char *mode)
     dstrncpy(files[file_handle].filename, filename, dstrlen(filename));
   }
   
+  // Update the number of current opened files in the system
+  file_ct += 1;
+  
   // Unlock
   lock_operation(0);
 
@@ -180,6 +183,9 @@ int FileClose(int handle)
   files[handle].end_flag = 0;
 
   // Update the inode information??
+
+  // Update the number of current opened files in the system
+  file_ct -= 1;
 
   // Unlock
   lock_operation(0);
@@ -240,10 +246,13 @@ int FileSeek(int handle, int num_bytes, int from_where)
 
   if(from_where == FILE_SEEK_SET){
     // Seek from the beginning
+    files[handle].current_byte = num_bytes;
   }
   else if(from_where == FILE_SEEK_END){
+    files[handle].current_byte = DfsInodeFilesize(files[handle].inode_handle) + num_bytes;
   }
   else if(from_where == FILE_SEEK_CUR){
+    files[handle].current_byte += num_bytes;
   }
   else{
     return FILE_FAIL;
@@ -252,7 +261,7 @@ int FileSeek(int handle, int num_bytes, int from_where)
   // Clear the EOF flag
   files[handle].end_flag = 0;
 
-  return 0;
+  return FILE_SUCCESS;
 }
 
 
@@ -267,15 +276,22 @@ int FileDelete(char *filename)
     // Find the file descriptor
     if(dstrncmp(files[ct].filename, filename, dstrlen(filename)) == 0){
       // If the file is opened by other process --> return error
-      if(files[ct].pid != GetCurrentPid()){
+      if(files[ct].pid != GetCurrentPid() && files[ct].pid != -1){
 	return FILE_FAIL;
       }
+
       // Delete the inode from the inode handle
       if(DfsInodeDelete(files[ct].inode_handle) != DFS_SUCCESS){
 	// Unlock
 	lock_operation(0);
 	return FILE_FAIL;
       }
+
+      // If the current process opens the file
+      if(files[ct].pid == GetCurrentPid()){
+	file_ct -= 1;
+      }
+
       // Re init the file descriptor
       file_init(ct);
     } 
