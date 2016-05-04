@@ -142,6 +142,13 @@ int FileOpen(char *filename, char *mode)
   // Open the file for the current process and save all the information
   files[file_handle].pid = GetCurrentPid();
   files[file_handle].mode_num = mode_num;
+
+  // If w/rw mode --> reset the file size --> free all the used data blocks
+  if(mode_num == 1 || mode_num == 2){
+    files[file_handle].
+  }
+
+
   if(dstrncmp(files[file_handle].filename, filename, dstrlen(filename)) != 0){
     dstrncpy(files[file_handle].filename, filename, dstrlen(filename));
   }
@@ -156,13 +163,21 @@ int FileOpen(char *filename, char *mode)
 int FileClose(int handle)
 {
 
+  // If the file is not opened for the current process --> return error
+  if(files[handle].pid != GetCurrentPid()){
+    return FILE_FAIL;
+  }
+
   // Lock here
   lock_operation(1);
 
+  // Update file descriptor
   files[handle].pid = -1;
   files[handle].current_byte = 0;
   files[handle].mode_num = -1;
   files[handle].end_flag = 0;
+
+  // Update the inode information??
 
   // Unlock
   lock_operation(0);
@@ -172,7 +187,14 @@ int FileClose(int handle)
 
 int FileRead(int handle, void *mem, int num_bytes)
 {
-  int number = DfsInodeReadBytes(files[handle].inode_handle, mem, files[handle].current_byte, num_bytes);
+  int number;
+
+  // If the file is not opened for the current process --> return error
+  if(files[handle].pid != GetCurrentPid()){
+    return FILE_FAIL;
+  }
+
+  number = DfsInodeReadBytes(files[handle].inode_handle, mem, files[handle].current_byte, num_bytes);
 
   if(number == DFS_FAIL){
     return FILE_FAIL;
@@ -190,7 +212,14 @@ int FileRead(int handle, void *mem, int num_bytes)
 
 int FileWrite(int handle, void *mem, int num_bytes)
 {
-  int number = DfsInodeWriteBytes(files[handle].inode_handle, mem, files[handle].current_byte, num_bytes);
+  int number;
+
+  // If the file is not opened for the current process --> return error
+  if(files[handle].pid != GetCurrentPid()){
+    return FILE_FAIL;
+  }
+
+  number = DfsInodeWriteBytes(files[handle].inode_handle, mem, files[handle].current_byte, num_bytes);
 
   if(number == DFS_FAIL){
     return FILE_FAIL;
@@ -201,6 +230,26 @@ int FileWrite(int handle, void *mem, int num_bytes)
 
 int FileSeek(int handle, int num_bytes, int from_where)
 {
+
+  // If the file is not opened for the current process --> return error
+  if(files[handle].pid != GetCurrentPid()){
+    return FILE_FAIL;
+  }
+
+  if(from_where == FILE_SEEK_SET){
+    // Seek from the beginning
+  }
+  else if(from_where == FILE_SEEK_END){
+  }
+  else if(from_where == FILE_SEEK_CUR){
+  }
+  else{
+    return FILE_FAIL;
+  }
+
+  // Clear the EOF flag
+  files[handle].end_flag = 0;
+
   return 0;
 }
 
@@ -215,6 +264,10 @@ int FileDelete(char *filename)
   for(ct = 0; ct < DFS_INODE_MAX_NUM; ct++){
     // Find the file descriptor
     if(dstrncmp(files[ct].filename, filename, dstrlen(filename)) == 0){
+      // If the file is opened by other process --> return error
+      if(files[ct].pid != GetCurrentPid()){
+	return FILE_FAIL;
+      }
       // Delete the inode from the inode handle
       if(DfsInodeDelete(files[ct].inode_handle) != DFS_SUCCESS){
 	// Unlock
