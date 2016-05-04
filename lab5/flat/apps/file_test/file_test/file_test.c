@@ -1,9 +1,8 @@
 #include "usertraps.h"
 #include "misc.h"
+#include "files_shared.h"
 
 #define STR_LEN 12
-#define FILE_FAIL -1
-#define FILE_SUCCESS 1
 
 void main (int argc, char *argv[])
 {
@@ -46,6 +45,26 @@ void main (int argc, char *argv[])
     Printf("Read %d bytes from the file\n", STR_LEN);
     Exit();
   }
+
+  Printf("Seek at the beginning of the file");
+  if(file_seek(handle, 0, FILE_SEEK_SET) != FILE_SUCCESS){
+    Printf("Failed to seek to the beginning\n");
+    Exit();
+  }
+
+  Printf("Read the same data again\n");
+  ct = file_read(handle, buffer, STR_LEN);
+  if(ct != STR_LEN){
+    Printf("Read %d bytes from the file\n", STR_LEN);
+    Exit();
+  }
+
+
+  Printf("Close the file\n");
+  if(file_close(handle) != FILE_SUCCESS){
+    Printf("Falied to close the file\n");
+  }
+  
 
   return;
 }

@@ -65,12 +65,15 @@ void DfsInvalidate() {
 
 int DfsOpenFileSystem() {
 
+  
   int ct;
   disk_block db_tmp;
   disk_block db_tmp_36[36];
   disk_block db_tmp_4[4];
   int inode_block_num = 0; // disk blocks for inodes
   int fbv_block_num = 0; // disk blocks for fbv
+
+  int tmp;
 
   //Basic steps:
   // Check that filesystem is not already open
@@ -87,12 +90,18 @@ int DfsOpenFileSystem() {
   // until we read the superblock, either.
 
   // Read the disk block No.1
-  if(DiskReadBlock(1, &db_tmp) != DISK_BLOCKSIZE){
+  tmp = DiskReadBlock(1, &db_tmp);
+  if(tmp != DISK_BLOCKSIZE){
+    printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+    /* for(ct = 0; ct < DISK_BLOCKSIZE; ct++){ */
+    /*   printf("data[%d] = %c\n", ct, db_tmp.data[ct]); */
+    /* } */
     return DFS_FAIL;
   }
 
+  return DFS_FAIL;
+
   // Copy the data from the block we just read into the superblock in memory
-  /* sb = (dfs_superblock) db_tmp; */
   // superblock has 24 bytes
   bcopy((char *) (&db_tmp), (char *) (&sb), sizeof(dfs_superblock));
 
@@ -105,7 +114,6 @@ int DfsOpenFileSystem() {
       return DFS_FAIL;
     }
   }
-  /* inodes = (dfs_inode *) db_tmp_36; */
   bcopy((char *)db_tmp_36, (char *)inodes, sb.inode_num_inArray * sizeof(dfs_inode));
 
   // Read free block vector
@@ -116,7 +124,6 @@ int DfsOpenFileSystem() {
     }
   }
   
-  /* fbv = (uint32 *) db_tmp_4; */
   bcopy((char *) db_tmp_4, (char *) fbv, DISK_BLOCKSIZE * fbv_block_num);
 
   // Change superblock to be invalid, write back to disk, then change 
@@ -128,6 +135,7 @@ int DfsOpenFileSystem() {
 
   // it back to be valid in memory
   sb.valid = 1;
+  
 
   return DFS_SUCCESS;
 }
@@ -141,51 +149,44 @@ int DfsOpenFileSystem() {
 
 int DfsCloseFileSystem() {
 
-  int ct;
-  disk_block db_tmp;
-  disk_block db_tmp_36[36];
-  disk_block db_tmp_4[4];
-  int inode_block_num = sb.inode_num_inArray * sizeof(dfs_inode) / DISK_BLOCKSIZE; // 192 * 96 / 512 = 36
-  int fbv_block_num = sb.fsb_num / sizeof(char) / DISK_BLOCKSIZE; // 16384 / 8 / 512 = 4
-  // Write the current memory verison of the filesystem metadata
+  /* int ct; */
+  /* disk_block db_tmp; */
+  /* disk_block db_tmp_36[36]; */
+  /* disk_block db_tmp_4[4]; */
+  /* int inode_block_num = sb.inode_num_inArray * sizeof(dfs_inode) / DISK_BLOCKSIZE; // 192 * 96 / 512 = 36 */
+  /* int fbv_block_num = sb.fsb_num / sizeof(char) / DISK_BLOCKSIZE; // 16384 / 8 / 512 = 4 */
+  /* // Write the current memory verison of the filesystem metadata */
 
-  // Write sb
-  /* db_tmp = (disk_block) sb; */
-  /* dstrncpy(&db_tmp, &sb, 24); */
-
-  bcopy((char *)&sb, (char *)&db_tmp, sizeof(dfs_superblock)); // no cast??
+  /* // Write sb */
+  /* bcopy((char *)&sb, (char *)&db_tmp, sizeof(dfs_superblock)); // no cast?? */
   
-  if(DiskWriteBlock(1, &db_tmp) != DISK_BLOCKSIZE){
-    return DFS_FAIL;
-  }
+  /* if(DiskWriteBlock(1, &db_tmp) != DISK_BLOCKSIZE){ */
+  /*   printf("???????????????????????\n"); */
+  /*   return DFS_FAIL; */
+  /* } */
 
-  // Write inodes
-  /* db_tmp_36 = (disk_block *) inodes; */
-  /* dstrncpy(db_tmp_36, inodes, 192 * 96); */
-  bcopy((char *) inodes, (char *) db_tmp_36, sb.inode_num_inArray * sizeof(dfs_inode));
+  /* // Write inodes */
+  /* bcopy((char *) inodes, (char *) db_tmp_36, sb.inode_num_inArray * sizeof(dfs_inode)); */
 
-  for(ct = 0; ct < inode_block_num; ct++){
-    if(DiskWriteBlock(ct + (sb.inode_start_block * (DFS_BLOCKSIZE / DISK_BLOCKSIZE)), &db_tmp_36[ct]) != DISK_BLOCKSIZE){
-      return DFS_FAIL;
-    }
-  }
+  /* for(ct = 0; ct < inode_block_num; ct++){ */
+  /*   if(DiskWriteBlock(ct + (sb.inode_start_block * (DFS_BLOCKSIZE / DISK_BLOCKSIZE)), &db_tmp_36[ct]) != DISK_BLOCKSIZE){ */
+  /*     return DFS_FAIL; */
+  /*   } */
+  /* } */
 
-  // Write fbv
-  /* db_tmp_4 = (disk_block *) fbv; */
-  /* dstrncpy(db_tmp_4, fbv, 512 * 4); */
+  /* // Write fbv */
+  /* bcopy((char *) fbv, (char *) db_tmp_4, DISK_BLOCKSIZE * fbv_block_num); */
 
-  bcopy((char *) fbv, (char *) db_tmp_4, DISK_BLOCKSIZE * fbv_block_num);
-
-  for(ct = 0; ct < fbv_block_num; ct++){
-    if(DiskWriteBlock(ct + (sb.fbv_start_block * (DFS_BLOCKSIZE / DISK_BLOCKSIZE)), &db_tmp_4[ct]) != DISK_BLOCKSIZE){
-      return DFS_FAIL;
-    }
-  }
+  /* for(ct = 0; ct < fbv_block_num; ct++){ */
+  /*   if(DiskWriteBlock(ct + (sb.fbv_start_block * (DFS_BLOCKSIZE / DISK_BLOCKSIZE)), &db_tmp_4[ct]) != DISK_BLOCKSIZE){ */
+  /*     return DFS_FAIL; */
+  /*   } */
+  /* } */
 
 
-  // Invalidates the memory's version of filesystem
-  fs_open = 0;
-  sb.valid = 0;
+  /* // Invalidates the memory's version of filesystem */
+  /* fs_open = 0; */
+  /* sb.valid = 0; */
 
   return DFS_SUCCESS;
 }
@@ -320,6 +321,10 @@ int DfsWriteBlock(uint32 blocknum, dfs_block *b){
 
   uint32 fbv_index = blocknum >> 5;
   uint32 fbv_bit_index = blocknum & 0x1f;
+
+  printf("This is DfsWriteBlock, check it out\n");
+
+  return sb.fsb_size;
 
   if(fs_open == 0 || sb.valid == 0){
     return DFS_FAIL;
@@ -1107,3 +1112,4 @@ int DfsInodeReset(uint32 handle){
   
   return DFS_SUCCESS;
 }
+

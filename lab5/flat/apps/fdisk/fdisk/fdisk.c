@@ -21,8 +21,8 @@ void main (int argc, char *argv[])
   int num_filesystem_blocks;
   p_block pBlock;
   char *ptr = NULL;
-	// STUDENT: put your code here. Follow the guidelines below. They are just the main steps. 
-	// You need to think of the finer details. You can use bzero() to zero out bytes in memory
+  // STUDENT: put your code here. Follow the guidelines below. They are just the main steps. 
+  // You need to think of the finer details. You can use bzero() to zero out bytes in memory
 
   //bzero(0, DFS_MAX_FILESYSTEM_SIZE); // ????
 
@@ -80,37 +80,30 @@ void main (int argc, char *argv[])
       Printf("fdisk (%d): Fail to write boot record into physical disk.\n", getpid());
     }
   // write super block into p block 1
-  /* block = (char *) (&sb); // ??? */
   bcopy((char *)&sb, pBlock.data, sizeof(dfs_superblock));
-  if(disk_write_block(1, pBlock.data) == DFS_FAIL)
-    {
-      Printf("fdisk (%d): Fail to write superblock into physical disk.\n", getpid());
-    }
+  if(disk_write_block(1, pBlock.data) == DFS_FAIL){
+    Printf("fdisk (%d): Fail to write superblock into physical disk.\n", getpid());
+  }
   
   ptr = (char *)inodes;
-  for(ct = 2; ct < 38; ct++)
-    {
-      bcopy(ptr, block, 512);
-      ptr += 512;
-      
-      if(disk_write_block(ct, block) == DFS_FAIL)
-	{
-	  Printf("fdisk (%d): Fail to write inodes into physical disk.\n", getpid());
-	}
+  for(ct = 2; ct < 38; ct++){
+    bcopy(ptr, block, 512);
+    ptr += 512;
+    
+    if(disk_write_block(ct, block) == DFS_FAIL){
+      Printf("fdisk (%d): Fail to write inodes into physical disk.\n", getpid());
     }
+  }
   ptr = (char *)fbv;
-  for(ct = 38; ct < 42; ct++)
-    {
-      bcopy(ptr, block, 512);
-      ptr += 512;
-
-      if(disk_write_block(ct, block) == DFS_FAIL)
-	{
-	  Printf("fdisk (%d): Fail to write fbv into physical disk.\n", getpid());
-	}
+  for(ct = 38; ct < 42; ct++){
+    bcopy(ptr, block, 512);
+    ptr += 512;
+    
+    if(disk_write_block(ct, block) == DFS_FAIL){
+      Printf("fdisk (%d): Fail to write fbv into physical disk.\n", getpid());
     }
-
-
+  }
+  
   Printf("fdisk (%d): Formatted DFS disk for %d bytes.\n", getpid(), disksize);
   
 }
