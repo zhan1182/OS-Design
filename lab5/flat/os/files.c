@@ -202,6 +202,12 @@ int FileRead(int handle, void *mem, int num_bytes)
     return FILE_FAIL;
   }
 
+  // If the file is opened for reading
+  if(files[handle].mode_num != 0 && files[handle].mode_num != 2){
+    return FILE_FAIL;
+  }
+
+
   number = DfsInodeReadBytes(files[handle].inode_handle, mem, files[handle].current_byte, num_bytes);
 
   if(number == DFS_FAIL){
@@ -224,6 +230,11 @@ int FileWrite(int handle, void *mem, int num_bytes)
 
   // If the file is not opened for the current process --> return error
   if(files[handle].pid != GetCurrentPid()){
+    return FILE_FAIL;
+  }
+
+  // If the file is opened for writing
+  if(files[handle].mode_num != 1 && files[handle].mode_num != 2){
     return FILE_FAIL;
   }
 
