@@ -771,6 +771,7 @@ dointerrupt (unsigned int cause, unsigned int iar, unsigned int isr,
       break;
 
     default:
+
       printf ("Got an unrecognized trap (0x%x) - exiting!\n",
 	      cause);
       GracefulExit ();

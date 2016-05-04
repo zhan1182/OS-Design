@@ -92,6 +92,8 @@ int DiskWriteBlock (uint32 blocknum, disk_block *b) {
     return DISK_FAIL;
   }
 
+  /* printf("DiskWriteBlock: fsfd = %d\n", fsfd); */
+
   // Write data to virtual disk
   FsSeek(fsfd, blocknum * DISK_BLOCKSIZE, FS_SEEK_SET);
   if (FsWrite(fsfd, b->data, DISK_BLOCKSIZE) != DISK_BLOCKSIZE) {
@@ -135,6 +137,8 @@ int DiskReadBlock (uint32 blocknum, disk_block *b) {
     printf ("DiskReadBlock: File system %s cannot be opened!\n", DISK_FILENAME);
     return DISK_FAIL;
   }
+
+  /* printf("fsfd = %d\n", fsfd); */
 
   // Read data from virtual disk
   FsSeek(fsfd, blocknum * DISK_BLOCKSIZE, FS_SEEK_SET);

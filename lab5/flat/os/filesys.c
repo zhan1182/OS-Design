@@ -32,7 +32,7 @@ inline
 int
 FdValid (int fd)
 {
-  return ((fd > 0) && (fd < FS_MAX_OPEN_FILES) && (openfiles[fd].flags != 0));
+  return ((fd >= 0) && (fd < FS_MAX_OPEN_FILES) && (openfiles[fd].flags != 0));
 }
 
 //----------------------------------------------------------------------
@@ -72,6 +72,8 @@ FsOpen (const char *name, int mode)
   int		i, retval;
 
   dbprintf ('f', "Attepmting to open %s mode=%d.\n", name, mode);
+  /* printf ("Attepmting to open %s mode=%d.\n", name, mode); */
+
   // Mask off all but the mode bits
   mode &= FS_MODE_RW;
   // ERROR if the caller hasn't specified a file mode.
@@ -98,6 +100,9 @@ FsOpen (const char *name, int mode)
     openfiles[i].fs = 0;
   }
   dbprintf ('f', "File %s opening in file system %d.\n",name,openfiles[i].fs);
+
+  /* printf ("File %s opening in file system %d.\n",name,openfiles[i].fs); */
+
   retval = fs[openfiles[i].fs].Open (i, name, mode);
   if (retval < 0) {
     // Open failed, so return error code

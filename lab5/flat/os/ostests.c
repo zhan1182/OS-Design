@@ -17,7 +17,6 @@ void RunOSTests() {
   char stuff = 'a';
   int ct_err = 0;
 
-
   // first, initialize the file system
   if(DfsOpenFileSystem() == DFS_FAIL)
     {
@@ -49,8 +48,10 @@ void RunOSTests() {
 
   // now that mem is stuffed, we write part of it into file
   num_bytes = 350; // write 350 bytes
-  start_byte = 25; // start from 25th byte
-  if(DfsInodeWriteBytes(handle, (void *)mem, start_byte, num_bytes) != num_bytes)
+  start_byte = 0; // start from 25th byte
+
+  //////////////////////// ERROR HERE ///////////////////////
+  if(DfsInodeWriteBytes(handle, mem, start_byte, num_bytes) != num_bytes)
     {
       dbprintf('s', "dfs write: write 350 bytes failed.\n");
     }
@@ -70,7 +71,8 @@ void RunOSTests() {
 	  ct_err++;
 	}
     }
-  dbprintf('s', "Among the first 25 data, %d are not correct.\n", ct_err);
+  /* dbprintf('s', "Among the first 25 data, %d are not correct.\n", ct_err); */
+  printf("Among the first 25 data, %d are not correct.\n", ct_err);
   // then test if next 350 bytes are what were written
   ct_err = 0;
   for(; ct < 375; ct++)
@@ -80,7 +82,8 @@ void RunOSTests() {
 	  ct_err++;
 	}
     }
-  dbprintf('s', "Among the next 350 bytes, %d are not correct.\n", ct_err);
+  /* dbprintf('s', "Among the next 350 bytes, %d are not correct.\n", ct_err); */
+  printf("Among the next 350 bytes, %d are not correct.\n", ct_err);
   // last check if the remaining 138 bytes are null
   ct_err = 0;
   for(; ct < 512; ct++)
@@ -90,7 +93,8 @@ void RunOSTests() {
 	  ct_err++;
 	}
     }
-  dbprintf('s', "Among the last 138 bytes, %d are not correct.\n", ct_err);
+  /* dbprintf('s', "Among the last 138 bytes, %d are not correct.\n", ct_err); */
+  printf("Among the last 138 bytes, %d are not correct.\n", ct_err);
 
   // next test if we can over write into the file
   // change the mem
@@ -120,7 +124,8 @@ void RunOSTests() {
 	  ct_err++;
 	}
     }
-  dbprintf('s', "Among the first dfs block, %d are not correct.\n", ct_err);
+  /* dbprintf('s', "Among the first dfs block, %d are not correct.\n", ct_err); */
+  printf("Among the first dfs block, %d are not correct.\n", ct_err);
 
   // we need to check if those data still there after closing file system
   // now we test how it works when write more than one block
@@ -151,7 +156,9 @@ void RunOSTests() {
 	  ct_err++;
 	}
     }
-  dbprintf('s', "Among the second dfs block, %d are not correct.\n", ct_err);
+  /* dbprintf('s', "Among the second dfs block, %d are not correct.\n", ct_err); */
+  printf("Among the second dfs block, %d are not correct.\n", ct_err);
+
   // check if in the third block, all are null except the first byte
   if(DfsInodeReadBytes(handle, mem_read, 2048, 1024) != 1024)
     {
