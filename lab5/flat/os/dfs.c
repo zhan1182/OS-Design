@@ -164,7 +164,7 @@ int DfsCloseFileSystem() {
   bcopy((char *) (&sb), (char *) (&db_tmp), sizeof(dfs_superblock)); // no cast??
   
   for(ct = 0; ct < DISK_BLOCKSIZE; ct++){
-    printf("db_tmp ");
+    //printf("db_tmp ");
   }
 
   if(DiskWriteBlock(1, &db_tmp) != DISK_BLOCKSIZE){
@@ -398,17 +398,19 @@ int DfsInodeOpen(char *filename) {
   int inode_ct;
   int ct;
 
-  printf("This is DfsInodeOpen\n");
+
 
   if(fs_open == 0 || sb.valid == 0){
     return DFS_FAIL;
   }
+
 
   inode_ct = DfsInodeFilenameExists(filename);
 
   if(inode_ct != DFS_FAIL){
     return inode_ct;
   }
+  printf("after checking name.\n");
 
   
   if(LockHandleAcquire(lock) == SYNC_SUCCESS){
@@ -435,7 +437,7 @@ int DfsInodeOpen(char *filename) {
   if(LockHandleRelease(lock) == SYNC_SUCCESS){
     dbprintf('s', "dfs (%d): released a lock after free fbv.\n", GetCurrentPid());
   }
-
+    printf("This is DfsInodeOpen\n");
   return ct;
 }
 

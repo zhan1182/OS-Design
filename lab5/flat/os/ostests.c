@@ -32,6 +32,7 @@ void RunOSTests() {
   // now create an inode for such file
   handle = DfsInodeOpen(file1);
   // now check if such file exists
+  printf("hello.\n");
   if(DfsInodeFilenameExists(file1) != handle)
     {
       dbprintf('s', "Error: file inode did not create.\n");
