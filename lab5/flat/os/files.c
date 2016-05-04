@@ -20,7 +20,7 @@ void file_init(int handle){
   files[handle].current_byte = 0;
   files[handle].mode_num = -1;
   files[handle].end_flag = 0;
-  bzero(files[handle].filename, 44);
+  bzero(files[handle].filename, FILE_MAX_FILENAME_LENGTH);
 }
 
 void files_initialize(){
@@ -155,6 +155,9 @@ int FileOpen(char *filename, char *mode)
     dstrncpy(files[file_handle].filename, filename, dstrlen(filename));
   }
   
+  // Update the number of current opened files in the system
+  file_ct += 1;
+  
   // Unlock
   lock_operation(0);
 
@@ -181,6 +184,9 @@ int FileClose(int handle)
 
   // Update the inode information??
 
+  // Update the number of current opened files in the system
+  file_ct -= 1;
+
   // Unlock
   lock_operation(0);
 
@@ -195,6 +201,12 @@ int FileRead(int handle, void *mem, int num_bytes)
   if(files[handle].pid != GetCurrentPid()){
     return FILE_FAIL;
   }
+
+  // If the file is opened for reading
+  if(files[handle].mode_num != 0 && files[handle].mode_num != 2){
+    return FILE_FAIL;
+  }
+
 
   number = DfsInodeReadBytes(files[handle].inode_handle, mem, files[handle].current_byte, num_bytes);
 
@@ -221,6 +233,11 @@ int FileWrite(int handle, void *mem, int num_bytes)
     return FILE_FAIL;
   }
 
+  // If the file is opened for writing
+  if(files[handle].mode_num != 1 && files[handle].mode_num != 2){
+    return FILE_FAIL;
+  }
+
   number = DfsInodeWriteBytes(files[handle].inode_handle, mem, files[handle].current_byte, num_bytes);
 
   if(number == DFS_FAIL){
@@ -240,19 +257,29 @@ int FileSeek(int handle, int num_bytes, int from_where)
 
   if(from_where == FILE_SEEK_SET){
     // Seek from the beginning
+    files[handle].current_byte = num_bytes;
   }
   else if(from_where == FILE_SEEK_END){
+    // Seek from the end
+    files[handle].current_byte = DfsInodeFilesize(files[handle].inode_handle) + num_bytes;
   }
   else if(from_where == FILE_SEEK_CUR){
+    // Seek from the current position
+    files[handle].current_byte += num_bytes;
   }
   else{
+    return FILE_FAIL;
+  }
+
+  // Check if the current starting byte makes sense
+  if(files[handle].current_byte < 0 || files[handle].current_byte > DfsInodeFilesize(files[handle].inode_handle)){
     return FILE_FAIL;
   }
 
   // Clear the EOF flag
   files[handle].end_flag = 0;
 
-  return 0;
+  return FILE_SUCCESS;
 }
 
 
@@ -267,15 +294,22 @@ int FileDelete(char *filename)
     // Find the file descriptor
     if(dstrncmp(files[ct].filename, filename, dstrlen(filename)) == 0){
       // If the file is opened by other process --> return error
-      if(files[ct].pid != GetCurrentPid()){
+      if(files[ct].pid != GetCurrentPid() && files[ct].pid != -1){
 	return FILE_FAIL;
       }
+
       // Delete the inode from the inode handle
       if(DfsInodeDelete(files[ct].inode_handle) != DFS_SUCCESS){
 	// Unlock
 	lock_operation(0);
 	return FILE_FAIL;
       }
+
+      // If the current process opens the file
+      if(files[ct].pid == GetCurrentPid()){
+	file_ct -= 1;
+      }
+
       // Re init the file descriptor
       file_init(ct);
     } 

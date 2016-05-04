@@ -129,7 +129,7 @@ int DfsOpenFileSystem() {
   // it back to be valid in memory
   sb.valid = 1;
 
-  return 0;
+  return DFS_SUCCESS;
 }
 
 
@@ -700,12 +700,17 @@ int DfsInodeWriteBytes(uint32 handle, void *mem, int start_byte, int num_bytes) 
   int ct = 0;
   int blk_number_array[DFS_BLOCKSIZE / 4];
 
+  // check if the fs opens
   if(fs_open == 0 || sb.valid == 0){
     return DFS_FAIL;
   }
   
   // Check if the inode is inuse
   if(inodes[handle].inuse == 0){
+    return DFS_FAIL;
+  }
+
+  if(start_byte < 0){
     return DFS_FAIL;
   }
 
