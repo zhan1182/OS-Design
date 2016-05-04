@@ -23,4 +23,7 @@ int DfsInodeFilesize(uint32 handle);
 int DfsInodeAllocateVirtualBlock(uint32 handle, uint32 virtual_blocknum);
 int DfsInodeTranslateVirtualToFilesys(uint32 handle, uint32 virtual_blocknum);
 
+// New added function
+int DfsInodeReset(uint32 handle);
+
 #endif

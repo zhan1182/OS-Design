@@ -145,10 +145,12 @@ int FileOpen(char *filename, char *mode)
 
   // If w/rw mode --> reset the file size --> free all the used data blocks
   if(mode_num == 1 || mode_num == 2){
-    files[file_handle].
+    if(DfsInodeReset(files[file_handle].inode_handle) != DFS_SUCCESS){
+      return FILE_FAIL;
+    }
   }
-
-
+  
+  // If new created file, set the filename
   if(dstrncmp(files[file_handle].filename, filename, dstrlen(filename)) != 0){
     dstrncpy(files[file_handle].filename, filename, dstrlen(filename));
   }
